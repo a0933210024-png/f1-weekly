@@ -1,0 +1,143 @@
+---
+// Navigation Component
+---
+
+<nav class="nav">
+  <div class="container">
+    <div class="nav-content">
+      <a href="/" class="logo">
+        🏎️ <span>Formula1 Weekly</span>
+      </a>
+      
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      
+      <div class="nav-links" id="navLinks">
+        <a href="/">首頁</a>
+        <a href="/articles">文章</a>
+        <a href="/teams">車隊</a>
+        <a href="/drivers">車手</a>
+        <a href="/predictions">AI 預測</a>
+        <a href="/calendar">賽事日曆</a>
+        <a href="/about">關於</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    background: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 2px solid var(--f1-red);
+    z-index: 1000;
+  }
+  
+  .nav-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+  }
+  
+  .logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-accent);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .logo span {
+    color: var(--f1-red);
+  }
+  
+  .nav-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+  }
+  
+  .nav-toggle span {
+    width: 25px;
+    height: 3px;
+    background: var(--text-accent);
+    transition: var(--transition);
+  }
+  
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+  }
+  
+  .nav-links a {
+    color: var(--text-primary);
+    font-weight: 500;
+    position: relative;
+    padding: 0.5rem 0;
+  }
+  
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--f1-red);
+    transition: var(--transition);
+  }
+  
+  .nav-links a:hover::after {
+    width: 100%;
+  }
+  
+  /* Mobile */
+  @media (max-width: 767px) {
+    .nav-toggle {
+      display: flex;
+    }
+    
+    .nav-links {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: rgba(10, 10, 10, 0.98);
+      flex-direction: column;
+      gap: 0;
+      padding: 1rem 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    
+    .nav-links.active {
+      max-height: 300px;
+    }
+    
+    .nav-links a {
+      padding: 1rem 2rem;
+      border-bottom: 1px solid #222;
+    }
+  }
+</style>
+
+<script>
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  
+  navToggle?.addEventListener('click', () => {
+    navLinks?.classList.toggle('active');
+  });
+</script>

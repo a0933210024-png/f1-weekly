@@ -1,0 +1,106 @@
+---
+import Navigation from '../components/Navigation.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+  type?: 'website' | 'article' | 'organization';
+  date?: string;
+}
+
+const { 
+  title, 
+  description = 'Formula1 Weekly - 每週深度解析 F1 賽事，由真正的車迷撰寫',
+  ogImage = 'https://f1-weekly.vercel.app/og-image.png',
+  type = 'website',
+  date
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:type" content={type} />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href={`https://f1-weekly.vercel.app${Astro.url.pathname}`} />
+    
+    <!-- RSS Feed -->
+    <link rel="alternate" type="application/rss+xml" title="Formula1 Weekly RSS" href="/rss.xml" />
+    
+    <!-- JSON-LD Structured Data -->
+    {type === 'website' && (
+      <script type="application/ld+json" set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Formula1 Weekly",
+        "url": "https://f1-weekly.vercel.app",
+        "description": description,
+        "publisher": {
+          "@type": "Organization",
+          "name": "Formula1 Weekly"
+        }
+      })} />
+    )}
+    {type === 'article' && date && (
+      <script type="application/ld+json" set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": title,
+        "datePublished": date,
+        "image": ogImage,
+        "publisher": {
+          "@type": "Organization",
+          "name": "Formula1 Weekly"
+        }
+      })} />
+    )}
+    {type === 'organization' && (
+      <script type="application/ld+json" set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": title,
+        "description": description,
+        "image": ogImage
+      })} />
+    )}
+    
+    <!-- TODO: Replace GA_MEASUREMENT_ID with your actual Google Analytics 4 Measurement ID -->
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'GA_MEASUREMENT_ID');
+    </script>
+    
+    <title>{title}</title>
+  </head>
+  <body>
+    <Navigation />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

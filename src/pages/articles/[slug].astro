@@ -1,0 +1,207 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const articles = await getCollection('articles');
+  return articles.map((article) => ({
+    params: { slug: article.slug },
+    props: { article },
+  }));
+}
+
+const { article } = Astro.props;
+const { Content } = await article.render();
+---
+
+<Layout 
+  title={`${article.data.title} - Formula1 Weekly`}
+  description={article.data.summary}
+  ogImage={article.data.coverImage || 'https://f1-weekly.vercel.app/og-image.png'}
+  type="article"
+  date={article.data.date}
+>
+  <article class="article">
+    <!-- Hero Image -->
+    <div class="article-hero">
+      <img 
+        src={article.data.coverImage || 'https://images.pexels.com/photos/12892036/pexels-photo-12892036.jpeg?auto=compress&cs=tinysrgb&w=1200&h=600&fit=crop'}
+        alt={article.data.title}
+      />
+    </div>
+    
+    <!-- Article Header -->
+    <div class="container article-container">
+      <header class="article-header">
+        <span class="tag">{article.data.category}</span>
+        <h1>{article.data.title}</h1>
+        <div class="article-meta">
+          <span>{article.data.date}</span>
+          <span>•</span>
+          <span>{article.data.readTime}</span>
+        </div>
+      </header>
+      
+      <!-- Article Content -->
+      <div class="article-content">
+        <Content />
+      </div>
+      
+      <!-- Newsletter CTA -->
+      <div class="article-cta">
+        <h3>喜歡這篇文章嗎？</h3>
+        <p>訂閱 Formula1 Weekly 電子報，每週深度 F1 分析直送信箱</p>
+        <a href="https://formula1-weekly.beehiiv.com/subscribe" class="btn" target="_blank">
+          立即訂閱
+        </a>
+      </div>
+      
+      <!-- 評論區 -->
+      <div class="comments-section">
+        <h3>💬 討論區</h3>
+        <p class="comments-note">使用 GitHub 帳號登入即可留言，加入 F1 討論！</p>
+        <script src="https://giscus.app/client.js"
+          data-repo="a0933210024-png/f1-weekly"
+          data-repo-id="REPO_ID_PLACEHOLDER"
+          data-category="General"
+          data-category-id="CATEGORY_ID_PLACEHOLDER"
+          data-mapping="pathname"
+          data-strict="0"
+          data-reactions-enabled="1"
+          data-emit-metadata="0"
+          data-input-position="bottom"
+          data-theme="dark"
+          data-lang="zh-TW"
+          crossorigin="anonymous"
+          async>
+        </script>
+        <p class="comments-setup-note" style="font-size:0.8rem;color:#666;margin-top:1rem;">
+          <!-- TODO: Replace REPO_ID_PLACEHOLDER and CATEGORY_ID_PLACEHOLDER from https://giscus.app -->
+        </p>
+      </div>
+      
+      <!-- Back to Articles -->
+      <div class="article-footer">
+        <a href="/articles" class="btn btn-outline">← 返回文章列表</a>
+      </div>
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .article-hero {
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+    background: var(--bg-card);
+  }
+  
+  .article-hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .article-container {
+    max-width: 800px;
+  }
+  
+  .article-header {
+    padding: var(--spacing-xl) 0 var(--spacing-lg);
+    border-bottom: 2px solid var(--f1-red);
+  }
+  
+  .article-header h1 {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    margin: var(--spacing-md) 0;
+  }
+  
+  .article-meta {
+    display: flex;
+    gap: 0.5rem;
+    color: #888;
+    font-size: 0.875rem;
+  }
+  
+  .article-content {
+    padding: var(--spacing-xl) 0;
+    font-size: 1.125rem;
+    line-height: 1.8;
+  }
+  
+  .article-content :global(h2) {
+    font-size: 1.75rem;
+    margin-top: var(--spacing-xl);
+    margin-bottom: var(--spacing-md);
+    color: var(--f1-red);
+  }
+  
+  .article-content :global(h3) {
+    font-size: 1.5rem;
+    margin-top: var(--spacing-lg);
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .article-content :global(p) {
+    margin-bottom: var(--spacing-md);
+    color: var(--text-primary);
+  }
+  
+  .article-content :global(img) {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: var(--spacing-lg) 0;
+  }
+  
+  .article-content :global(ul),
+  .article-content :global(ol) {
+    margin: var(--spacing-md) 0;
+    padding-left: var(--spacing-lg);
+  }
+  
+  .article-content :global(li) {
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .article-content :global(blockquote) {
+    border-left: 4px solid var(--f1-red);
+    padding-left: var(--spacing-md);
+    margin: var(--spacing-lg) 0;
+    font-style: italic;
+    color: #aaa;
+  }
+  
+  .article-cta {
+    background: var(--bg-card);
+    padding: var(--spacing-xl);
+    border-radius: 8px;
+    text-align: center;
+    margin: var(--spacing-2xl) 0;
+    border: 2px solid var(--f1-red);
+  }
+  
+  .article-cta h3 {
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .article-cta p {
+    color: #aaa;
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .article-footer {
+    padding: var(--spacing-xl) 0;
+    text-align: center;
+  }
+  
+  @media (max-width: 767px) {
+    .article-hero {
+      height: 250px;
+    }
+    
+    .article-content {
+      font-size: 1rem;
+    }
+  }
+</style>

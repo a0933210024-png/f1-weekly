@@ -1,0 +1,288 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const teams = await getCollection('teams');
+  return teams.map((team) => ({
+    params: { slug: team.slug },
+    props: { team },
+  }));
+}
+
+const { team } = Astro.props;
+const { Content } = await team.render();
+---
+
+<Layout 
+  title={`${team.data.name} - F1 Weekly`}
+  description={`${team.data.name} 車隊資訊、車手陣容、歷史統計 - ${team.data.nationality}`}
+  ogImage={team.data.coverImage || 'https://f1-weekly.vercel.app/og-image.png'}
+  type="organization"
+>
+  <div class="team-hero" style={`background: linear-gradient(135deg, ${team.data.color} 0%, ${team.data.accentColor} 100%)`}>
+    <div class="hero-content">
+      <h1>{team.data.name}</h1>
+      <p class="hero-subtitle">
+        {team.data.nationality} • 成立於 {team.data.founded} • {team.data.engine}
+      </p>
+    </div>
+  </div>
+
+  <div class="team-detail-container">
+    <a href="/teams" class="back-button">← 返回車隊列表</a>
+
+    <section class="drivers-section">
+      <h2>2026 車手陣容</h2>
+      <div class="drivers-grid">
+        {team.data.drivers.map((driver) => (
+          <div class="driver-card">
+            <div class="driver-number-big" style={`color: ${team.data.color}`}>
+              #{driver.number}
+            </div>
+            <h3>{driver.name}</h3>
+            <p class="driver-nationality">{driver.nationality}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="info-section">
+      <h2>車隊資訊</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">車隊總監</span>
+          <span class="info-value">{team.data.teamPrincipal}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">總部地點</span>
+          <span class="info-value">{team.data.base}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">引擎供應商</span>
+          <span class="info-value">{team.data.engine}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">首次參賽</span>
+          <span class="info-value">{team.data.stats.firstSeason}</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="glory-section">
+      <h2>榮耀統計</h2>
+      <div class="glory-stats">
+        <div class="glory-stat">
+          <span class="glory-icon">🏆</span>
+          <span class="glory-number">{team.data.stats.championships}</span>
+          <span class="glory-label">車手冠軍數</span>
+        </div>
+        <div class="glory-stat">
+          <span class="glory-icon">🥇</span>
+          <span class="glory-number">{team.data.stats.wins}</span>
+          <span class="glory-label">賽事勝場數</span>
+        </div>
+        <div class="glory-stat">
+          <span class="glory-icon">🏅</span>
+          <span class="glory-number">{team.data.stats.podiums}</span>
+          <span class="glory-label">頒獎台次數</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="history-section">
+      <h2>車隊歷史</h2>
+      <div class="history-content">
+        <Content />
+      </div>
+    </section>
+
+    <a href="/teams" class="back-button-bottom">← 返回車隊列表</a>
+  </div>
+</Layout>
+
+<style>
+  .team-hero {
+    color: white;
+    padding: 4rem 1rem;
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .hero-content h1 {
+    font-size: 3.5rem;
+    font-weight: 900;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .hero-subtitle {
+    font-size: 1.25rem;
+    opacity: 0.95;
+  }
+
+  .team-detail-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1rem 3rem;
+  }
+
+  .back-button, .back-button-bottom {
+    display: inline-block;
+    color: #667eea;
+    font-weight: 700;
+    text-decoration: none;
+    margin-bottom: 2rem;
+    transition: transform 0.2s;
+  }
+
+  .back-button:hover, .back-button-bottom:hover {
+    transform: translateX(-4px);
+  }
+
+  .back-button-bottom {
+    margin-top: 3rem;
+    margin-bottom: 0;
+  }
+
+  section {
+    margin-bottom: 3rem;
+  }
+
+  section h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    color: #ffffff;
+  }
+
+  .drivers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .driver-card {
+    background: #1a1a1a;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+    text-align: center;
+    transition: transform 0.3s;
+  }
+
+  .driver-card:hover {
+    transform: translateY(-4px);
+  }
+
+  .driver-number-big {
+    font-size: 4rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+
+  .driver-card h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #ffffff;
+  }
+
+  .driver-nationality {
+    font-size: 1.25rem;
+    color: #aaa;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    background: #1a1a1a;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+  }
+
+  .info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .info-label {
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #aaa;
+  }
+
+  .info-value {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #f0f0f0;
+  }
+
+  .glory-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+  }
+
+  .glory-stat {
+    background: #1a1a1a;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+  }
+
+  .glory-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 1rem;
+  }
+
+  .glory-number {
+    display: block;
+    font-size: 3rem;
+    font-weight: 900;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+  }
+
+  .glory-label {
+    display: block;
+    font-size: 1rem;
+    color: #aaa;
+    font-weight: 600;
+  }
+
+  .history-content {
+    background: #1a1a1a;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+    line-height: 1.8;
+    font-size: 1.125rem;
+    color: #ccc;
+  }
+
+  .history-content :global(p) {
+    margin-bottom: 1.25rem;
+  }
+
+  .history-content :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 640px) {
+    .hero-content h1 {
+      font-size: 2.5rem;
+    }
+
+    .driver-number-big {
+      font-size: 3rem;
+    }
+  }
+</style>

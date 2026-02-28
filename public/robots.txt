@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://f1-weekly.vercel.app/sitemap-index.xml

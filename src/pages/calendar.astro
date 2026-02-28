@@ -1,0 +1,193 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const races = [
+  { round: 1, flag: '🇦🇺', country: '澳洲', location: 'Melbourne', dates: '2026-03-06~08', start: '2026-03-08' },
+  { round: 2, flag: '🇨🇳', country: '中國', location: 'Shanghai', dates: '2026-03-13~15', start: '2026-03-15' },
+  { round: 3, flag: '🇯🇵', country: '日本', location: 'Suzuka', dates: '2026-03-27~29', start: '2026-03-29' },
+  { round: 4, flag: '🇧🇭', country: '巴林', location: 'Bahrain', dates: '2026-04-17~19', start: '2026-04-19' },
+  { round: 5, flag: '🇸🇦', country: '沙烏地', location: 'Jeddah', dates: '2026-04-24~26', start: '2026-04-26' },
+  { round: 6, flag: '🇺🇸', country: '邁阿密', location: 'Miami', dates: '2026-05-01~03', start: '2026-05-03' },
+  { round: 7, flag: '🇮🇹', country: '義大利', location: 'Imola', dates: '2026-05-15~17', start: '2026-05-17' },
+  { round: 8, flag: '🇲🇨', country: '摩納哥', location: 'Monaco', dates: '2026-05-22~24', start: '2026-05-24' },
+  { round: 9, flag: '🇪🇸', country: '西班牙', location: 'Barcelona', dates: '2026-05-29~31', start: '2026-05-31' },
+  { round: 10, flag: '🇨🇦', country: '加拿大', location: 'Montreal', dates: '2026-06-12~14', start: '2026-06-14' },
+  { round: 11, flag: '🇦🇹', country: '奧地利', location: 'Red Bull Ring', dates: '2026-06-26~28', start: '2026-06-28' },
+  { round: 12, flag: '🇬🇧', country: '英國', location: 'Silverstone', dates: '2026-07-03~05', start: '2026-07-05' },
+  { round: 13, flag: '🇧🇪', country: '比利時', location: 'Spa', dates: '2026-07-24~26', start: '2026-07-26' },
+  { round: 14, flag: '🇭🇺', country: '匈牙利', location: 'Budapest', dates: '2026-07-31~08-02', start: '2026-08-02' },
+  { round: 15, flag: '🇳🇱', country: '荷蘭', location: 'Zandvoort', dates: '2026-08-28~30', start: '2026-08-30' },
+  { round: 16, flag: '🇮🇹', country: '義大利', location: 'Monza', dates: '2026-09-04~06', start: '2026-09-06' },
+  { round: 17, flag: '🇦🇿', country: '亞塞拜然', location: 'Baku', dates: '2026-09-18~20', start: '2026-09-20' },
+  { round: 18, flag: '🇸🇬', country: '新加坡', location: 'Singapore', dates: '2026-10-02~04', start: '2026-10-04' },
+  { round: 19, flag: '🇺🇸', country: '美國', location: 'Austin', dates: '2026-10-23~25', start: '2026-10-25' },
+  { round: 20, flag: '🇲🇽', country: '墨西哥', location: 'Mexico City', dates: '2026-10-30~11-01', start: '2026-11-01' },
+  { round: 21, flag: '🇧🇷', country: '巴西', location: 'São Paulo', dates: '2026-11-06~08', start: '2026-11-08' },
+  { round: 22, flag: '🇺🇸', country: '拉斯維加斯', location: 'Las Vegas', dates: '2026-11-20~22', start: '2026-11-22' },
+  { round: 23, flag: '🇶🇦', country: '卡達', location: 'Lusail', dates: '2026-11-27~29', start: '2026-11-29' },
+  { round: 24, flag: '🇦🇪', country: '阿布達比', location: 'Yas Marina', dates: '2026-12-04~06', start: '2026-12-06' },
+];
+
+function getRaceStatus(raceDate: string) {
+  const now = new Date();
+  const race = new Date(raceDate);
+  const diffDays = Math.floor((race.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+  
+  if (diffDays < -2) return { status: '已完賽', class: 'completed' };
+  if (diffDays >= -2 && diffDays <= 0) return { status: '進行中', class: 'ongoing' };
+  return { status: '即將開始', class: 'upcoming' };
+}
+---
+
+<Layout 
+  title="2026 賽事日曆 - Formula1 Weekly"
+  description="2026 F1 賽季完整賽程表，共 24 站比賽"
+>
+  <section class="calendar-page">
+    <div class="container">
+      <h1 class="text-center">2026 F1 賽季日曆</h1>
+      <div class="red-line" style="margin: 1rem auto;"></div>
+      <p class="text-center subtitle">共 24 站比賽 • 3 月至 12 月</p>
+      
+      <div class="calendar-grid">
+        {races.map((race) => {
+          const { status, class: statusClass } = getRaceStatus(race.start);
+          return (
+            <div class={`race-card ${statusClass}`}>
+              <div class="race-round">Round {race.round}</div>
+              <div class="race-flag">{race.flag}</div>
+              <div class="race-info">
+                <h3>{race.country}</h3>
+                <p class="race-location">{race.location}</p>
+                <p class="race-dates">{race.dates}</p>
+                <span class={`race-status ${statusClass}`}>{status}</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .calendar-page {
+    padding: var(--spacing-2xl) 0;
+    min-height: 70vh;
+  }
+  
+  .subtitle {
+    color: #aaa;
+    font-size: 1.125rem;
+    margin-bottom: var(--spacing-xl);
+  }
+  
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-xl);
+  }
+  
+  .race-card {
+    background: var(--bg-card);
+    padding: var(--spacing-lg);
+    border-radius: 8px;
+    border-left: 4px solid var(--f1-red);
+    display: flex;
+    gap: var(--spacing-md);
+    align-items: center;
+    transition: var(--transition);
+  }
+  
+  .race-card:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(225, 6, 0, 0.3);
+  }
+  
+  .race-card.completed {
+    border-left-color: #555;
+    opacity: 0.7;
+  }
+  
+  .race-card.ongoing {
+    border-left-color: #00ff00;
+    animation: pulse 2s infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.4); }
+    50% { box-shadow: 0 0 0 10px rgba(0, 255, 0, 0); }
+  }
+  
+  .race-round {
+    font-size: 0.75rem;
+    color: #888;
+    font-weight: 600;
+    text-transform: uppercase;
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+  
+  .race-card {
+    position: relative;
+  }
+  
+  .race-flag {
+    font-size: 2.5rem;
+    flex-shrink: 0;
+  }
+  
+  .race-info {
+    flex: 1;
+  }
+  
+  .race-info h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+  }
+  
+  .race-location {
+    color: #aaa;
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+  }
+  
+  .race-dates {
+    color: var(--f1-red);
+    font-weight: 600;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .race-status {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  
+  .race-status.completed {
+    background: #333;
+    color: #888;
+  }
+  
+  .race-status.ongoing {
+    background: #00ff00;
+    color: #000;
+  }
+  
+  .race-status.upcoming {
+    background: var(--f1-red);
+    color: var(--text-accent);
+  }
+  
+  @media (max-width: 767px) {
+    .calendar-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,273 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const drivers = [
+  { number: 1, name: "Max Verstappen", flag: "🇳🇱", team: "Red Bull", teamColor: "#0600EF", ranking: 1, bestQuali: "P1", wins: 12, experience: 12, expectation: 5, description: "衛冕冠軍，無人能擋的賽道主宰者。", special: "champion" },
+  { number: 11, name: "Sergio Pérez", flag: "🇲🇽", team: "Red Bull", teamColor: "#0600EF", ranking: 6, bestQuali: "P2", wins: 3, experience: 15, expectation: 3, description: "可靠隊友，擅長防守與輪胎管理。" },
+  { number: 44, name: "Lewis Hamilton", flag: "🇬🇧", team: "Ferrari", teamColor: "#DC0000", ranking: 3, bestQuali: "P1", wins: 103, experience: 19, expectation: 5, description: "傳奇車手，追求第八個世界冠軍。", special: "legend" },
+  { number: 16, name: "Charles Leclerc", flag: "🇲🇨", team: "Ferrari", teamColor: "#DC0000", ranking: 2, bestQuali: "P1", wins: 10, experience: 8, expectation: 5, description: "速度與技巧的完美結合，法拉利旗幟。" },
+  { number: 4, name: "Lando Norris", flag: "🇬🇧", team: "McLaren", teamColor: "#FF8700", ranking: 4, bestQuali: "P1", wins: 5, experience: 7, expectation: 4, description: "年輕天才，擅長追逐戰，未來冠軍候選。" },
+  { number: 81, name: "Oscar Piastri", flag: "🇦🇺", team: "McLaren", teamColor: "#FF8700", ranking: 5, bestQuali: "P2", wins: 4, experience: 3, expectation: 4, description: "冷靜計算，未來之星，澳洲主場作戰。" },
+  { number: 63, name: "George Russell", flag: "🇬🇧", team: "Mercedes", teamColor: "#00D2BE", ranking: 7, bestQuali: "P1", wins: 2, experience: 7, expectation: 4, description: "精準駕駛風格，梅賽德斯新一代領袖。" },
+  { number: 12, name: "Kimi Antonelli", flag: "🇮🇹", team: "Mercedes", teamColor: "#00D2BE", ranking: 16, bestQuali: "P10", wins: 0, experience: 1, expectation: 3, description: "新秀天才，潛力無限，接班 Hamilton 的使命。", special: "rookie" },
+  { number: 14, name: "Fernando Alonso", flag: "🇪🇸", team: "Aston Martin", teamColor: "#006F62", ranking: 8, bestQuali: "P3", wins: 1, experience: 24, expectation: 4, description: "老將智慧，永不放棄，F1 最強鬥士。" },
+  { number: 18, name: "Lance Stroll", flag: "🇨🇦", team: "Aston Martin", teamColor: "#006F62", ranking: 12, bestQuali: "P5", wins: 0, experience: 9, expectation: 3, description: "穩定表現，雨戰專家，尋求突破。" },
+  { number: 10, name: "Pierre Gasly", flag: "🇫🇷", team: "Alpine", teamColor: "#FF69B4", ranking: 9, bestQuali: "P4", wins: 1, experience: 8, expectation: 3, description: "速度與膽識兼備，Alpine 隊長。" },
+  { number: 7, name: "Jack Doohan", flag: "🇦🇺", team: "Alpine", teamColor: "#FF69B4", ranking: 18, bestQuali: "P12", wins: 0, experience: 1, expectation: 3, description: "新秀挑戰者，學習迅速，澳洲之光。", special: "rookie" },
+  { number: 87, name: "Oliver Bearman", flag: "🇬🇧", team: "Haas", teamColor: "#B6BABD", ranking: 15, bestQuali: "P8", wins: 0, experience: 2, expectation: 3, description: "年輕活力，Haas 新時代的希望。" },
+  { number: 31, name: "Esteban Ocon", flag: "🇫🇷", team: "Haas", teamColor: "#B6BABD", ranking: 10, bestQuali: "P6", wins: 1, experience: 9, expectation: 3, description: "防守大師，穩定積分機器。" },
+  { number: 22, name: "Yuki Tsunoda", flag: "🇯🇵", team: "Racing Bulls", teamColor: "#1E41FF", ranking: 11, bestQuali: "P7", wins: 0, experience: 5, expectation: 3, description: "兇猛駕駛，速度驚人，日本之魂。" },
+  { number: 6, name: "Isack Hadjar", flag: "🇫🇷", team: "Racing Bulls", teamColor: "#1E41FF", ranking: 19, bestQuali: "P14", wins: 0, experience: 1, expectation: 3, description: "新秀冒險家，法國新生代的代表。", special: "rookie" },
+  { number: 23, name: "Alexander Albon", flag: "🇹🇭", team: "Williams", teamColor: "#005AFF", ranking: 13, bestQuali: "P9", wins: 0, experience: 7, expectation: 3, description: "Williams 靈魂人物，超越車速的價值。" },
+  { number: 55, name: "Carlos Sainz", flag: "🇪🇸", team: "Williams", teamColor: "#005AFF", ranking: 14, bestQuali: "P3", wins: 4, experience: 11, expectation: 4, description: "穩健快手，加盟 Williams 帶來即戰力。" },
+  { number: 27, name: "Nico Hülkenberg", flag: "🇩🇪", team: "Audi", teamColor: "#BB0000", ranking: 17, bestQuali: "P11", wins: 0, experience: 14, expectation: 3, description: "資深老將，Audi 首戰的最佳領路人。" },
+  { number: 5, name: "Gabriel Bortoleto", flag: "🇧🇷", team: "Audi", teamColor: "#BB0000", ranking: 20, bestQuali: "P16", wins: 0, experience: 1, expectation: 3, description: "新秀天才，F2 冠軍直升 F1。", special: "rookie" },
+];
+---
+
+<Layout title="2026 車手陣容 - Formula1 Weekly" description="探索 2026 F1 賽季的完整車手陣容，20位車手競逐一個冠軍寶座。">
+  <section class="drivers-page">
+    <div class="container">
+      <div class="page-header">
+        <h1>2026 車手陣容</h1>
+        <div class="red-line" style="margin: 1rem auto;"></div>
+        <p class="subtitle">20 位車手，一個冠軍寶座</p>
+      </div>
+
+      <div class="drivers-grid">
+        {drivers.map((driver) => (
+          <div 
+            class={`driver-card ${driver.special || ''}`}
+            style={`--team-color: ${driver.teamColor};`}
+          >
+            {driver.special === 'champion' && <span class="badge champion-badge">👑 CHAMPION</span>}
+            {driver.special === 'legend' && <span class="badge legend-badge">⭐ LEGEND</span>}
+            {driver.special === 'rookie' && <span class="badge rookie-badge">🌱 ROOKIE</span>}
+
+            <div class="driver-number" style={`color: ${driver.teamColor};`}>
+              #{driver.number}
+            </div>
+
+            <div class="driver-info">
+              <h2 class="driver-name">{driver.flag} {driver.name}</h2>
+              <p class="driver-team" style={`color: ${driver.teamColor};`}>{driver.team}</p>
+            </div>
+
+            <div class="driver-stats">
+              <div class="stat">
+                <span class="stat-label">排名</span>
+                <span class="stat-value">P{driver.ranking}</span>
+              </div>
+              <div class="stat">
+                <span class="stat-label">最佳排位</span>
+                <span class="stat-value">{driver.bestQuali}</span>
+              </div>
+              <div class="stat">
+                <span class="stat-label">勝場</span>
+                <span class="stat-value">{driver.wins}</span>
+              </div>
+              <div class="stat">
+                <span class="stat-label">年資</span>
+                <span class="stat-value">{driver.experience}年</span>
+              </div>
+            </div>
+
+            <div class="driver-expectation">
+              <span class="expect-label">2026 期望值</span>
+              <span class="stars">
+                {Array.from({length: 5}).map((_, i) => (
+                  <span class={i < driver.expectation ? 'star filled' : 'star'}>★</span>
+                ))}
+              </span>
+            </div>
+
+            <p class="driver-description">{driver.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .drivers-page {
+    padding: var(--spacing-2xl) 0;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  .page-header h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+  }
+
+  .subtitle {
+    color: #aaa;
+    font-size: 1.2rem;
+    margin-top: var(--spacing-md);
+  }
+
+  .drivers-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-lg);
+  }
+
+  .driver-card {
+    position: relative;
+    background: var(--bg-card);
+    border: 2px solid #222;
+    border-radius: 12px;
+    padding: var(--spacing-lg);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    overflow: hidden;
+  }
+
+  .driver-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--team-color);
+  }
+
+  .driver-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--team-color);
+    box-shadow: 0 8px 30px color-mix(in srgb, var(--team-color) 40%, transparent);
+  }
+
+  /* Special badges */
+  .badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-bottom: var(--spacing-sm);
+    letter-spacing: 0.05em;
+  }
+
+  .champion-badge {
+    background: #DC0000;
+    color: #fff;
+  }
+
+  .legend-badge {
+    background: linear-gradient(90deg, #b8860b, #ffd700, #b8860b);
+    color: #000;
+    border: 1px solid #ffd700;
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+  }
+
+  .driver-card.legend {
+    border-color: #ffd700;
+  }
+
+  .driver-card.legend:hover {
+    box-shadow: 0 8px 30px rgba(255, 215, 0, 0.4);
+  }
+
+  .rookie-badge {
+    background: #1a4a1a;
+    color: #4caf50;
+    border: 1px solid #4caf50;
+  }
+
+  .driver-number {
+    font-size: 3rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: var(--spacing-sm);
+    font-family: 'Formula1', monospace;
+  }
+
+  .driver-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 0 0 4px;
+    color: var(--text-primary);
+  }
+
+  .driver-team {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin: 0 0 var(--spacing-md);
+  }
+
+  .driver-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    background: #111;
+    border-radius: 8px;
+    padding: var(--spacing-sm);
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .stat-value {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .driver-expectation {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .expect-label {
+    font-size: 0.75rem;
+    color: #888;
+  }
+
+  .star {
+    color: #333;
+    font-size: 1rem;
+  }
+
+  .star.filled {
+    color: #ffd700;
+  }
+
+  .driver-description {
+    font-size: 0.85rem;
+    color: #aaa;
+    margin: 0;
+    line-height: 1.5;
+    border-top: 1px solid #222;
+    padding-top: var(--spacing-sm);
+  }
+
+  @media (max-width: 1024px) {
+    .drivers-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .drivers-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

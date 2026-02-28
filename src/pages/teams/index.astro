@@ -1,0 +1,228 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+const teams = await getCollection('teams');
+const sortedTeams = teams.sort((a, b) => {
+  // 按車隊成績排序：冠軍數 > 勝場數
+  if (b.data.stats.championships !== a.data.stats.championships) {
+    return b.data.stats.championships - a.data.stats.championships;
+  }
+  return b.data.stats.wins - a.data.stats.wins;
+});
+---
+
+<Layout title="F1 2026 車隊名單 - F1 Weekly">
+  <div class="teams-hero">
+    <h1>🏎️ 2026 車隊名單</h1>
+    <p class="subtitle">11 支車隊，24 位車手，一個冠軍</p>
+  </div>
+
+  <div class="teams-grid">
+    {sortedTeams.map((team) => (
+      <a href={`/teams/${team.slug}`} class="team-card">
+        <div class="team-stripe" style={`background: ${team.data.color}`}></div>
+        <div class="team-content">
+          <h2>{team.data.shortName}</h2>
+          <p class="nationality">{team.data.nationality}</p>
+          
+          <div class="drivers">
+            <h3>車手陣容</h3>
+            {team.data.drivers.map((driver) => (
+              <div class="driver">
+                <span class="driver-number" style={`color: ${team.data.color}`}>#{driver.number}</span>
+                <span>{driver.name}</span>
+                <span class="driver-flag">{driver.nationality}</span>
+              </div>
+            ))}
+          </div>
+
+          <div class="team-info">
+            <p><strong>車隊總監：</strong>{team.data.teamPrincipal}</p>
+            <p><strong>引擎：</strong>{team.data.engine}</p>
+          </div>
+
+          <div class="stats">
+            <div class="stat">
+              <span class="stat-number">{team.data.stats.championships}</span>
+              <span class="stat-label">冠軍</span>
+            </div>
+            <div class="stat">
+              <span class="stat-number">{team.data.stats.wins}</span>
+              <span class="stat-label">勝場</span>
+            </div>
+            <div class="stat">
+              <span class="stat-number">{team.data.stats.podiums}</span>
+              <span class="stat-label">頒獎台</span>
+            </div>
+          </div>
+
+          <div class="learn-more">了解更多 →</div>
+        </div>
+      </a>
+    ))}
+  </div>
+</Layout>
+
+<style>
+  .teams-hero {
+    text-align: center;
+    padding: 3rem 1rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    margin-bottom: 3rem;
+  }
+
+  .teams-hero h1 {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+    font-weight: 900;
+  }
+
+  .subtitle {
+    font-size: 1.25rem;
+    opacity: 0.95;
+  }
+
+  .teams-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem 3rem;
+  }
+
+  @media (min-width: 640px) {
+    .teams-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .teams-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .team-card {
+    background: #1a1a1a;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: #f0f0f0;
+    display: block;
+  }
+
+  .team-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+  }
+
+  .team-stripe {
+    height: 8px;
+    width: 100%;
+  }
+
+  .team-content {
+    padding: 1.5rem;
+  }
+
+  .team-content h2 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    margin-bottom: 0.25rem;
+    color: #ffffff;
+  }
+
+  .nationality {
+    font-size: 1rem;
+    color: #aaa;
+    margin-bottom: 1.5rem;
+  }
+
+  .drivers {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: #111;
+    border-radius: 8px;
+  }
+
+  .drivers h3 {
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #aaa;
+    margin-bottom: 0.75rem;
+  }
+
+  .driver {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    color: #f0f0f0;
+  }
+
+  .driver:last-child {
+    margin-bottom: 0;
+  }
+
+  .driver-number {
+    font-weight: 800;
+    font-size: 1.1rem;
+  }
+
+  .driver-flag {
+    margin-left: auto;
+    font-size: 1.1rem;
+  }
+
+  .team-info {
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: #ccc;
+  }
+
+  .team-info p {
+    margin-bottom: 0.5rem;
+  }
+
+  .stats {
+    display: flex;
+    justify-content: space-around;
+    padding: 1rem 0;
+    border-top: 2px solid #333;
+    border-bottom: 2px solid #333;
+    margin-bottom: 1rem;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-number {
+    display: block;
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #ffffff;
+  }
+
+  .stat-label {
+    display: block;
+    font-size: 0.75rem;
+    color: #aaa;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .learn-more {
+    text-align: center;
+    color: #E10600;
+    font-weight: 700;
+    font-size: 1rem;
+  }
+</style>

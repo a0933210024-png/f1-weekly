@@ -1,0 +1,421 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const allArticles = await getCollection('articles');
+const latestArticles = allArticles
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+  .slice(0, 6);
+---
+
+<Layout title="Formula1 Weekly - 每週深度解析 F1 賽事">
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <h1>Formula1 Weekly</h1>
+      <div class="red-line"></div>
+      <p class="hero-subtitle">每週深度解析 F1 賽事，由真正的車迷撰寫</p>
+      
+      <div class="newsletter-box">
+        <h3>訂閱電子報</h3>
+        <p>每週 F1 深度分析直送信箱</p>
+        <a href="https://formula1-weekly.beehiiv.com/subscribe" class="btn" target="_blank">
+          立即訂閱
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Race Countdown - Neon Hero -->
+  <section class="countdown-section">
+    <div class="container">
+      <div class="melbourne-countdown">
+        <div class="mc-content">
+          <div class="label-container">
+            <span class="flag-icon">🏁</span>
+            <span class="opener-label">SEASON OPENER</span>
+            <span class="flag-icon flag-reversed">🏁</span>
+          </div>
+          <h2 class="mc-title">AUSTRALIAN GRAND PRIX</h2>
+          <p class="mc-subtitle">Albert Park Circuit, Melbourne · 8 March 2026</p>
+          <div id="neon-countdown" class="neon-timer">
+            <div class="neon-block"><span id="neon-days">00</span><span class="neon-label">DAYS</span></div>
+            <span class="neon-sep">:</span>
+            <div class="neon-block"><span id="neon-hours">00</span><span class="neon-label">HRS</span></div>
+            <span class="neon-sep">:</span>
+            <div class="neon-block"><span id="neon-mins">00</span><span class="neon-label">MIN</span></div>
+            <span class="neon-sep">:</span>
+            <div class="neon-block"><span id="neon-secs">00</span><span class="neon-label">SEC</span></div>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="text-center" style="margin-top: var(--spacing-2xl);">接下來的比賽</h2>
+      <div class="red-line" style="margin: 1rem auto;"></div>
+      <div class="grid grid-3 countdown-grid">
+        <div class="countdown-card">
+          <div class="race-flag">🇨🇳</div>
+          <h3>中國站</h3>
+          <p class="race-date">2026-03-15</p>
+          <div class="countdown" data-date="2026-03-15T14:00:00+08:00">
+            <div class="countdown-item"><span class="countdown-value" data-days>0</span><span class="countdown-label">天</span></div>
+            <div class="countdown-item"><span class="countdown-value" data-hours>0</span><span class="countdown-label">時</span></div>
+            <div class="countdown-item"><span class="countdown-value" data-minutes>0</span><span class="countdown-label">分</span></div>
+            <div class="countdown-item"><span class="countdown-value" data-seconds>0</span><span class="countdown-label">秒</span></div>
+          </div>
+        </div>
+        <div class="countdown-card">
+          <div class="race-flag">🇯🇵</div>
+          <h3>日本站</h3>
+          <p class="race-date">2026-03-29</p>
+          <div class="countdown" data-date="2026-03-29T14:00:00+09:00">
+            <div class="countdown-item"><span class="countdown-value" data-days>0</span><span class="countdown-label">天</span></div>
+            <div class="countdown-item"><span class="countdown-value" data-hours>0</span><span class="countdown-label">時</span></div>
+            <div class="countdown-item"><span class="countdown-value" data-minutes>0</span><span class="countdown-label">分</span></div>
+            <div class="countdown-item"><span class="countdown-value" data-seconds>0</span><span class="countdown-label">秒</span></div>
+          </div>
+        </div>
+        <div class="countdown-card">
+          <div class="race-flag">🇧🇭</div>
+          <h3>巴林站</h3>
+          <p class="race-date">2026-04-19</p>
+          <div class="countdown" data-date="2026-04-19T18:00:00+03:00">
+            <div class="countdown-item"><span class="countdown-value" data-days>0</span><span class="countdown-label">天</span></div>
+            <div class="countdown-item"><span class="countdown-value" data-hours>0</span><span class="countdown-label">時</span></div>
+            <div class="countdown-item"><span class="countdown-value" data-minutes>0</span><span class="countdown-label">分</span></div>
+            <div class="countdown-item"><span class="countdown-value" data-seconds>0</span><span class="countdown-label">秒</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Latest Articles -->
+  <section class="latest-articles">
+    <div class="container">
+      <h2 class="text-center">最新文章</h2>
+      <div class="red-line" style="margin: 1rem auto;"></div>
+      
+      <div class="grid grid-3">
+        {latestArticles.map((article) => (
+          <a href={`/articles/${article.slug}`} class="card article-card">
+            <img 
+              src={article.data.coverImage || 'https://images.pexels.com/photos/12892036/pexels-photo-12892036.jpeg?auto=compress&cs=tinysrgb&w=800&h=450&fit=crop'}
+              alt={article.data.title}
+              class="card-image"
+            />
+            <div class="card-content">
+              <span class="tag">{article.data.category}</span>
+              <h3>{article.data.title}</h3>
+              <p>{article.data.summary}</p>
+              <div class="article-meta">
+                <span>{article.data.date}</span>
+                <span>•</span>
+                <span>{article.data.readTime}</span>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+      
+      <div class="text-center mt-xl">
+        <a href="/articles" class="btn btn-outline">查看所有文章</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI Predictions Teaser -->
+  <section class="ai-teaser">
+    <div class="container">
+      <div class="ai-teaser-content">
+        <h2>🤖 AI 賽前預測</h2>
+        <p>每場比賽前，AI 分析歷史數據、車手表現、賽道特性，為你預測比賽結果</p>
+        <a href="/predictions" class="btn">即將推出</a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .hero {
+    padding: var(--spacing-2xl) 0;
+    text-align: center;
+  }
+  
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    margin-bottom: 0;
+  }
+  
+  .hero-subtitle {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    color: #aaa;
+    margin-bottom: var(--spacing-xl);
+  }
+  
+  .newsletter-box {
+    max-width: 500px;
+    margin: var(--spacing-xl) auto 0;
+    padding: var(--spacing-lg);
+    background: var(--bg-card);
+    border-radius: 8px;
+    border: 2px solid var(--f1-red);
+  }
+  
+  .newsletter-box h3 {
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .newsletter-box p {
+    color: #aaa;
+    margin-bottom: var(--spacing-md);
+  }
+  
+  /* Neon Melbourne Countdown */
+  .melbourne-countdown {
+    width: 100%;
+    min-height: 260px;
+    background: linear-gradient(135deg, #0a0a0a 0%, #2a0000 60%, #0a0a0a 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 16px;
+    border: 1px solid #3d0000;
+    text-align: center;
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .mc-content { position: relative; z-index: 2; }
+
+  .label-container { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 8px; }
+
+  .opener-label {
+    letter-spacing: 0.3em;
+    font-size: 0.85rem;
+    color: var(--f1-red);
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .flag-icon {
+    display: inline-block;
+    font-size: 1.2rem;
+    animation: wave 1.5s ease-in-out infinite alternate;
+    transform-origin: bottom center;
+  }
+  .flag-reversed { animation-delay: 0.75s; }
+  @keyframes wave { from { transform: rotate(-15deg); } to { transform: rotate(15deg); } }
+
+  .mc-title {
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    letter-spacing: 3px;
+    margin: 8px 0 4px;
+    color: #fff;
+  }
+
+  .mc-subtitle { font-size: 0.8rem; color: #888; letter-spacing: 1px; margin-bottom: var(--spacing-md); }
+
+  .neon-timer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: var(--spacing-md);
+  }
+
+  .neon-block { display: flex; flex-direction: column; align-items: center; }
+
+  .neon-timer span[id] {
+    font-family: 'Courier New', monospace;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 0 0 5px #fff, 0 0 12px var(--f1-red), 0 0 25px var(--f1-red), 0 0 50px var(--f1-red);
+    line-height: 1;
+  }
+
+  .neon-label { font-size: 0.65rem; letter-spacing: 0.15em; color: #888; margin-top: 4px; }
+
+  .neon-sep {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 900;
+    color: var(--f1-red);
+    text-shadow: 0 0 8px var(--f1-red);
+    margin-bottom: 20px;
+  }
+
+  .countdown-section {
+    padding: var(--spacing-2xl) 0;
+    background: var(--bg-card);
+  }
+  
+  .countdown-grid {
+    margin-top: var(--spacing-xl);
+  }
+  
+  .countdown-card {
+    background: var(--bg-dark);
+    padding: var(--spacing-lg);
+    border-radius: 8px;
+    text-align: center;
+    border: 2px solid #222;
+  }
+  
+  .race-flag {
+    font-size: 3rem;
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .race-date {
+    color: var(--f1-red);
+    font-weight: 600;
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .countdown {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-md);
+  }
+  
+  .countdown-item {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .countdown-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--f1-red);
+  }
+  
+  .countdown-label {
+    font-size: 0.875rem;
+    color: #888;
+  }
+  
+  .latest-articles {
+    padding: var(--spacing-2xl) 0;
+  }
+  
+  .article-card {
+    display: block;
+    color: var(--text-primary);
+  }
+  
+  .article-card:hover {
+    color: var(--text-primary);
+  }
+  
+  .article-card h3 {
+    font-size: 1.25rem;
+    margin: var(--spacing-sm) 0;
+  }
+  
+  .article-meta {
+    display: flex;
+    gap: 0.5rem;
+    color: #888;
+    font-size: 0.875rem;
+    margin-top: var(--spacing-sm);
+  }
+  
+  .ai-teaser {
+    padding: var(--spacing-2xl) 0;
+    background: linear-gradient(135deg, var(--bg-card) 0%, #1a0505 100%);
+  }
+  
+  .ai-teaser-content {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .ai-teaser h2 {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .ai-teaser p {
+    color: #aaa;
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  @media (max-width: 767px) {
+    .countdown {
+      gap: var(--spacing-sm);
+    }
+    
+    .countdown-value {
+      font-size: 1.5rem;
+    }
+  }
+</style>
+
+<script>
+  function updateCountdown(element: HTMLElement) {
+    const targetDate = new Date(element.dataset.date || '');
+    const now = new Date();
+    const diff = targetDate.getTime() - now.getTime();
+    
+    if (diff <= 0) {
+      element.innerHTML = '<div class="countdown-item"><span class="countdown-value">比賽進行中</span></div>';
+      return;
+    }
+    
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+    
+    const daysEl = element.querySelector('[data-days]');
+    const hoursEl = element.querySelector('[data-hours]');
+    const minutesEl = element.querySelector('[data-minutes]');
+    const secondsEl = element.querySelector('[data-seconds]');
+    
+    if (daysEl) daysEl.textContent = days.toString();
+    if (hoursEl) hoursEl.textContent = hours.toString().padStart(2, '0');
+    if (minutesEl) minutesEl.textContent = minutes.toString().padStart(2, '0');
+    if (secondsEl) secondsEl.textContent = seconds.toString().padStart(2, '0');
+  }
+  
+  function initCountdowns() {
+    const countdowns = document.querySelectorAll('.countdown');
+    countdowns.forEach((countdown) => {
+      updateCountdown(countdown as HTMLElement);
+      setInterval(() => updateCountdown(countdown as HTMLElement), 1000);
+    });
+  }
+  
+  initCountdowns();
+
+  // Neon Melbourne countdown
+  (function() {
+    const target = new Date("2026-03-08T14:00:00+11:00").getTime();
+    function updateNeon() {
+      const now = Date.now();
+      const diff = target - now;
+      if (diff <= 0) {
+        const el = document.getElementById('neon-countdown');
+        if (el) el.innerHTML = '<span style="font-size:1.5rem;color:var(--f1-red);text-shadow:0 0 15px var(--f1-red)">🏁 IT\'S RACE WEEK! 🏁</span>';
+        return;
+      }
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      const fmt = (n: number) => n.toString().padStart(2, '0');
+      const days = document.getElementById('neon-days');
+      const hours = document.getElementById('neon-hours');
+      const mins = document.getElementById('neon-mins');
+      const secs = document.getElementById('neon-secs');
+      if (days) days.textContent = fmt(d);
+      if (hours) hours.textContent = fmt(h);
+      if (mins) mins.textContent = fmt(m);
+      if (secs) secs.textContent = fmt(s);
+    }
+    updateNeon();
+    setInterval(updateNeon, 1000);
+  })();
+</script>

@@ -1,0 +1,101 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const allArticles = await getCollection('articles');
+const sortedArticles = allArticles.sort((a, b) => 
+  new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+---
+
+<Layout 
+  title="所有文章 - Formula1 Weekly"
+  description="深度 F1 分析文章，涵蓋賽季預覽、賽事報告、技術分析、車手動態"
+>
+  <section class="articles-page">
+    <div class="container">
+      <h1 class="text-center">所有文章</h1>
+      <div class="red-line" style="margin: 1rem auto;"></div>
+      <p class="text-center subtitle">深度解析 F1 賽事，由真正的車迷撰寫</p>
+      
+      <div class="grid grid-3 articles-grid">
+        {sortedArticles.map((article) => (
+          <a href={`/articles/${article.slug}`} class="card article-card">
+            <img 
+              src={article.data.coverImage || 'https://images.pexels.com/photos/12892036/pexels-photo-12892036.jpeg?auto=compress&cs=tinysrgb&w=800&h=450&fit=crop'}
+              alt={article.data.title}
+              class="card-image"
+              loading="lazy"
+            />
+            <div class="card-content">
+              <span class="tag">{article.data.category}</span>
+              <h3>{article.data.title}</h3>
+              <p class="article-summary">{article.data.summary}</p>
+              <div class="article-meta">
+                <span>{article.data.date}</span>
+                <span>•</span>
+                <span>{article.data.readTime}</span>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .articles-page {
+    padding: var(--spacing-2xl) 0;
+    min-height: 60vh;
+  }
+  
+  .subtitle {
+    color: #aaa;
+    font-size: 1.125rem;
+    margin-bottom: var(--spacing-xl);
+  }
+  
+  .articles-grid {
+    margin-top: var(--spacing-xl);
+  }
+  
+  .article-card {
+    display: flex;
+    flex-direction: column;
+    color: var(--text-primary);
+    height: 100%;
+  }
+  
+  .article-card:hover {
+    color: var(--text-primary);
+  }
+  
+  .article-card .card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .article-card h3 {
+    font-size: 1.25rem;
+    margin: var(--spacing-sm) 0;
+    line-height: 1.4;
+  }
+  
+  .article-summary {
+    flex: 1;
+    color: #aaa;
+    line-height: 1.6;
+  }
+  
+  .article-meta {
+    display: flex;
+    gap: 0.5rem;
+    color: #888;
+    font-size: 0.875rem;
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-sm);
+    border-top: 1px solid #222;
+  }
+</style>
