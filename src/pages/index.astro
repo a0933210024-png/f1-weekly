@@ -47,6 +47,10 @@ const latestArticles = allArticles
             <span class="neon-sep">:</span>
             <div class="neon-block"><span id="neon-secs">00</span><span class="neon-label">SEC</span></div>
           </div>
+          <div class="melbourne-weather">
+            <span class="weather-icon">🌡️</span>
+            <span class="weather-text">Melbourne 賽道天氣: 22°C • 晴朗</span>
+          </div>
         </div>
       </div>
 
@@ -244,6 +248,20 @@ const latestArticles = allArticles
     text-shadow: 0 0 8px var(--f1-red);
     margin-bottom: 20px;
   }
+
+  .melbourne-weather {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: var(--spacing-md);
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .weather-icon { font-size: 1.2rem; }
+  .weather-text { font-size: 0.85rem; color: #aaa; }
 
   .countdown-section {
     padding: var(--spacing-2xl) 0;
