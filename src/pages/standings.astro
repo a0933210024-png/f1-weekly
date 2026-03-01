@@ -1,0 +1,292 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { fetchCurrentStandings } from '../lib/f1Standings';
+
+const initial = await fetchCurrentStandings([2025, 2026]);
+---
+
+<Layout title="F1 即時積分榜 (2025/2026) - Formula1 Weekly" description="查看 2025 / 2026 F1 車手積分榜與車隊積分榜，資料來源 Jolpica Ergast API。">
+  <section class="standings-page">
+    <div class="container">
+      <div class="page-header">
+        <h1>🏁 F1 即時積分榜</h1>
+        <div class="red-line" style="margin: 1rem auto;"></div>
+        <p class="subtitle">2025 / 2026 Driver & Constructor Standings</p>
+        <p class="meta">資料來源：{initial.source} · 頁面載入時間：<span id="fetched-at">{new Date(initial.fetchedAt).toLocaleString('zh-TW')}</span></p>
+      </div>
+
+      <div id="standings-root" data-initial={JSON.stringify(initial)}>
+        {initial.seasons.map((seasonBlock) => (
+          <article class="season-card" data-season={seasonBlock.season}>
+            <header class="season-header">
+              <h2>{seasonBlock.season} 賽季</h2>
+              <span class="round-tag">
+                {seasonBlock.hasData ? `Round ${seasonBlock.round ?? '-'} 後` : '尚無積分資料'}
+              </span>
+            </header>
+
+            <div class="tables-grid">
+              <div class="table-wrap">
+                <h3>車手積分榜</h3>
+                {seasonBlock.drivers.length > 0 ? (
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Pos</th>
+                        <th>Driver</th>
+                        <th>Team</th>
+                        <th>Pts</th>
+                        <th>Wins</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {seasonBlock.drivers.map((d) => (
+                        <tr>
+                          <td>{d.position}</td>
+                          <td>{d.fullName}</td>
+                          <td>{d.teamName}</td>
+                          <td>{d.points}</td>
+                          <td>{d.wins}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <p class="empty">目前尚無車手積分資料（可能尚未開季或 API 尚未更新）。</p>
+                )}
+              </div>
+
+              <div class="table-wrap">
+                <h3>車隊積分榜</h3>
+                {seasonBlock.constructors.length > 0 ? (
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Pos</th>
+                        <th>Constructor</th>
+                        <th>Pts</th>
+                        <th>Wins</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {seasonBlock.constructors.map((c) => (
+                        <tr>
+                          <td>{c.position}</td>
+                          <td>{c.name}</td>
+                          <td>{c.points}</td>
+                          <td>{c.wins}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <p class="empty">目前尚無車隊積分資料（可能尚未開季或 API 尚未更新）。</p>
+                )}
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .standings-page {
+    padding: var(--spacing-2xl) 0;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .subtitle {
+    color: #aaa;
+    margin-bottom: 0.35rem;
+  }
+
+  .meta {
+    color: #777;
+    font-size: 0.9rem;
+  }
+
+  .season-card {
+    border: 1px solid #2a2a2a;
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .season-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: var(--spacing-md);
+  }
+
+  .season-header h2 {
+    margin-bottom: 0;
+    font-size: 1.5rem;
+  }
+
+  .round-tag {
+    background: #1f1f1f;
+    border: 1px solid #333;
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    color: #ddd;
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+
+  .tables-grid {
+    display: grid;
+    gap: var(--spacing-lg);
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 1024px) {
+    .tables-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .table-wrap {
+    background: #101010;
+    border: 1px solid #262626;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .table-wrap h3 {
+    margin: 0;
+    padding: 0.9rem 1rem;
+    font-size: 1rem;
+    border-bottom: 1px solid #262626;
+    background: #171717;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+  }
+
+  th,
+  td {
+    padding: 0.65rem 0.8rem;
+    border-bottom: 1px solid #222;
+    text-align: left;
+  }
+
+  th {
+    color: #bbb;
+    font-weight: 700;
+    background: #141414;
+  }
+
+  tbody tr:hover {
+    background: #1a1a1a;
+  }
+
+  .empty {
+    margin: 0;
+    padding: 1rem;
+    color: #9b9b9b;
+    font-size: 0.92rem;
+  }
+</style>
+
+<script>
+  async function refreshStandings() {
+    const root = document.getElementById('standings-root');
+    if (!root) return;
+
+    const seasons = ['2025', '2026'];
+
+    async function fetchSeason(season) {
+      const [driversRes, constructorsRes] = await Promise.all([
+        fetch(`https://api.jolpi.ca/ergast/f1/${season}/driverStandings.json`),
+        fetch(`https://api.jolpi.ca/ergast/f1/${season}/constructorStandings.json`)
+      ]);
+
+      if (!driversRes.ok || !constructorsRes.ok) {
+        throw new Error(`Season ${season} fetch failed`);
+      }
+
+      const driversJson = await driversRes.json();
+      const constructorsJson = await constructorsRes.json();
+
+      const driverList = driversJson?.MRData?.StandingsTable?.StandingsLists?.[0] || null;
+      const constructorList = constructorsJson?.MRData?.StandingsTable?.StandingsLists?.[0] || null;
+
+      return {
+        season,
+        round: driverList?.round || constructorList?.round || null,
+        hasData: Boolean(driverList || constructorList),
+        drivers: driverList?.DriverStandings || [],
+        constructors: constructorList?.ConstructorStandings || []
+      };
+    }
+
+    try {
+      const all = await Promise.all(seasons.map(fetchSeason));
+
+      all.forEach((seasonData) => {
+        const card = root.querySelector(`[data-season="${seasonData.season}"]`);
+        if (!card) return;
+
+        const roundTag = card.querySelector('.round-tag');
+        if (roundTag) {
+          roundTag.textContent = seasonData.hasData
+            ? `Round ${seasonData.round ?? '-'} 後`
+            : '尚無積分資料';
+        }
+
+        const wraps = card.querySelectorAll('.table-wrap');
+        const driverWrap = wraps[0];
+        const constructorWrap = wraps[1];
+
+        if (driverWrap) {
+          if (!seasonData.drivers.length) {
+            driverWrap.innerHTML = '<h3>車手積分榜</h3><p class="empty">目前尚無車手積分資料（可能尚未開季或 API 尚未更新）。</p>';
+          } else {
+            const body = seasonData.drivers.map((item) => {
+              const driver = item.Driver || {};
+              const team = item.Constructors?.[0]?.name || '';
+              const name = `${driver.givenName || ''} ${driver.familyName || ''}`.trim();
+
+              return `<tr><td>${item.position}</td><td>${name}</td><td>${team}</td><td>${item.points}</td><td>${item.wins}</td></tr>`;
+            }).join('');
+
+            driverWrap.innerHTML = `<h3>車手積分榜</h3><table><thead><tr><th>Pos</th><th>Driver</th><th>Team</th><th>Pts</th><th>Wins</th></tr></thead><tbody>${body}</tbody></table>`;
+          }
+        }
+
+        if (constructorWrap) {
+          if (!seasonData.constructors.length) {
+            constructorWrap.innerHTML = '<h3>車隊積分榜</h3><p class="empty">目前尚無車隊積分資料（可能尚未開季或 API 尚未更新）。</p>';
+          } else {
+            const body = seasonData.constructors.map((item) => {
+              const constructor = item.Constructor || {};
+              return `<tr><td>${item.position}</td><td>${constructor.name || ''}</td><td>${item.points}</td><td>${item.wins}</td></tr>`;
+            }).join('');
+
+            constructorWrap.innerHTML = `<h3>車隊積分榜</h3><table><thead><tr><th>Pos</th><th>Constructor</th><th>Pts</th><th>Wins</th></tr></thead><tbody>${body}</tbody></table>`;
+          }
+        }
+      });
+
+      const fetchedAt = document.getElementById('fetched-at');
+      if (fetchedAt) fetchedAt.textContent = new Date().toLocaleString('zh-TW');
+    } catch (error) {
+      console.error('Failed to refresh standings:', error);
+    }
+  }
+
+  refreshStandings();
+  setInterval(refreshStandings, 5 * 60 * 1000);
+</script>

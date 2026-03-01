@@ -1,11 +1,31 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
+import { fetchCurrentStandings } from '../lib/f1Standings';
 
 const allArticles = await getCollection('articles');
 const latestArticles = allArticles
   .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
   .slice(0, 6);
+
+const standingsPayload = await fetchCurrentStandings([2026, 2025]);
+const currentDriverStandings =
+  standingsPayload.seasons.find((season) => season.drivers.length > 0) ?? null;
+const topDrivers = currentDriverStandings?.drivers.slice(0, 3) ?? [];
+
+const topBadge = ['🥇', '🥈', '🥉'];
+const teamAccent = {
+  ferrari: '🔴',
+  mercedes: '⚪',
+  mclaren: '🟧',
+  red_bull: '🔵',
+  aston_martin: '🟢',
+  alpine: '🩷',
+  williams: '🔷',
+  haas: '⚫',
+  sauber: '🟩',
+  rb: '🟦'
+};
 ---
 
 <Layout title="Formula1 Weekly - 每週深度解析 F1 賽事">
@@ -91,6 +111,36 @@ const latestArticles = allArticles
           </div>
         </div>
       </div>
+
+      {topDrivers.length > 0 && (
+        <div class="standings-live-card countdown-card">
+          <div class="standings-live-header">
+            <h3>⚡ 即時車手積分 Top 3</h3>
+            <span class="standings-season">{currentDriverStandings?.season} Season</span>
+          </div>
+
+          <div class="standings-top3-grid">
+            {topDrivers.map((driver, index) => (
+              <article class="standings-driver-row">
+                <div class="driver-rank">{topBadge[index] || '🏎️'}</div>
+                <div class="driver-main">
+                  <div class="driver-name-line">
+                    <span class="driver-team-emoji">{teamAccent[driver.teamId] || '🏎️'}</span>
+                    <span class="driver-name">{driver.fullName}</span>
+                  </div>
+                  <span class="driver-team">{driver.teamName}</span>
+                </div>
+                <div class="driver-points">
+                  <span class="points-value">{driver.points}</span>
+                  <span class="points-label">PTS</span>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <a href="/standings" class="standings-link">完整積分榜 ➡</a>
+        </div>
+      )}
     </div>
   </section>
 
@@ -271,6 +321,114 @@ const latestArticles = allArticles
   .countdown-grid {
     margin-top: var(--spacing-xl);
   }
+
+  .standings-live-card {
+    margin-top: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    text-align: left;
+  }
+
+  .standings-live-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+  }
+
+  .standings-live-header h3 {
+    margin: 0;
+    font-size: 1.15rem;
+  }
+
+  .standings-season {
+    color: #aaa;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .standings-top3-grid {
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  .standings-driver-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .driver-rank {
+    font-size: 1.35rem;
+    line-height: 1;
+  }
+
+  .driver-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+
+  .driver-name-line {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-width: 0;
+  }
+
+  .driver-name {
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .driver-team {
+    color: #aaa;
+    font-size: 0.82rem;
+  }
+
+  .driver-points {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+  }
+
+  .points-value {
+    color: var(--f1-red);
+    font-size: 1.35rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .points-label {
+    color: #aaa;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+  }
+
+  .standings-link {
+    align-self: flex-end;
+    color: #fff;
+    font-weight: 700;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 180ms ease, color 180ms ease;
+  }
+
+  .standings-link:hover {
+    color: var(--f1-red);
+    border-color: var(--f1-red);
+  }
   
   .countdown-card {
     --glow-x: 50%;
@@ -410,6 +568,18 @@ const latestArticles = allArticles
     .countdown-value {
       font-size: 1.5rem;
     }
+
+    .standings-driver-row {
+      grid-template-columns: auto 1fr;
+      grid-template-areas:
+        'rank main'
+        'rank points';
+      row-gap: 0.45rem;
+    }
+
+    .driver-rank { grid-area: rank; }
+    .driver-main { grid-area: main; }
+    .driver-points { grid-area: points; }
   }
 </style>
 
