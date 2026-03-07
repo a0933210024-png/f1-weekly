@@ -529,10 +529,17 @@
 
     grid.innerHTML = F1.teams.map(function (team) {
       var l = lang;
+      var logoUrl = team.cdnSlug ? F1.getTeamLogo(team.cdnSlug, 48) : '';
       var driverCards = team.drivers.map(function (d) {
+        var imgUrl = d.code ? F1.getDriverImg(d.code, team.cdnSlug, 440) : '';
         return '<div class="driver-tile">' +
+          '<div class="driver-tile-accent" style="background:' + team.color + '"></div>' +
           '<div class="driver-tile-num">' + d.num + '</div>' +
-          '<div class="driver-tile-name">' + d.first + '<br>' + d.last + '</div>' +
+          (imgUrl ? '<img class="driver-tile-img" src="' + imgUrl + '" alt="' + d.first + ' ' + d.last + '" loading="lazy" onerror="this.style.display=\'none\'">' : '') +
+          '<div class="driver-tile-name">' +
+            '<span class="driver-tile-firstname">' + d.first + '</span>' +
+            '<span class="driver-tile-lastname">' + d.last + '</span>' +
+          '</div>' +
           '<div class="driver-tile-nat">' + d.flag + '&nbsp;&nbsp;' + d.nat + '</div>' +
           '<div class="driver-tile-pts">#' + d.num + '</div>' +
           '</div>';
@@ -541,10 +548,13 @@
       return '<div class="team-card" id="team-' + team.id + '" style="border-left-color:' + team.color + '">' +
         '<div class="team-card-top">' +
           '<div class="team-name-block">' +
-            '<div class="team-name">' + (l === 'zh' ? team.nameZH : team.name) + '</div>' +
+            '<div class="team-header-row">' +
+              (logoUrl ? '<img class="team-logo" src="' + logoUrl + '" alt="' + team.name + '" loading="lazy" onerror="this.style.display=\'none\'">' : '') +
+              '<div class="team-name">' + (l === 'zh' ? team.nameZH : team.name) + '</div>' +
+            '</div>' +
             '<div class="team-fullname">' + team.fullName + '</div>' +
-            '<div style="display:inline-flex;align-items:center;gap:5px;font-family:var(--font-mono);font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;padding:3px 8px;border:1px solid var(--border-2);color:var(--text-3);margin-top:8px;">' +
-              (l === 'zh' ? '引擎：' : 'Engine: ') + (engines[team.id] || '—') +
+            '<div class="engine-badge">' +
+              (l === 'zh' ? '動力單元：' : 'Power Unit: ') + (engines[team.id] || '—') +
             '</div>' +
           '</div>' +
           '<div class="team-meta">' +

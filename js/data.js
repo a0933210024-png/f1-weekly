@@ -91,100 +91,100 @@ const F1 = {
     {
       id: 'mclaren', name: 'McLaren', nameZH: '麥拿侖',
       fullName: 'McLaren Mastercard F1 Team',
-      engine: 'Mercedes', color: '#FF8000', pos: 1, pts: 0,
+      engine: 'Mercedes', color: '#FF8000', pos: 1, pts: 0, cdnSlug: 'mclaren',
       drivers: [
-        { num: 1,  first: 'Lando',   last: 'Norris',    nat: 'GBR', flag: '🇬🇧', pts: 0, wins: 0 },
-        { num: 81, first: 'Oscar',   last: 'Piastri',   nat: 'AUS', flag: '🇦🇺', pts: 0, wins: 0 }
+        { num: 1,  first: 'Lando',   last: 'Norris',    nat: 'GBR', flag: '🇬🇧', pts: 0, wins: 0, code: 'lannor01' },
+        { num: 81, first: 'Oscar',   last: 'Piastri',   nat: 'AUS', flag: '🇦🇺', pts: 0, wins: 0, code: 'oscpia01' }
       ]
     },
     {
       id: 'ferrari', name: 'Ferrari', nameZH: '法拉利',
       fullName: 'Scuderia Ferrari HP',
-      engine: 'Ferrari', color: '#E8002D', pos: 2, pts: 0,
+      engine: 'Ferrari', color: '#E8002D', pos: 2, pts: 0, cdnSlug: 'ferrari',
       drivers: [
-        { num: 16, first: 'Charles', last: 'Leclerc',   nat: 'MCO', flag: '🇲🇨', pts: 0, wins: 0 },
-        { num: 44, first: 'Lewis',   last: 'Hamilton',  nat: 'GBR', flag: '🇬🇧', pts: 0, wins: 0 }
+        { num: 16, first: 'Charles', last: 'Leclerc',   nat: 'MCO', flag: '🇲🇨', pts: 0, wins: 0, code: 'chalec01' },
+        { num: 44, first: 'Lewis',   last: 'Hamilton',  nat: 'GBR', flag: '🇬🇧', pts: 0, wins: 0, code: 'lewham01' }
       ]
     },
     {
       id: 'redbull', name: 'Red Bull', nameZH: '紅牛',
       fullName: 'Oracle Red Bull Racing',
-      engine: 'Red Bull Ford', color: '#3671C6', pos: 3, pts: 0,
+      engine: 'Red Bull Ford', color: '#3671C6', pos: 3, pts: 0, cdnSlug: 'redbullracing',
       drivers: [
-        { num: 3,  first: 'Max',     last: 'Verstappen', nat: 'NED', flag: '🇳🇱', pts: 0, wins: 0 },
-        { num: 6,  first: 'Isack',   last: 'Hadjar',     nat: 'FRA', flag: '🇫🇷', pts: 0, wins: 0 }
+        { num: 3,  first: 'Max',     last: 'Verstappen', nat: 'NED', flag: '🇳🇱', pts: 0, wins: 0, code: 'maxver01' },
+        { num: 6,  first: 'Isack',   last: 'Hadjar',     nat: 'FRA', flag: '🇫🇷', pts: 0, wins: 0, code: 'isahad01' }
       ]
     },
     {
       id: 'mercedes', name: 'Mercedes', nameZH: '梅賽德斯',
       fullName: 'Mercedes-AMG PETRONAS Formula One Team',
-      engine: 'Mercedes', color: '#00D2BE', pos: 4, pts: 0,
+      engine: 'Mercedes', color: '#00D2BE', pos: 4, pts: 0, cdnSlug: 'mercedes',
       drivers: [
-        { num: 63, first: 'George',  last: 'Russell',   nat: 'GBR', flag: '🇬🇧', pts: 0, wins: 0 },
-        { num: 12, first: 'Kimi',    last: 'Antonelli', nat: 'ITA', flag: '🇮🇹', pts: 0, wins: 0 }
+        { num: 63, first: 'George',  last: 'Russell',   nat: 'GBR', flag: '🇬🇧', pts: 0, wins: 0, code: 'georus01' },
+        { num: 12, first: 'Kimi',    last: 'Antonelli', nat: 'ITA', flag: '🇮🇹', pts: 0, wins: 0, code: 'andant01' }
       ]
     },
     {
       id: 'astonmartin', name: 'Aston Martin', nameZH: '阿斯頓·馬丁',
       fullName: 'Aston Martin Aramco Formula One Team',
-      engine: 'Honda', color: '#229971', pos: 5, pts: 0,
+      engine: 'Honda', color: '#229971', pos: 5, pts: 0, cdnSlug: 'astonmartin',
       drivers: [
-        { num: 14, first: 'Fernando', last: 'Alonso',   nat: 'ESP', flag: '🇪🇸', pts: 0, wins: 0 },
-        { num: 18, first: 'Lance',    last: 'Stroll',   nat: 'CAN', flag: '🇨🇦', pts: 0, wins: 0 }
+        { num: 14, first: 'Fernando', last: 'Alonso',   nat: 'ESP', flag: '🇪🇸', pts: 0, wins: 0, code: 'feralo01' },
+        { num: 18, first: 'Lance',    last: 'Stroll',   nat: 'CAN', flag: '🇨🇦', pts: 0, wins: 0, code: 'lanstr01' }
       ]
     },
     {
       id: 'alpine', name: 'Alpine', nameZH: '阿爾派',
       fullName: 'BWT Alpine Formula One Team',
-      engine: 'Mercedes', color: '#0093CC', pos: 6, pts: 0,
+      engine: 'Mercedes', color: '#0093CC', pos: 6, pts: 0, cdnSlug: 'alpine',
       drivers: [
-        { num: 10, first: 'Pierre',  last: 'Gasly',     nat: 'FRA', flag: '🇫🇷', pts: 0, wins: 0 },
-        { num: 43, first: 'Franco',  last: 'Colapinto', nat: 'ARG', flag: '🇦🇷', pts: 0, wins: 0 }
+        { num: 10, first: 'Pierre',  last: 'Gasly',     nat: 'FRA', flag: '🇫🇷', pts: 0, wins: 0, code: 'piegas01' },
+        { num: 43, first: 'Franco',  last: 'Colapinto', nat: 'ARG', flag: '🇦🇷', pts: 0, wins: 0, code: 'fracol01' }
       ]
     },
     {
       id: 'haas', name: 'Haas', nameZH: '哈斯',
       fullName: 'TGR Haas F1 Team',
-      engine: 'Ferrari', color: '#FFFFFF', pos: 7, pts: 0,
+      engine: 'Ferrari', color: '#FFFFFF', pos: 7, pts: 0, cdnSlug: 'haasf1team',
       drivers: [
-        { num: 31, first: 'Esteban', last: 'Ocon',      nat: 'FRA', flag: '🇫🇷', pts: 0, wins: 0 },
-        { num: 87, first: 'Oliver',  last: 'Bearman',   nat: 'GBR', flag: '🇬🇧', pts: 0, wins: 0 }
+        { num: 31, first: 'Esteban', last: 'Ocon',      nat: 'FRA', flag: '🇫🇷', pts: 0, wins: 0, code: 'estoco01' },
+        { num: 87, first: 'Oliver',  last: 'Bearman',   nat: 'GBR', flag: '🇬🇧', pts: 0, wins: 0, code: 'olibea01' }
       ]
     },
     {
       id: 'williams', name: 'Williams', nameZH: '威廉斯',
       fullName: 'Atlassian Williams F1 Team',
-      engine: 'Mercedes', color: '#37BEDD', pos: 8, pts: 0,
+      engine: 'Mercedes', color: '#37BEDD', pos: 8, pts: 0, cdnSlug: 'williams',
       drivers: [
-        { num: 55, first: 'Carlos',  last: 'Sainz',     nat: 'ESP', flag: '🇪🇸', pts: 0, wins: 0 },
-        { num: 23, first: 'Alex',    last: 'Albon',     nat: 'THA', flag: '🇹🇭', pts: 0, wins: 0 }
+        { num: 55, first: 'Carlos',  last: 'Sainz',     nat: 'ESP', flag: '🇪🇸', pts: 0, wins: 0, code: 'carsai01' },
+        { num: 23, first: 'Alex',    last: 'Albon',     nat: 'THA', flag: '🇹🇭', pts: 0, wins: 0, code: 'alealb01' }
       ]
     },
     {
       id: 'racingbulls', name: 'Racing Bulls', nameZH: '鬥牛',
       fullName: 'Visa Cash App Racing Bulls Formula One Team',
-      engine: 'Red Bull Ford', color: '#6692FF', pos: 9, pts: 0,
+      engine: 'Red Bull Ford', color: '#6692FF', pos: 9, pts: 0, cdnSlug: 'racingbulls',
       drivers: [
-        { num: 30, first: 'Liam',    last: 'Lawson',    nat: 'NZL', flag: '🇳🇿', pts: 0, wins: 0 },
-        { num: 41, first: 'Arvid',   last: 'Lindblad',  nat: 'GBR', flag: '🇬🇧', pts: 0, wins: 0 }
+        { num: 30, first: 'Liam',    last: 'Lawson',    nat: 'NZL', flag: '🇳🇿', pts: 0, wins: 0, code: 'lialaw01' },
+        { num: 41, first: 'Arvid',   last: 'Lindblad',  nat: 'GBR', flag: '🇬🇧', pts: 0, wins: 0, code: 'arvlin01' }
       ]
     },
     {
       id: 'audi', name: 'Audi', nameZH: '奧迪',
       fullName: 'Audi Revolut F1 Team',
-      engine: 'Audi', color: '#BB0000', pos: 10, pts: 0,
+      engine: 'Audi', color: '#BB0000', pos: 10, pts: 0, cdnSlug: 'audi',
       drivers: [
-        { num: 27, first: 'Nico',    last: 'Hülkenberg', nat: 'DEU', flag: '🇩🇪', pts: 0, wins: 0 },
-        { num: 5,  first: 'Gabriel', last: 'Bortoleto',  nat: 'BRA', flag: '🇧🇷', pts: 0, wins: 0 }
+        { num: 27, first: 'Nico',    last: 'Hülkenberg', nat: 'DEU', flag: '🇩🇪', pts: 0, wins: 0, code: 'nichul01' },
+        { num: 5,  first: 'Gabriel', last: 'Bortoleto',  nat: 'BRA', flag: '🇧🇷', pts: 0, wins: 0, code: 'gabbor01' }
       ]
     },
     {
       id: 'cadillac', name: 'Cadillac', nameZH: '凱迪拉克',
       fullName: 'Cadillac Formula 1 Team',
-      engine: 'Ferrari', color: '#CC0033', pos: 11, pts: 0,
+      engine: 'Ferrari', color: '#CC0033', pos: 11, pts: 0, cdnSlug: 'cadillac',
       drivers: [
-        { num: 11, first: 'Sergio',   last: 'Pérez',    nat: 'MEX', flag: '🇲🇽', pts: 0, wins: 0 },
-        { num: 77, first: 'Valtteri', last: 'Bottas',   nat: 'FIN', flag: '🇫🇮', pts: 0, wins: 0 }
+        { num: 11, first: 'Sergio',   last: 'Pérez',    nat: 'MEX', flag: '🇲🇽', pts: 0, wins: 0, code: 'serper01' },
+        { num: 77, first: 'Valtteri', last: 'Bottas',   nat: 'FIN', flag: '🇫🇮', pts: 0, wins: 0, code: 'valbot01' }
       ]
     }
   ],
@@ -217,6 +217,22 @@ const F1 = {
     { pos: 21, num: 77, driver: 'Valtteri Bottas',  team: 'Cadillac',      time: '—',         confirmed: false },
     { pos: 22, num: 3,  driver: 'Max Verstappen',   team: 'Red Bull',      time: 'Q1 Crash',  confirmed: true  },
   ],
+
+  /* ---- F1 MEDIA CDN IMAGE HELPERS (2026) ----
+     Source: media.formula1.com (Cloudinary CDN)
+     All URLs verified HTTP 200
+  ---- */
+  cdnBase: 'https://media.formula1.com/image/upload',
+
+  getDriverImg: function(driverCode, teamSlug, w) {
+    w = w || 440;
+    return this.cdnBase + '/c_fill,w_' + w + '/q_auto/d_common:f1:2026:fallback:driver:2026fallbackdriverright.webp/v1740000000/common/f1/2026/' + teamSlug + '/' + driverCode + '/2026' + teamSlug + driverCode + 'right.webp';
+  },
+
+  getTeamLogo: function(teamSlug, w) {
+    w = w || 48;
+    return this.cdnBase + '/c_lfill,w_' + w + '/q_auto/v1740000000/common/f1/2026/' + teamSlug + '/2026' + teamSlug + 'logowhite.webp';
+  },
 
   /* ---- CIRCUIT IMAGES (from media.formula1.com, 2026) ---- */
   circuits: {
