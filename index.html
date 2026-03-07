@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>F1 Weekly — 2026 Formula 1 World Championship</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ---- Australia Qualifying banner ---- */
+    .quali-banner {
+      background: var(--bg-2);
+      border-bottom: 1px solid var(--border-2);
+      border-top: 2px solid var(--red);
+    }
+    .quali-banner-inner {
+      max-width: var(--w);
+      margin: 0 auto;
+      padding: 20px var(--gutter);
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+    }
+    .qb-label {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--red);
+      padding-right: 20px;
+      margin-right: 20px;
+      border-right: 1px solid var(--border-2);
+      flex-shrink: 0;
+    }
+    .qb-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1px;
+      background: var(--border);
+      flex: 1;
+    }
+    .qb-item {
+      background: var(--bg);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .qb-pos {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-3);
+      width: 20px;
+      flex-shrink: 0;
+    }
+    .qb-pos.p1, .qb-pos.p2, .qb-pos.p3 { color: var(--red); }
+    .qb-color-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .qb-name {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #fff;
+      line-height: 1.1;
+    }
+    .qb-team {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-3);
+      letter-spacing: 0.06em;
+    }
+    .qb-time {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-2);
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+    .qb-crash { color: var(--red) !important; }
+    @media (max-width: 900px) { .qb-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px) { .qb-grid { grid-template-columns: 1fr; } .qb-label { display: none; } }
+
+    /* Champion banner */
+    .champion-strip {
+      background: var(--bg-3);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .champion-strip-inner {
+      max-width: var(--w);
+      margin: 0 auto;
+      padding: 18px var(--gutter);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .cs-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      flex-shrink: 0;
+    }
+    .cs-sep { width: 1px; height: 28px; background: var(--border-2); flex-shrink: 0; }
+    .cs-num {
+      font-family: var(--font-display);
+      font-size: 34px;
+      font-weight: 900;
+      color: var(--red);
+      line-height: 1;
+    }
+    .cs-name {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: #fff;
+      line-height: 1;
+    }
+    .cs-team {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-3);
+      letter-spacing: 0.06em;
+    }
+    .cs-badge {
+      margin-left: auto;
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: var(--red);
+      color: #fff;
+      padding: 5px 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TICKER -->
+  <div class="ticker">
+    <div class="ticker-track">
+      <span class="ticker-item" data-i18n="ticker_1"></span>
+      <span class="ticker-item" data-i18n="ticker_2"></span>
+      <span class="ticker-item" data-i18n="ticker_3"></span>
+      <span class="ticker-item" data-i18n="ticker_4"></span>
+      <span class="ticker-item" data-i18n="ticker_5"></span>
+      <span class="ticker-item" data-i18n="ticker_1"></span>
+      <span class="ticker-item" data-i18n="ticker_2"></span>
+      <span class="ticker-item" data-i18n="ticker_3"></span>
+      <span class="ticker-item" data-i18n="ticker_4"></span>
+      <span class="ticker-item" data-i18n="ticker_5"></span>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-mark"></div>
+        <div class="nav-logo-text"><em>F1</em> WEEKLY</div>
+      </a>
+      <div class="nav-links">
+        <a href="index.html"     class="nav-link" data-i18n="nav_home"></a>
+        <a href="teams.html"     class="nav-link" data-i18n="nav_teams"></a>
+        <a href="schedule.html"  class="nav-link" data-i18n="nav_schedule"></a>
+        <a href="standings.html" class="nav-link" data-i18n="nav_standings"></a>
+        <a href="news.html"      class="nav-link" data-i18n="nav_news"></a>
+      </div>
+      <div class="nav-right">
+        <div class="lang-toggle">
+          <button class="lang-btn" data-lang="en">EN</button>
+          <button class="lang-btn" data-lang="zh">中</button>
+        </div>
+        <button class="mobile-menu-btn" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-badge" data-i18n="hero_badge"></div>
+      <h1 class="hero-headline">
+        <span data-i18n="hero_line1"></span>
+        <span class="red" data-i18n="hero_line2"></span>
+        <span data-i18n="hero_line3"></span>
+        <span class="outline" data-i18n="hero_line4"></span>
+      </h1>
+      <p class="hero-sub" data-i18n="hero_sub"></p>
+      <div class="hero-counters">
+        <div>
+          <div class="hero-counter-val">24</div>
+          <div class="hero-counter-lbl" data-i18n="counter_races"></div>
+        </div>
+        <div>
+          <div class="hero-counter-val">11</div>
+          <div class="hero-counter-lbl" data-i18n="counter_teams"></div>
+        </div>
+        <div>
+          <div class="hero-counter-val">22</div>
+          <div class="hero-counter-lbl" data-i18n="counter_drivers"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Next race panel + countdown -->
+    <div class="hero-right">
+      <div class="next-race-panel">
+        <div class="nrp-label" data-i18n="next_race_lbl"></div>
+        <div class="nrp-round js-next-round-num">Round 1</div>
+        <div class="nrp-name js-next-name">Australian Grand Prix</div>
+        <div class="nrp-circuit js-next-circuit">Albert Park Circuit</div>
+        <div class="nrp-svg"><div class="js-next-circuit-svg"></div></div>
+        <div class="countdown-row" data-countdown>
+          <div class="cd-box"><div class="cd-val cd-d">--</div><div class="cd-lbl cd-lbl-d" data-i18n="days"></div></div>
+          <div class="cd-box"><div class="cd-val cd-h">--</div><div class="cd-lbl cd-lbl-h" data-i18n="hours"></div></div>
+          <div class="cd-box"><div class="cd-val cd-m">--</div><div class="cd-lbl cd-lbl-m" data-i18n="minutes"></div></div>
+          <div class="cd-box"><div class="cd-val cd-s">--</div><div class="cd-lbl cd-lbl-s" data-i18n="seconds"></div></div>
+        </div>
+      </div>
+
+      <!-- Champion strip inside hero-right -->
+      <div style="padding:22px 32px;border-top:1px solid var(--border);">
+        <div style="font-family:var(--font-mono);font-size:9px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-3);margin-bottom:10px;" data-i18n="wdc_leader"></div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="font-family:var(--font-display);font-size:42px;font-weight:900;color:var(--red);line-height:1;">1</div>
+          <div>
+            <div style="font-family:var(--font-display);font-size:20px;font-weight:900;text-transform:uppercase;color:#fff;line-height:1.1;">Lando<br>Norris</div>
+            <div style="font-family:var(--font-mono);font-size:9px;color:var(--text-3);letter-spacing:0.06em;margin-top:3px;">McLaren Mastercard F1 Team</div>
+          </div>
+          <div style="margin-left:auto;text-align:right;">
+            <div style="font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;background:var(--red);color:#fff;padding:5px 10px;" data-i18n="hero_badge"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUSTRALIA QUALIFYING BANNER -->
+  <div class="quali-banner">
+    <div class="quali-banner-inner">
+      <div class="qb-label" id="qb-label-text">Australia Qualifying</div>
+      <div class="qb-grid" id="quali-banner-grid">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- STANDINGS PREVIEW -->
+  <section class="section">
+    <div class="section-head">
+      <div class="section-title" data-i18n="drivers_standings"></div>
+      <a href="standings.html" class="section-more" data-i18n="view_all"></a>
+    </div>
+    <div class="standings-preview">
+      <div class="sp-panel">
+        <div class="sp-panel-header">
+          <span data-i18n="drivers_standings"></span>
+          <span style="font-size:9px;letter-spacing:0.06em;color:var(--text-3);">0 RACES</span>
+        </div>
+        <div id="idx-driver-standings"></div>
+      </div>
+      <div class="sp-panel">
+        <div class="sp-panel-header">
+          <span data-i18n="constructors_standings"></span>
+          <span style="font-size:9px;letter-spacing:0.06em;color:var(--text-3);">0 RACES</span>
+        </div>
+        <div id="idx-constructor-standings"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LATEST NEWS -->
+  <section class="section" style="padding-top:0">
+    <div class="section-head">
+      <div class="section-title" data-i18n="latest_news"></div>
+      <a href="news.html" class="section-more" data-i18n="view_all"></a>
+    </div>
+    <div class="news-mosaic" id="idx-news-grid"></div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand-logo"><em>F1</em> WEEKLY</div>
+        <p class="footer-desc" data-i18n="footer_tagline"></p>
+      </div>
+      <div>
+        <div class="footer-col-hd" data-i18n="footer_nav"></div>
+        <div class="footer-col-links">
+          <a href="teams.html"     class="footer-col-link" data-i18n="nav_teams"></a>
+          <a href="schedule.html"  class="footer-col-link" data-i18n="nav_schedule"></a>
+          <a href="standings.html" class="footer-col-link" data-i18n="nav_standings"></a>
+          <a href="news.html"      class="footer-col-link" data-i18n="nav_news"></a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-hd" data-i18n="footer_races"></div>
+        <div class="footer-col-links">
+          <a href="schedule.html" class="footer-col-link">2026 Calendar</a>
+          <a href="standings.html" class="footer-col-link">Standings</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-hd" data-i18n="footer_follow"></div>
+        <div class="footer-col-links">
+          <a href="https://www.formula1.com" target="_blank" class="footer-col-link">Formula1.com</a>
+          <a href="https://www.autosport.com/f1/" target="_blank" class="footer-col-link">Autosport</a>
+          <a href="https://racingnews365.com" target="_blank" class="footer-col-link">RacingNews365</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy" data-i18n="copyright"></div>
+      <div class="footer-copy">Formula 1® is a trademark of Formula One Licensing B.V.</div>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/live.js"></script>
+  <script>
+    /* ---- Qualifying banner ---- */
+    function renderQualiBanner() {
+      var l = getLang();
+      var label = document.getElementById('qb-label-text');
+      if (label) label.textContent = l === 'zh' ? '澳洲站排位賽' : 'Australia Qualifying';
+
+      var grid = document.getElementById('quali-banner-grid');
+      if (!grid || !F1.australiaQuali) return;
+
+      /* Show top 10 in banner */
+      var top10 = F1.australiaQuali.slice(0, 10);
+
+      function getTeamColor(num) {
+        for (var i = 0; i < F1.teams.length; i++) {
+          for (var j = 0; j < F1.teams[i].drivers.length; j++) {
+            if (F1.teams[i].drivers[j].num === num) return F1.teams[i].color;
+          }
+        }
+        return '#555';
+      }
+
+      grid.innerHTML = top10.map(function(q) {
+        var posClass = q.pos <= 3 ? 'qb-pos p' + q.pos : 'qb-pos';
+        var color = getTeamColor(q.num);
+        var parts = q.driver.split(' ');
+        var lastName = parts[parts.length - 1];
+        var isCrash = q.time === 'Q1 Crash';
+        return '<div class="qb-item">' +
+          '<div class="' + posClass + '">' + q.pos + '</div>' +
+          '<div class="qb-color-dot" style="background:' + color + '"></div>' +
+          '<div>' +
+            '<div class="qb-name">' + lastName + '</div>' +
+            '<div class="qb-team">' + q.team + '</div>' +
+          '</div>' +
+          '<div class="qb-time' + (isCrash ? ' qb-crash' : '') + '">' + q.time + '</div>' +
+          '</div>';
+      }).join('');
+    }
+
+    /* Override renderIndexDynamic to also render banner */
+    var _origRender = window.renderIndexDynamic;
+    window.renderIndexDynamic = function() {
+      _origRender();
+      renderQualiBanner();
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+      renderIndexDynamic();
+    });
+  </script>
+</body>
+</html>

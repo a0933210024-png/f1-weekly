@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teams & Drivers — F1 Weekly</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .team-legend {
+      max-width: var(--w);
+      margin: 0 auto;
+      padding: 18px var(--gutter);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .team-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-2);
+      transition: color var(--ease);
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .team-legend-item:hover { color: #fff; }
+    .tli-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* New team badge */
+    .team-new-badge {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: var(--red);
+      color: #fff;
+      padding: 2px 6px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    /* Engine badge */
+    .engine-badge {
+      display: inline-flex;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border: 1px solid var(--border-2);
+      color: var(--text-3);
+      margin-top: 8px;
+    }
+
+    /* Grid stat strip */
+    .grid-stats-strip {
+      max-width: var(--w);
+      margin: 0 auto;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .gss-item {
+      background: var(--bg-2);
+      padding: 18px 24px;
+    }
+    .gss-val {
+      font-family: var(--font-display);
+      font-size: 34px;
+      font-weight: 900;
+      color: #fff;
+      line-height: 1;
+    }
+    .gss-lbl {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-top: 4px;
+    }
+    @media (max-width: 600px) { .grid-stats-strip { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+
+  <!-- TICKER -->
+  <div class="ticker">
+    <div class="ticker-track">
+      <span class="ticker-item" data-i18n="ticker_1"></span>
+      <span class="ticker-item" data-i18n="ticker_2"></span>
+      <span class="ticker-item" data-i18n="ticker_3"></span>
+      <span class="ticker-item" data-i18n="ticker_4"></span>
+      <span class="ticker-item" data-i18n="ticker_5"></span>
+      <span class="ticker-item" data-i18n="ticker_1"></span>
+      <span class="ticker-item" data-i18n="ticker_2"></span>
+      <span class="ticker-item" data-i18n="ticker_3"></span>
+      <span class="ticker-item" data-i18n="ticker_4"></span>
+      <span class="ticker-item" data-i18n="ticker_5"></span>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-mark"></div>
+        <div class="nav-logo-text"><em>F1</em> WEEKLY</div>
+      </a>
+      <div class="nav-links">
+        <a href="index.html"     class="nav-link" data-i18n="nav_home"></a>
+        <a href="teams.html"     class="nav-link" data-i18n="nav_teams"></a>
+        <a href="schedule.html"  class="nav-link" data-i18n="nav_schedule"></a>
+        <a href="standings.html" class="nav-link" data-i18n="nav_standings"></a>
+        <a href="news.html"      class="nav-link" data-i18n="nav_news"></a>
+      </div>
+      <div class="nav-right">
+        <div class="lang-toggle">
+          <button class="lang-btn" data-lang="en">EN</button>
+          <button class="lang-btn" data-lang="zh">中</button>
+        </div>
+        <button class="mobile-menu-btn" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <div class="page-hero">
+    <div class="page-eyebrow" data-i18n="eyebrow_teams"></div>
+    <h1 class="page-title" data-i18n="page_teams"></h1>
+  </div>
+
+  <!-- GRID STATS -->
+  <div class="grid-stats-strip">
+    <div class="gss-item">
+      <div class="gss-val">11</div>
+      <div class="gss-lbl" id="gss-constructors">Constructors</div>
+    </div>
+    <div class="gss-item">
+      <div class="gss-val">22</div>
+      <div class="gss-lbl" id="gss-drivers">Drivers</div>
+    </div>
+    <div class="gss-item">
+      <div class="gss-val">6</div>
+      <div class="gss-lbl" id="gss-engines">Engine Suppliers</div>
+    </div>
+    <div class="gss-item">
+      <div class="gss-val">2</div>
+      <div class="gss-lbl" id="gss-new">New Teams in 2026</div>
+    </div>
+  </div>
+
+  <!-- TEAM LEGEND (quick jump) -->
+  <div class="team-legend" id="team-legend"></div>
+
+  <!-- TEAMS GRID -->
+  <div style="max-width:var(--w);margin:0 auto;padding:0 0 80px;">
+    <div class="teams-grid" id="teams-grid"></div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand-logo"><em>F1</em> WEEKLY</div>
+        <p class="footer-desc" data-i18n="footer_tagline"></p>
+      </div>
+      <div>
+        <div class="footer-col-hd" data-i18n="footer_nav"></div>
+        <div class="footer-col-links">
+          <a href="teams.html"     class="footer-col-link" data-i18n="nav_teams"></a>
+          <a href="schedule.html"  class="footer-col-link" data-i18n="nav_schedule"></a>
+          <a href="standings.html" class="footer-col-link" data-i18n="nav_standings"></a>
+          <a href="news.html"      class="footer-col-link" data-i18n="nav_news"></a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-hd" data-i18n="footer_races"></div>
+        <div class="footer-col-links">
+          <a href="schedule.html"  class="footer-col-link">2026 Calendar</a>
+          <a href="standings.html" class="footer-col-link">Standings</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-hd" data-i18n="footer_follow"></div>
+        <div class="footer-col-links">
+          <a href="https://www.formula1.com/en/teams" target="_blank" class="footer-col-link">Official Team Profiles</a>
+          <a href="https://www.the-race.com/formula-1/f1-2026-entry-list-driver-numbers-chassis-engines/" target="_blank" class="footer-col-link">2026 Entry List</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy" data-i18n="copyright"></div>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/live.js"></script>
+  <script>
+    /* New teams in 2026 */
+    var newTeams = { audi: true, cadillac: true };
+
+    var engineMap = {
+      mclaren: 'Mercedes', ferrari: 'Ferrari', redbull: 'Red Bull Ford',
+      mercedes: 'Mercedes', astonmartin: 'Honda', alpine: 'Mercedes',
+      haas: 'Ferrari', williams: 'Mercedes', racingbulls: 'Red Bull Ford',
+      audi: 'Audi', cadillac: 'Ferrari'
+    };
+
+    function renderTeamsPage() {
+      var l = getLang();
+
+      /* Stats labels */
+      var statLabels = {
+        en: { constructors: 'Constructors', drivers: 'Drivers', engines: 'Engine Suppliers', newTeams: 'New Teams in 2026' },
+        zh: { constructors: '參賽車隊', drivers: '車手', engines: '動力單元供應商', newTeams: '2026年新加入車隊' }
+      };
+      var labels = statLabels[l] || statLabels.en;
+      document.getElementById('gss-constructors').textContent = labels.constructors;
+      document.getElementById('gss-drivers').textContent      = labels.drivers;
+      document.getElementById('gss-engines').textContent      = labels.engines;
+      document.getElementById('gss-new').textContent          = labels.newTeams;
+
+      /* Legend */
+      var legend = document.getElementById('team-legend');
+      legend.innerHTML = '';
+      F1.teams.forEach(function(team) {
+        var a = document.createElement('a');
+        a.href = '#team-' + team.id;
+        a.className = 'team-legend-item';
+        a.innerHTML =
+          '<span class="tli-dot" style="background:' + team.color + '"></span>' +
+          '<span>' + (l === 'zh' ? team.nameZH : team.name) + '</span>' +
+          (newTeams[team.id] ? '<span class="team-new-badge">NEW</span>' : '');
+        legend.appendChild(a);
+      });
+
+      /* Teams grid */
+      var grid = document.getElementById('teams-grid');
+      grid.innerHTML = '';
+      F1.teams.forEach(function(team) {
+        var isNew = !!newTeams[team.id];
+
+        var driverCards = team.drivers.map(function(d) {
+          return '<div class="driver-tile">' +
+            '<div class="driver-tile-num">' + d.num + '</div>' +
+            '<div class="driver-tile-name">' + d.first + '<br>' + d.last + '</div>' +
+            '<div class="driver-tile-nat">' + d.flag + '&nbsp;&nbsp;' + d.nat + '</div>' +
+            '<div class="driver-tile-pts">#' + d.num + '</div>' +
+            '</div>';
+        }).join('');
+
+        var card = document.createElement('div');
+        card.id = 'team-' + team.id;
+        card.className = 'team-card';
+        card.style.borderLeftColor = team.color;
+
+        card.innerHTML =
+          '<div class="team-card-top">' +
+            '<div class="team-name-block">' +
+              '<div class="team-name">' +
+                (l === 'zh' ? team.nameZH : team.name) +
+                (isNew ? '<span class="team-new-badge">NEW</span>' : '') +
+              '</div>' +
+              '<div class="team-fullname">' + team.fullName + '</div>' +
+              '<div class="engine-badge">' + (l === 'zh' ? '動力單元：' : 'Power Unit: ') + (engineMap[team.id] || '—') + '</div>' +
+            '</div>' +
+            '<div class="team-meta">' +
+              '<div class="team-pos-label">P' + team.pos + '</div>' +
+              '<div class="team-pts">' + team.pts + '</div>' +
+              '<div class="team-pts-lbl">PTS</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="team-drivers">' + driverCards + '</div>';
+
+        grid.appendChild(card);
+      });
+    }
+
+    /* Override main.js renderTeams so lang toggle re-renders correctly */
+    window.renderTeams = renderTeamsPage;
+
+    document.addEventListener('DOMContentLoaded', renderTeamsPage);
+    document.addEventListener('f1live:updated',   renderTeamsPage);
+  </script>
+</body>
+</html>

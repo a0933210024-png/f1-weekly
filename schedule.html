@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026 Schedule — F1 Weekly</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .schedule-season-bar {
+      max-width: var(--w);
+      margin: 0 auto;
+      padding: 24px var(--gutter);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .ssb-item {
+      background: var(--bg);
+      padding: 18px 24px;
+    }
+    .ssb-val {
+      font-family: var(--font-display);
+      font-size: 36px;
+      font-weight: 900;
+      color: #fff;
+      line-height: 1;
+    }
+    .ssb-lbl {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-top: 5px;
+    }
+    @media (max-width: 600px) {
+      .schedule-season-bar { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TICKER -->
+  <div class="ticker">
+    <div class="ticker-track">
+      <span class="ticker-item" data-i18n="ticker_1"></span>
+      <span class="ticker-item" data-i18n="ticker_2"></span>
+      <span class="ticker-item" data-i18n="ticker_3"></span>
+      <span class="ticker-item" data-i18n="ticker_4"></span>
+      <span class="ticker-item" data-i18n="ticker_5"></span>
+      <span class="ticker-item" data-i18n="ticker_1"></span>
+      <span class="ticker-item" data-i18n="ticker_2"></span>
+      <span class="ticker-item" data-i18n="ticker_3"></span>
+      <span class="ticker-item" data-i18n="ticker_4"></span>
+      <span class="ticker-item" data-i18n="ticker_5"></span>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-mark"></div>
+        <div class="nav-logo-text"><em>F1</em> WEEKLY</div>
+      </a>
+      <div class="nav-links">
+        <a href="index.html"     class="nav-link" data-i18n="nav_home"></a>
+        <a href="teams.html"     class="nav-link" data-i18n="nav_teams"></a>
+        <a href="schedule.html"  class="nav-link" data-i18n="nav_schedule"></a>
+        <a href="standings.html" class="nav-link" data-i18n="nav_standings"></a>
+        <a href="news.html"      class="nav-link" data-i18n="nav_news"></a>
+      </div>
+      <div class="nav-right">
+        <div class="lang-toggle">
+          <button class="lang-btn" data-lang="en">EN</button>
+          <button class="lang-btn" data-lang="zh">中</button>
+        </div>
+        <button class="mobile-menu-btn" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <div class="page-hero">
+    <div class="page-eyebrow" data-i18n="eyebrow_sched"></div>
+    <h1 class="page-title" data-i18n="page_schedule"></h1>
+  </div>
+
+  <!-- SEASON STATS BAR -->
+  <div class="schedule-season-bar">
+    <div class="ssb-item">
+      <div class="ssb-val">24</div>
+      <div class="ssb-lbl" data-i18n="counter_races"></div>
+    </div>
+    <div class="ssb-item">
+      <div class="ssb-val" id="ssb-done">0</div>
+      <div class="ssb-lbl" data-i18n="race_complete"></div>
+    </div>
+    <div class="ssb-item">
+      <div class="ssb-val" id="ssb-upcoming">23</div>
+      <div class="ssb-lbl" data-i18n="race_upcoming"></div>
+    </div>
+    <div class="ssb-item">
+      <div class="ssb-val" id="ssb-next">MAR 8</div>
+      <div class="ssb-lbl" data-i18n="race_next"></div>
+    </div>
+  </div>
+
+  <!-- FILTER BUTTONS -->
+  <div class="schedule-filters">
+    <button class="filter-btn active" data-filter="all"     data-i18n="filter_all"></button>
+    <button class="filter-btn"        data-filter="done"    data-i18n="filter_done"></button>
+    <button class="filter-btn"        data-filter="upcoming" data-i18n="filter_upcoming"></button>
+  </div>
+
+  <!-- SCHEDULE LIST -->
+  <div class="schedule-list">
+    <!-- Filled by JS -->
+  </div>
+
+  <!-- CIRCUIT MODAL -->
+  <div class="circuit-modal" id="circuit-modal">
+    <div class="cm-box">
+      <button class="cm-close" aria-label="Close">&times;</button>
+      <div class="cm-grid">
+        <div class="cm-info">
+          <div class="cm-country">Country</div>
+          <h2 class="cm-title">Race Name</h2>
+          <div class="cm-circuit-name">Circuit Name</div>
+          <div class="cm-stats">
+            <div class="cm-stat">
+              <div class="cm-stat-lbl" data-i18n="modal_length"></div>
+              <div class="cm-stat-val cm-stat-length">—</div>
+            </div>
+            <div class="cm-stat">
+              <div class="cm-stat-lbl" data-i18n="modal_laps"></div>
+              <div class="cm-stat-val cm-stat-laps">—</div>
+            </div>
+            <div class="cm-stat">
+              <div class="cm-stat-lbl" data-i18n="modal_record"></div>
+              <div class="cm-stat-val cm-stat-record">—</div>
+            </div>
+            <div class="cm-stat">
+              <div class="cm-stat-lbl" data-i18n="modal_turns"></div>
+              <div class="cm-stat-val cm-stat-turns">—</div>
+            </div>
+          </div>
+          <div class="cm-date-block">
+            <div class="cm-date-big">
+              <span data-i18n="modal_date"></span>
+              —
+            </div>
+          </div>
+          <div class="cm-winner" style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+            <div style="font-family:var(--font-mono);font-size:9px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-3);margin-bottom:5px;" data-i18n="modal_winner"></div>
+            <div class="cm-winner-name" style="font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--red);text-transform:uppercase;"></div>
+          </div>
+        </div>
+        <div class="cm-svg-col">
+          <div class="cm-svg-holder">
+            <!-- SVG filled by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand-logo"><em>F1</em> WEEKLY</div>
+        <p class="footer-desc" data-i18n="footer_tagline"></p>
+      </div>
+      <div>
+        <div class="footer-col-hd" data-i18n="footer_nav"></div>
+        <div class="footer-col-links">
+          <a href="teams.html"     class="footer-col-link" data-i18n="nav_teams"></a>
+          <a href="schedule.html"  class="footer-col-link" data-i18n="nav_schedule"></a>
+          <a href="standings.html" class="footer-col-link" data-i18n="nav_standings"></a>
+          <a href="news.html"      class="footer-col-link" data-i18n="nav_news"></a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-hd" data-i18n="footer_races"></div>
+        <div class="footer-col-links">
+          <a href="schedule.html" class="footer-col-link">2026 Calendar</a>
+          <a href="schedule.html" class="footer-col-link">Circuit Guide</a>
+          <a href="standings.html" class="footer-col-link">Results</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-hd" data-i18n="footer_follow"></div>
+        <div class="footer-col-links">
+          <a href="https://www.formula1.com/en/racing/2026" target="_blank" class="footer-col-link">Official F1 Calendar</a>
+          <a href="https://racingnews365.com/" target="_blank" class="footer-col-link">RacingNews365</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy" data-i18n="copyright"></div>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/live.js"></script>
+  <script>
+    function updateSeasonBar() {
+      var done     = F1.races.filter(function(r) { return r.status === 'completed'; }).length;
+      var upcoming = F1.races.filter(function(r) { return r.status === 'upcoming'; }).length;
+      var next     = F1.races.find(function(r) { return r.status === 'next'; });
+      var doneEl     = document.getElementById('ssb-done');
+      var upcomingEl = document.getElementById('ssb-upcoming');
+      var nextEl     = document.getElementById('ssb-next');
+      if (doneEl)     doneEl.textContent     = done;
+      if (upcomingEl) upcomingEl.textContent = upcoming;
+      if (nextEl)     nextEl.textContent     = next ? next.display : '—';
+    }
+    document.addEventListener('DOMContentLoaded', updateSeasonBar);
+    document.addEventListener('f1live:updated',   updateSeasonBar);
+  </script>
+</body>
+</html>

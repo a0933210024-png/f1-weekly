@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Standings — F1 Weekly</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .standings-alert {
+      max-width: var(--w);
+      margin: 0 auto;
+      padding: 16px var(--gutter);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-2);
+    }
+    .sa-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--red);
+      flex-shrink: 0;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    .sa-text {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-2);
+    }
+    .sa-text strong { color: var(--red); }
+
+    /* Live data badge */
+    .live-data-bar {
+      max-width: var(--w);
+      margin: 0 auto;
+      padding: 10px var(--gutter);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+    }
+    .live-badge-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    #f1live-badge {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border: 1px solid currentColor;
+      color: #888;
+      transition: color 0.3s, border-color 0.3s;
+    }
+    .live-refresh-btn {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border: 1px solid var(--border-2);
+      background: transparent;
+      color: var(--text-3);
+      cursor: pointer;
+      transition: all var(--ease);
+    }
+    .live-refresh-btn:hover { color: #fff; border-color: var(--text-2); }
+
+    /* Qualifying grid section */
+    .quali-section {
+      max-width: var(--w);
+      margin: 0 auto;
+      padding: 0 var(--gutter) 60px;
+    }
+    .quali-section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 24px 0 14px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 0;
+    }
+    .quali-section-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #fff;
+    }
+    .quali-note {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+    .quali-confirmed-note {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-3);
+      letter-spacing: 0.06em;
+      padding: 12px 0 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .qcn-confirmed { color: var(--text-2); }
+    .qcn-est { color: var(--text-3); }
+  </style>
+</head>
+<body>
+
+  <!-- TICKER -->
+  <div class="ticker">
+    <div class="ticker-track">
+      <span class="ticker-item" data-i18n="ticker_1"></span>
+      <span class="ticker-item" data-i18n="ticker_2"></span>
+      <span class="ticker-item" data-i18n="ticker_3"></span>
+      <span class="ticker-item" data-i18n="ticker_4"></span>
+      <span class="ticker-item" data-i18n="ticker_5"></span>
+      <span class="ticker-item" data-i18n="ticker_1"></span>
+      <span class="ticker-item" data-i18n="ticker_2"></span>
+      <span class="ticker-item" data-i18n="ticker_3"></span>
+      <span class="ticker-item" data-i18n="ticker_4"></span>
+      <span class="ticker-item" data-i18n="ticker_5"></span>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-mark"></div>
+        <div class="nav-logo-text"><em>F1</em> WEEKLY</div>
+      </a>
+      <div class="nav-links">
+        <a href="index.html"     class="nav-link" data-i18n="nav_home"></a>
+        <a href="teams.html"     class="nav-link" data-i18n="nav_teams"></a>
+        <a href="schedule.html"  class="nav-link" data-i18n="nav_schedule"></a>
+        <a href="standings.html" class="nav-link" data-i18n="nav_standings"></a>
+        <a href="news.html"      class="nav-link" data-i18n="nav_news"></a>
+      </div>
+      <div class="nav-right">
+        <div class="lang-toggle">
+          <button class="lang-btn" data-lang="en">EN</button>
+          <button class="lang-btn" data-lang="zh">中</button>
+        </div>
+        <button class="mobile-menu-btn" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <div class="page-hero">
+    <div class="page-eyebrow" data-i18n="eyebrow_stand"></div>
+    <h1 class="page-title" data-i18n="page_standings"></h1>
+  </div>
+
+  <!-- LIVE DATA BAR -->
+  <div class="live-data-bar">
+    <div class="live-badge-wrap">
+      <span id="f1live-badge">—</span>
+      <span style="font-family:var(--font-mono);font-size:9px;color:var(--text-3);letter-spacing:0.06em;" id="live-source-note">Jolpica F1 API · jolpi.ca</span>
+    </div>
+    <button class="live-refresh-btn" onclick="F1Live && F1Live.refresh()" id="live-refresh-btn">↺ Refresh</button>
+  </div>
+
+  <!-- SEASON STATUS ALERT -->
+  <div class="standings-alert">
+    <div class="sa-dot"></div>
+    <div class="sa-text" id="standings-alert-text">
+      <!-- Filled by JS -->
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="standings-tabs">
+    <button class="s-tab active" data-target="panel-drivers"      data-i18n="tab_drivers"></button>
+    <button class="s-tab"        data-target="panel-constructors" data-i18n="tab_constructors"></button>
+    <button class="s-tab"        data-target="panel-quali"        id="tab-quali-label">Australia Grid</button>
+  </div>
+
+  <!-- DRIVERS PANEL -->
+  <div class="s-tab-panel active" id="panel-drivers">
+    <div class="standings-full">
+      <table class="st-table">
+        <thead>
+          <tr>
+            <th data-i18n="st_driver"></th>
+            <th></th>
+            <th style="text-align:center" data-i18n="st_wins"></th>
+            <th style="text-align:right"  data-i18n="st_points"></th>
+          </tr>
+        </thead>
+        <tbody id="driver-standings-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CONSTRUCTORS PANEL -->
+  <div class="s-tab-panel" id="panel-constructors">
+    <div class="standings-full">
+      <table class="st-table">
+        <thead>
+          <tr>
+            <th data-i18n="st_team"></th>
+            <th></th>
+            <th style="min-width:180px"></th>
+            <th style="text-align:right" data-i18n="st_points"></th>
+          </tr>
+        </thead>
+        <tbody id="constructor-standings-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- AUSTRALIA QUALIFYING PANEL -->
+  <div class="s-tab-panel" id="panel-quali">
+    <div class="quali-section">
+      <div class="quali-section-head">
+        <div class="quali-section-title" id="quali-panel-title">Round 1 — Australian GP · Qualifying</div>
+        <div class="quali-note">Albert Park Circuit · Mar 7, 2026</div>
+      </div>
+      <div class="quali-confirmed-note">
+        <span class="qcn-confirmed" id="qcn-conf-text">● P1–P10 confirmed from formula1.com</span>
+        <span class="qcn-est" id="qcn-est-text">○ P11–P21 estimated · P22 confirmed (Q1 crash)</span>
+      </div>
+      <table class="st-table">
+        <thead>
+          <tr>
+            <th id="qth-grid">Grid</th>
+            <th id="qth-driver" data-i18n="st_driver"></th>
+            <th style="text-align:right">Time</th>
+          </tr>
+        </thead>
+        <tbody id="quali-grid-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand-logo"><em>F1</em> WEEKLY</div>
+        <p class="footer-desc" data-i18n="footer_tagline"></p>
+      </div>
+      <div>
+        <div class="footer-col-hd" data-i18n="footer_nav"></div>
+        <div class="footer-col-links">
+          <a href="teams.html"     class="footer-col-link" data-i18n="nav_teams"></a>
+          <a href="schedule.html"  class="footer-col-link" data-i18n="nav_schedule"></a>
+          <a href="standings.html" class="footer-col-link" data-i18n="nav_standings"></a>
+          <a href="news.html"      class="footer-col-link" data-i18n="nav_news"></a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-hd" data-i18n="footer_races"></div>
+        <div class="footer-col-links">
+          <a href="schedule.html" class="footer-col-link">2026 Calendar</a>
+          <a href="standings.html" class="footer-col-link">Results</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-hd" data-i18n="footer_follow"></div>
+        <div class="footer-col-links">
+          <a href="https://www.formula1.com/en/results/2026/drivers" target="_blank" class="footer-col-link">Official F1 Results</a>
+          <a href="https://racingnews365.com" target="_blank" class="footer-col-link">RacingNews365</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy" data-i18n="copyright"></div>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/live.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var l = getLang();
+
+      /* Alert text */
+      var alertEl = document.getElementById('standings-alert-text');
+      if (alertEl) {
+        alertEl.innerHTML = l === 'zh'
+          ? '2026賽季 — <strong>尚無比賽結果</strong>。積分更新於第1站澳洲大獎賽（3月8日星期日）正賽後'
+          : '2026 Season — <strong>No races completed yet.</strong> Championship points update after Round 1: Australian GP, Sunday March 8';
+      }
+
+      /* Qualifying tab label */
+      var tabLabel = document.getElementById('tab-quali-label');
+      if (tabLabel) tabLabel.textContent = l === 'zh' ? '澳洲排位賽' : 'Australia Grid';
+
+      /* Qualifying panel title */
+      var panelTitle = document.getElementById('quali-panel-title');
+      if (panelTitle) panelTitle.textContent = l === 'zh' ? '第1站 — 澳洲大獎賽 · 排位賽結果' : 'Round 1 — Australian GP · Qualifying';
+
+      /* Live data bar labels */
+      var refreshBtn = document.getElementById('live-refresh-btn');
+      var sourceNote = document.getElementById('live-source-note');
+      if (refreshBtn) refreshBtn.textContent = l === 'zh' ? '↺ 刷新' : '↺ Refresh';
+      if (sourceNote) sourceNote.textContent = l === 'zh' ? 'Jolpica F1 API · 即時數據來源' : 'Jolpica F1 API · jolpi.ca';
+
+      /* Confirmed notes */
+      var confText = document.getElementById('qcn-conf-text');
+      var estText  = document.getElementById('qcn-est-text');
+      if (confText) confText.textContent = l === 'zh' ? '● P1–P10 已由 formula1.com 確認' : '● P1–P10 confirmed from formula1.com';
+      if (estText)  estText.textContent  = l === 'zh' ? '○ P11–P21 估計 · P22 確認（Q1意外）' : '○ P11–P21 estimated  ·  P22 confirmed (Q1 crash)';
+    });
+  </script>
+</body>
+</html>

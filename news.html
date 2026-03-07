@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>News — F1 Weekly</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .news-filter-bar {
+      max-width: var(--w);
+      margin: 0 auto;
+      padding: 20px var(--gutter);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .news-filter-btn {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border: 1px solid var(--border-2);
+      background: transparent;
+      color: var(--text-2);
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all var(--ease);
+    }
+    .news-filter-btn:hover { color: #fff; border-color: var(--text-3); }
+    .news-filter-btn.active { background: var(--red); border-color: var(--red); color: #fff; }
+    .news-source-badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border: 1px solid var(--border-2);
+      color: var(--text-3);
+      display: inline-block;
+    }
+
+    /* Article modal */
+    .article-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 200;
+      overflow-y: auto;
+      padding: 40px var(--gutter);
+    }
+    .article-modal.open { display: block; }
+    .article-box {
+      max-width: 740px;
+      margin: 0 auto;
+      background: var(--bg-2);
+      border: 1px solid var(--border-2);
+      padding: 52px;
+      position: relative;
+    }
+    .article-close {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: var(--text-2);
+      font-size: 28px;
+      line-height: 1;
+      cursor: pointer;
+      transition: color var(--ease);
+    }
+    .article-close:hover { color: #fff; }
+    .article-cat {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 16px;
+    }
+    .article-title {
+      font-family: var(--font-display);
+      font-size: clamp(26px, 4.5vw, 42px);
+      font-weight: 900;
+      line-height: 1.05;
+      text-transform: uppercase;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+    .article-meta {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .article-body {
+      font-size: 17px;
+      color: var(--text-2);
+      line-height: 1.85;
+    }
+    .article-body p { margin-bottom: 20px; }
+    .article-body p:last-child { margin-bottom: 0; }
+    .article-source {
+      margin-top: 32px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-3);
+      letter-spacing: 0.06em;
+    }
+    @media (max-width: 680px) {
+      .article-box { padding: 28px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TICKER -->
+  <div class="ticker">
+    <div class="ticker-track">
+      <span class="ticker-item" data-i18n="ticker_1"></span>
+      <span class="ticker-item" data-i18n="ticker_2"></span>
+      <span class="ticker-item" data-i18n="ticker_3"></span>
+      <span class="ticker-item" data-i18n="ticker_4"></span>
+      <span class="ticker-item" data-i18n="ticker_5"></span>
+      <span class="ticker-item" data-i18n="ticker_1"></span>
+      <span class="ticker-item" data-i18n="ticker_2"></span>
+      <span class="ticker-item" data-i18n="ticker_3"></span>
+      <span class="ticker-item" data-i18n="ticker_4"></span>
+      <span class="ticker-item" data-i18n="ticker_5"></span>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-mark"></div>
+        <div class="nav-logo-text"><em>F1</em> WEEKLY</div>
+      </a>
+      <div class="nav-links">
+        <a href="index.html"     class="nav-link" data-i18n="nav_home"></a>
+        <a href="teams.html"     class="nav-link" data-i18n="nav_teams"></a>
+        <a href="schedule.html"  class="nav-link" data-i18n="nav_schedule"></a>
+        <a href="standings.html" class="nav-link" data-i18n="nav_standings"></a>
+        <a href="news.html"      class="nav-link" data-i18n="nav_news"></a>
+      </div>
+      <div class="nav-right">
+        <div class="lang-toggle">
+          <button class="lang-btn" data-lang="en">EN</button>
+          <button class="lang-btn" data-lang="zh">中</button>
+        </div>
+        <button class="mobile-menu-btn" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <div class="page-hero">
+    <div class="page-eyebrow" data-i18n="eyebrow_news"></div>
+    <h1 class="page-title" data-i18n="page_news"></h1>
+  </div>
+
+  <!-- FILTER BAR -->
+  <div class="news-filter-bar">
+    <button class="news-filter-btn active" data-filter="all"></button>
+    <button class="news-filter-btn" data-filter="Qualifying"></button>
+    <button class="news-filter-btn" data-filter="Technical"></button>
+    <button class="news-filter-btn" data-filter="Interview"></button>
+    <button class="news-filter-btn" data-filter="Practice"></button>
+    <button class="news-filter-btn" data-filter="Guide"></button>
+  </div>
+
+  <!-- NEWS GRID -->
+  <div class="news-page-grid" id="news-page-grid">
+    <!-- Rendered by JS below -->
+  </div>
+
+  <!-- ARTICLE MODAL -->
+  <div class="article-modal" id="article-modal">
+    <div class="article-box">
+      <button class="article-close" id="article-close-btn" aria-label="Close">&times;</button>
+      <div class="article-cat" id="modal-cat"></div>
+      <h2 class="article-title" id="modal-title"></h2>
+      <div class="article-meta" id="modal-meta"></div>
+      <div class="article-body" id="modal-body"></div>
+      <div class="article-source" id="modal-source"></div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand-logo"><em>F1</em> WEEKLY</div>
+        <p class="footer-desc" data-i18n="footer_tagline"></p>
+      </div>
+      <div>
+        <div class="footer-col-hd" data-i18n="footer_nav"></div>
+        <div class="footer-col-links">
+          <a href="teams.html"     class="footer-col-link" data-i18n="nav_teams"></a>
+          <a href="schedule.html"  class="footer-col-link" data-i18n="nav_schedule"></a>
+          <a href="standings.html" class="footer-col-link" data-i18n="nav_standings"></a>
+          <a href="news.html"      class="footer-col-link" data-i18n="nav_news"></a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-hd" data-i18n="footer_races"></div>
+        <div class="footer-col-links">
+          <a href="schedule.html" class="footer-col-link">2026 Calendar</a>
+          <a href="standings.html" class="footer-col-link">Results</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-hd" data-i18n="footer_follow"></div>
+        <div class="footer-col-links">
+          <a href="https://www.formula1.com/en/latest/all" target="_blank" class="footer-col-link">Formula1.com News</a>
+          <a href="https://www.autosport.com/f1/" target="_blank" class="footer-col-link">Autosport</a>
+          <a href="https://racingnews365.com/" target="_blank" class="footer-col-link">RacingNews365</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy" data-i18n="copyright"></div>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/live.js"></script>
+  <script>
+    /* ---- Filter label map ---- */
+    var filterLabels = {
+      all:        { en: 'All',        zh: '全部' },
+      Qualifying: { en: 'Qualifying', zh: '排位賽' },
+      Technical:  { en: 'Technical',  zh: '技術' },
+      Interview:  { en: 'Interviews', zh: '訪談' },
+      Practice:   { en: 'Practice',   zh: '練習賽' },
+      Guide:      { en: 'Guide',      zh: '指南' },
+      Incident:   { en: 'Incidents',  zh: '事故' }
+    };
+
+    var currentFilter = 'all';
+
+    /* ---- Set filter button labels ---- */
+    function updateFilterLabels() {
+      var l = getLang();
+      document.querySelectorAll('.news-filter-btn').forEach(function(btn) {
+        var key = btn.dataset.filter;
+        if (filterLabels[key]) btn.textContent = filterLabels[key][l];
+      });
+    }
+
+    /* ---- Render news grid ---- */
+    function buildNewsGrid(filter) {
+      var l = getLang();
+      var articles = F1.news.slice();
+      if (filter && filter !== 'all') {
+        articles = articles.filter(function(n) {
+          return n.tag.en === filter;
+        });
+      }
+
+      if (articles.length === 0) {
+        return '<div style="grid-column:1/-1;padding:60px var(--gutter);text-align:center;font-family:var(--font-mono);font-size:12px;color:var(--text-3);letter-spacing:0.1em;text-transform:uppercase;">No articles in this category</div>';
+      }
+
+      return articles.map(function(n) {
+        var isSource = n.source === 'formula1.com';
+        return '<div class="np-card" data-id="' + n.id + '">' +
+          '<div class="np-card-top">' +
+          '<div class="np-card-bg-text">' + n.tag.en.toUpperCase() + '</div>' +
+          '<div class="np-card-tag">' + n.tag[l] + '</div>' +
+          '</div>' +
+          '<div class="np-card-body">' +
+          '<div class="np-title">' + n.title[l] + '</div>' +
+          '<div class="np-excerpt">' + n.excerpt[l] + '</div>' +
+          '<div class="np-meta">' +
+          '<span>' + n.date[l] + '</span>' +
+          '<span>' + n.readTime[l] + '</span>' +
+          (isSource ? '<span style="color:var(--red);font-size:8px;">● F1.COM</span>' : '') +
+          '</div>' +
+          '</div>' +
+          '</div>';
+      }).join('');
+    }
+
+    function renderNewsPage(filter) {
+      var grid = document.getElementById('news-page-grid');
+      if (!grid) return;
+      grid.innerHTML = buildNewsGrid(filter || currentFilter);
+
+      /* Bind card clicks */
+      grid.querySelectorAll('.np-card[data-id]').forEach(function(card) {
+        card.addEventListener('click', function() {
+          openArticle(parseInt(card.dataset.id));
+        });
+      });
+    }
+
+    /* ---- Open article modal ---- */
+    function openArticle(id) {
+      var n = F1.news.find(function(a) { return a.id === id; });
+      if (!n) return;
+      var l = getLang();
+
+      document.getElementById('modal-cat').textContent = n.cat[l];
+      document.getElementById('modal-title').textContent = n.title[l];
+      document.getElementById('modal-meta').innerHTML =
+        '<span>' + n.date[l] + '</span>' +
+        '<span>' + n.readTime[l] + '</span>';
+      document.getElementById('modal-body').innerHTML = n.body[l] || '<p>' + n.excerpt[l] + '</p>';
+
+      var src = document.getElementById('modal-source');
+      if (n.source === 'formula1.com') {
+        src.innerHTML = 'Source: <a href="https://www.formula1.com/en/latest/all" target="_blank" style="color:var(--red);">formula1.com</a> — editorial summaries based on official reports.';
+      } else {
+        src.innerHTML = 'F1 Weekly original content.';
+      }
+
+      var modal = document.getElementById('article-modal');
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      modal.scrollTop = 0;
+    }
+
+    /* ---- Modal close ---- */
+    function closeModal() {
+      document.getElementById('article-modal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('article-close-btn').addEventListener('click', closeModal);
+    document.getElementById('article-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    /* ---- Filter buttons ---- */
+    document.querySelectorAll('.news-filter-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.news-filter-btn').forEach(function(b) {
+          b.classList.remove('active');
+        });
+        btn.classList.add('active');
+        currentFilter = btn.dataset.filter;
+        renderNewsPage(currentFilter);
+      });
+    });
+
+    /* ---- Override main.js renderNews so lang toggle re-renders ---- */
+    window.renderNews = function() {
+      updateFilterLabels();
+      renderNewsPage(currentFilter);
+    };
+
+    /* ---- Initial render ---- */
+    document.addEventListener('DOMContentLoaded', function() {
+      updateFilterLabels();
+      renderNewsPage('all');
+    });
+  </script>
+</body>
+</html>
