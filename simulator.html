@@ -1,0 +1,1611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Championship Simulator — F1 Weekly</title>
+  <meta name="description" content="Simulate the 2026 F1 Championship. Predict race results, calculate projected standings, and explore 'what if' scenarios for all 22 drivers across 24 races.">
+  <link rel="canonical" href="https://f1-weekly.vercel.app/simulator">
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="F1 Weekly">
+  <meta property="og:title" content="2026 F1 Championship Simulator — F1 Weekly">
+  <meta property="og:description" content="Predict race winners, simulate championship scenarios, and project final standings for the 2026 Formula 1 season.">
+  <meta property="og:url" content="https://f1-weekly.vercel.app/simulator">
+  <meta property="og:image" content="https://f1-weekly.vercel.app/og-image.png">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="2026 F1 Championship Simulator — F1 Weekly">
+  <meta name="twitter:description" content="Predict race winners, simulate championship scenarios, and project final standings for the 2026 Formula 1 season.">
+  <meta name="twitter:image" content="https://f1-weekly.vercel.app/og-image.png">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ============================================================
+       SIMULATOR — PAGE-SPECIFIC STYLES
+       ============================================================ */
+
+    /* Stats strip */
+    .sim-stats-strip {
+      max-width: var(--w);
+      margin: 0 auto;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .sim-stat-item {
+      background: var(--bg-2);
+      padding: 18px 24px;
+    }
+    .sim-stat-val {
+      font-family: var(--font-display);
+      font-size: 34px;
+      font-weight: 900;
+      color: #fff;
+      line-height: 1;
+    }
+    .sim-stat-lbl {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-top: 4px;
+    }
+
+    /* Quick Sim controls */
+    .sim-controls {
+      max-width: var(--w);
+      margin: 0 auto;
+      padding: 24px var(--gutter);
+      border-bottom: 1px solid var(--border);
+    }
+    .sim-controls-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 12px;
+    }
+    .sim-quick-btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .sim-quick-btn {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 8px 20px;
+      border: 1px solid var(--border-2);
+      background: transparent;
+      color: var(--text-2);
+      cursor: pointer;
+      transition: all var(--ease);
+      position: relative;
+      overflow: hidden;
+    }
+    .sim-quick-btn:hover { color: #fff; border-color: var(--text-3); }
+    .sim-quick-btn.active { background: var(--red); border-color: var(--red); color: #fff; }
+    .sim-quick-btn .driver-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    /* Main sim layout */
+    .sim-layout {
+      max-width: var(--w);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 0;
+    }
+
+    /* Race predictions panel */
+    .sim-races-panel {
+      border-right: 1px solid var(--border);
+      padding: 0 0 60px;
+    }
+    .sim-races-header {
+      padding: 24px var(--gutter);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .sim-races-title {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #fff;
+    }
+    .sim-clear-btn {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border: 1px solid var(--border-2);
+      background: transparent;
+      color: var(--text-3);
+      cursor: pointer;
+      transition: all var(--ease);
+    }
+    .sim-clear-btn:hover { color: var(--red); border-color: var(--red); }
+
+    .sim-race-item {
+      border-bottom: 1px solid var(--border);
+      transition: background var(--ease);
+    }
+    .sim-race-item:hover { background: var(--bg-2); }
+    .sim-race-header {
+      display: grid;
+      grid-template-columns: 50px 36px 1fr auto;
+      align-items: center;
+      gap: 14px;
+      padding: 14px var(--gutter);
+      cursor: pointer;
+    }
+    .sim-race-round {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-3);
+      letter-spacing: 0.1em;
+    }
+    .sim-race-flag { font-size: 24px; line-height: 1; }
+    .sim-race-name {
+      font-family: var(--font-display);
+      font-size: 17px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #fff;
+      line-height: 1.15;
+    }
+    .sim-race-date {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-3);
+      letter-spacing: 0.06em;
+      margin-top: 2px;
+    }
+    .sim-race-expand {
+      font-family: var(--font-mono);
+      font-size: 18px;
+      color: var(--text-3);
+      transition: transform 0.3s ease, color 0.2s;
+      user-select: none;
+    }
+    .sim-race-item.open .sim-race-expand { transform: rotate(180deg); color: var(--red); }
+
+    .sim-race-body {
+      display: none;
+      padding: 0 var(--gutter) 20px;
+    }
+    .sim-race-item.open .sim-race-body { display: block; }
+
+    .sim-pos-row {
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .sim-pos-row:last-child { border-bottom: none; }
+    .sim-pos-label {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-3);
+    }
+    .sim-pos-label.top { color: var(--red); }
+    .sim-pos-select {
+      font-family: var(--font-body);
+      font-size: 13px;
+      padding: 7px 12px;
+      background: var(--bg-3);
+      border: 1px solid var(--border-2);
+      color: var(--text);
+      width: 100%;
+      appearance: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+      transition: border-color var(--ease);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' stroke='%23888' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      padding-right: 30px;
+    }
+    .sim-pos-select:hover { border-color: var(--text-3); }
+    .sim-pos-select:focus { outline: none; border-color: var(--red); }
+
+    /* Fastest lap checkbox */
+    .sim-fl-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 0 4px;
+      margin-top: 4px;
+      border-top: 1px solid var(--border);
+    }
+    .sim-fl-checkbox {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border: 1px solid var(--border-2);
+      background: var(--bg-3);
+      cursor: pointer;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .sim-fl-checkbox:checked {
+      background: var(--red);
+      border-color: var(--red);
+    }
+    .sim-fl-checkbox:checked::after {
+      content: '';
+      position: absolute;
+      left: 4px;
+      top: 1px;
+      width: 5px;
+      height: 9px;
+      border: solid #fff;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+    .sim-fl-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      cursor: pointer;
+      user-select: none;
+    }
+    .sim-fl-select {
+      font-family: var(--font-body);
+      font-size: 12px;
+      padding: 5px 10px;
+      background: var(--bg-3);
+      border: 1px solid var(--border-2);
+      color: var(--text-2);
+      appearance: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' stroke='%23888' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      padding-right: 26px;
+      flex: 1;
+      max-width: 200px;
+    }
+
+    /* Winner preview chips */
+    .sim-race-preview {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: auto;
+    }
+    .sim-preview-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-2);
+      background: var(--bg-3);
+      padding: 3px 8px;
+      border-left: 2px solid;
+    }
+
+    /* Results panel (right side) */
+    .sim-results-panel {
+      position: sticky;
+      top: var(--nav-h);
+      height: calc(100vh - var(--nav-h));
+      overflow-y: auto;
+      background: var(--bg-2);
+      padding: 0;
+    }
+    .sim-results-header {
+      padding: 24px 28px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: var(--bg-2);
+      z-index: 5;
+    }
+    .sim-results-title {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .sim-results-sub {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+
+    /* Tab switcher */
+    .sim-results-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 76px;
+      background: var(--bg-2);
+      z-index: 5;
+    }
+    .sim-rtab {
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 12px 20px;
+      border: none;
+      border-bottom: 2px solid transparent;
+      background: none;
+      color: var(--text-3);
+      cursor: pointer;
+      transition: all var(--ease);
+      flex: 1;
+      text-align: center;
+    }
+    .sim-rtab.active { color: #fff; border-bottom-color: var(--red); }
+
+    /* Driver result row */
+    .sim-result-row {
+      display: grid;
+      grid-template-columns: 30px 1fr auto;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 28px;
+      border-bottom: 1px solid var(--border);
+      transition: background var(--ease);
+    }
+    .sim-result-row:hover { background: rgba(255,255,255,0.02); }
+    .sim-result-pos {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-3);
+    }
+    .sim-result-pos.top { color: var(--red); }
+    .sim-result-driver {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sim-result-bar {
+      width: 3px;
+      height: 28px;
+      border-radius: 1px;
+      flex-shrink: 0;
+    }
+    .sim-result-img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: top center;
+      flex-shrink: 0;
+      background: var(--bg-3);
+    }
+    .sim-result-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: #fff;
+      line-height: 1.2;
+    }
+    .sim-result-team {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-3);
+      letter-spacing: 0.04em;
+      margin-top: 1px;
+    }
+    .sim-result-pts {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      text-align: right;
+    }
+    .sim-result-pts-lbl {
+      font-family: var(--font-mono);
+      font-size: 8px;
+      color: var(--text-3);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-align: right;
+    }
+
+    /* Bar chart visual */
+    .sim-bar-wrap {
+      padding: 0 28px 20px;
+    }
+    .sim-bar-row {
+      display: grid;
+      grid-template-columns: 100px 1fr 50px;
+      align-items: center;
+      gap: 10px;
+      padding: 5px 0;
+    }
+    .sim-bar-name {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-2);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .sim-bar-track {
+      height: 20px;
+      background: var(--bg-4);
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+    }
+    .sim-bar-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.6s cubic-bezier(0.16,1,0.3,1);
+      position: relative;
+    }
+    .sim-bar-pts {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-2);
+      text-align: right;
+    }
+
+    /* Constructor result row */
+    .sim-constructor-row {
+      display: grid;
+      grid-template-columns: 30px 1fr auto;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 28px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sim-constructor-bar {
+      height: 4px;
+      background: var(--bg-4);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    .sim-constructor-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.6s cubic-bezier(0.16,1,0.3,1);
+    }
+
+    /* Calculate button */
+    .sim-calculate-wrap {
+      padding: 24px var(--gutter);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-2);
+    }
+    .sim-calculate-btn {
+      width: 100%;
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 14px 24px;
+      background: var(--red);
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      transition: all var(--ease);
+      position: relative;
+      overflow: hidden;
+    }
+    .sim-calculate-btn:hover { filter: brightness(1.15); }
+    .sim-calculate-btn:active { transform: scale(0.98); }
+    .sim-calculate-btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      transition: left 0.5s;
+    }
+    .sim-calculate-btn:hover::after { left: 100%; }
+
+    /* Empty state */
+    .sim-empty-state {
+      padding: 60px 28px;
+      text-align: center;
+    }
+    .sim-empty-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.3;
+    }
+    .sim-empty-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 8px;
+    }
+    .sim-empty-desc {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-3);
+      letter-spacing: 0.06em;
+      line-height: 1.6;
+    }
+
+    /* Responsive */
+    @media (max-width: 1100px) {
+      .sim-layout {
+        grid-template-columns: 1fr;
+      }
+      .sim-results-panel {
+        position: static;
+        height: auto;
+      }
+    }
+    @media (max-width: 600px) {
+      .sim-stats-strip { grid-template-columns: 1fr 1fr; }
+      .sim-race-header { grid-template-columns: 40px 28px 1fr auto; gap: 10px; }
+      .sim-race-preview { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TICKER -->
+  <div class="ticker">
+    <div class="ticker-track">
+      <span class="ticker-item" data-i18n="ticker_1"></span>
+      <span class="ticker-item" data-i18n="ticker_2"></span>
+      <span class="ticker-item" data-i18n="ticker_3"></span>
+      <span class="ticker-item" data-i18n="ticker_4"></span>
+      <span class="ticker-item" data-i18n="ticker_5"></span>
+      <span class="ticker-item" data-i18n="ticker_1"></span>
+      <span class="ticker-item" data-i18n="ticker_2"></span>
+      <span class="ticker-item" data-i18n="ticker_3"></span>
+      <span class="ticker-item" data-i18n="ticker_4"></span>
+      <span class="ticker-item" data-i18n="ticker_5"></span>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-mark"></div>
+        <div class="nav-logo-text"><em>F1</em> WEEKLY</div>
+      </a>
+      <div class="nav-links">
+        <a href="index.html"     class="nav-link" data-i18n="nav_home"></a>
+        <a href="teams.html"     class="nav-link" data-i18n="nav_teams"></a>
+        <a href="schedule.html"  class="nav-link" data-i18n="nav_schedule"></a>
+        <a href="standings.html" class="nav-link" data-i18n="nav_standings"></a>
+        <a href="news.html"      class="nav-link" data-i18n="nav_news"></a>
+        <a href="compare.html"   class="nav-link" data-i18n="nav_compare"></a>
+        <a href="simulator.html" class="nav-link" data-i18n="nav_simulator"></a>
+      </div>
+      <div class="nav-right">
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+        <div class="lang-toggle">
+          <button class="lang-btn" data-lang="en">EN</button>
+          <button class="lang-btn" data-lang="zh">中</button>
+        </div>
+        <button class="mobile-menu-btn" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <div class="page-hero">
+    <div class="page-eyebrow" id="sim-eyebrow">2026 Season</div>
+    <h1 class="page-title" id="sim-title">Championship Simulator</h1>
+  </div>
+
+  <!-- STATS STRIP -->
+  <div class="sim-stats-strip">
+    <div class="sim-stat-item">
+      <div class="sim-stat-val" id="sim-stat-races">24</div>
+      <div class="sim-stat-lbl" id="sim-stat-races-lbl">Races to Simulate</div>
+    </div>
+    <div class="sim-stat-item">
+      <div class="sim-stat-val">22</div>
+      <div class="sim-stat-lbl" id="sim-stat-drivers-lbl">Drivers</div>
+    </div>
+    <div class="sim-stat-item">
+      <div class="sim-stat-val" id="sim-stat-max">600</div>
+      <div class="sim-stat-lbl" id="sim-stat-max-lbl">Max Possible Points</div>
+    </div>
+    <div class="sim-stat-item">
+      <div class="sim-stat-val" id="sim-stat-filled">0</div>
+      <div class="sim-stat-lbl" id="sim-stat-filled-lbl">Races Predicted</div>
+    </div>
+  </div>
+
+  <!-- QUICK SIM CONTROLS -->
+  <div class="sim-controls">
+    <div class="sim-controls-label" id="sim-quicksim-label">Quick Simulation</div>
+    <div class="sim-quick-btns" id="sim-quick-btns">
+      <!-- Filled by JS -->
+    </div>
+  </div>
+
+  <!-- MAIN LAYOUT -->
+  <div class="sim-layout">
+    <!-- LEFT: Race predictions -->
+    <div class="sim-races-panel">
+      <div class="sim-races-header">
+        <div class="sim-races-title" id="sim-races-title">Race Predictions</div>
+        <button class="sim-clear-btn" id="sim-clear-btn" onclick="SIM.clearAll()">Clear All</button>
+      </div>
+      <div id="sim-race-list">
+        <!-- Filled by JS -->
+      </div>
+      <div class="sim-calculate-wrap">
+        <button class="sim-calculate-btn" id="sim-calculate-btn" onclick="SIM.calculate()">
+          Calculate Championship
+        </button>
+      </div>
+    </div>
+
+    <!-- RIGHT: Results -->
+    <div class="sim-results-panel">
+      <div class="sim-results-header">
+        <div class="sim-results-title" id="sim-results-title">Projected Standings</div>
+        <div class="sim-results-sub" id="sim-results-sub">Set predictions and calculate</div>
+      </div>
+      <div class="sim-results-tabs">
+        <button class="sim-rtab active" data-panel="sim-panel-drivers" id="sim-tab-drivers">Drivers</button>
+        <button class="sim-rtab" data-panel="sim-panel-constructors" id="sim-tab-constructors">Constructors</button>
+        <button class="sim-rtab" data-panel="sim-panel-chart" id="sim-tab-chart">Chart</button>
+      </div>
+      <div id="sim-panel-drivers" class="sim-rpanel active">
+        <div class="sim-empty-state" id="sim-empty">
+          <div class="sim-empty-icon">&#127937;</div>
+          <div class="sim-empty-title" id="sim-empty-title">No predictions yet</div>
+          <div class="sim-empty-desc" id="sim-empty-desc">Use Quick Sim or set race predictions<br>to project championship standings</div>
+        </div>
+      </div>
+      <div id="sim-panel-constructors" class="sim-rpanel" style="display:none;"></div>
+      <div id="sim-panel-chart" class="sim-rpanel" style="display:none;"></div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand-logo"><em>F1</em> WEEKLY</div>
+        <p class="footer-desc" data-i18n="footer_tagline"></p>
+      </div>
+      <div>
+        <div class="footer-col-hd" data-i18n="footer_nav"></div>
+        <div class="footer-col-links">
+          <a href="teams.html"     class="footer-col-link" data-i18n="nav_teams"></a>
+          <a href="schedule.html"  class="footer-col-link" data-i18n="nav_schedule"></a>
+          <a href="standings.html" class="footer-col-link" data-i18n="nav_standings"></a>
+          <a href="news.html"      class="footer-col-link" data-i18n="nav_news"></a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-hd" data-i18n="footer_races"></div>
+        <div class="footer-col-links">
+          <a href="schedule.html"  class="footer-col-link">2026 Calendar</a>
+          <a href="standings.html" class="footer-col-link">Standings</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-hd" data-i18n="footer_follow"></div>
+        <div class="footer-col-links">
+          <a href="https://www.formula1.com/en/results/2026/drivers" target="_blank" class="footer-col-link">Official F1 Results</a>
+          <a href="https://racingnews365.com" target="_blank" class="footer-col-link">RacingNews365</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy" data-i18n="copyright"></div>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/live.js"></script>
+  <script>
+  /* ============================================================
+     CHAMPIONSHIP SIMULATOR
+     ============================================================ */
+  var SIM = (function() {
+    'use strict';
+
+    /* ---- Constants ---- */
+    var POINTS = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1];
+    var TOP_POSITIONS = 10;
+
+    /* ---- State ---- */
+    var predictions = {};  /* raceRound -> { p1: driverKey, p2: driverKey, ..., fl: driverKey } */
+    var allDrivers = [];
+    var driverMap = {};    /* driverKey -> { first, last, num, code, teamId, teamName, teamNameZH, teamColor, cdnSlug } */
+
+    /* ---- Build driver list ---- */
+    function buildDriverList() {
+      allDrivers = [];
+      driverMap = {};
+      F1.teams.forEach(function(team) {
+        team.drivers.forEach(function(d) {
+          var key = d.code || (d.first + d.last).toLowerCase();
+          var entry = {
+            key: key,
+            first: d.first,
+            last: d.last,
+            num: d.num,
+            code: d.code,
+            flag: d.flag,
+            nat: d.nat,
+            teamId: team.id,
+            teamName: team.name,
+            teamNameZH: team.nameZH,
+            teamColor: team.color,
+            cdnSlug: team.cdnSlug
+          };
+          allDrivers.push(entry);
+          driverMap[key] = entry;
+        });
+      });
+      /* Sort by team order, then first driver */
+      allDrivers.sort(function(a, b) {
+        var teamOrder = F1.teams.findIndex(function(t) { return t.id === a.teamId; }) -
+                        F1.teams.findIndex(function(t) { return t.id === b.teamId; });
+        if (teamOrder !== 0) return teamOrder;
+        return a.num - b.num;
+      });
+    }
+
+    /* ---- Top contenders (for Quick Sim) ---- */
+    var contenders = [
+      { key: 'lannor01', label: 'Norris' },
+      { key: 'maxver01', label: 'Verstappen' },
+      { key: 'chalec01', label: 'Leclerc' },
+      { key: 'georus01', label: 'Russell' },
+      { key: 'oscpia01', label: 'Piastri' },
+      { key: 'lewham01', label: 'Hamilton' }
+    ];
+
+    /* ---- Get remaining races ---- */
+    function getRemainingRaces() {
+      return F1.races.filter(function(r) {
+        return r.status !== 'completed';
+      });
+    }
+
+    /* ---- Render Quick Sim buttons ---- */
+    function renderQuickBtns() {
+      var l = getLang();
+      var container = document.getElementById('sim-quick-btns');
+      if (!container) return;
+
+      var html = '';
+
+      /* Driver "wins all" buttons */
+      contenders.forEach(function(c) {
+        var d = driverMap[c.key];
+        if (!d) return;
+        var name = l === 'zh' ? d.last : c.label;
+        html += '<button class="sim-quick-btn" onclick="SIM.quickSim(\'' + c.key + '\')">' +
+          '<span class="driver-dot" style="background:' + d.teamColor + '"></span>' +
+          name + (l === 'zh' ? ' 全勝' : ' Wins All') +
+          '</button>';
+      });
+
+      /* Random button */
+      html += '<button class="sim-quick-btn" onclick="SIM.quickRandom()">' +
+        (l === 'zh' ? '隨機模擬' : 'Random') +
+        '</button>';
+
+      /* Realistic random */
+      html += '<button class="sim-quick-btn" onclick="SIM.quickRealistic()">' +
+        (l === 'zh' ? '擬真模擬' : 'Realistic') +
+        '</button>';
+
+      container.innerHTML = html;
+    }
+
+    /* ---- Render race list ---- */
+    function renderRaceList() {
+      var l = getLang();
+      var races = getRemainingRaces();
+      var container = document.getElementById('sim-race-list');
+      if (!container) return;
+
+      var html = '';
+      races.forEach(function(race) {
+        var pred = predictions[race.round] || {};
+        var hasP1 = pred.p1 && driverMap[pred.p1];
+
+        /* Preview chips for collapsed view */
+        var previewHtml = '';
+        if (hasP1) {
+          var previewPositions = ['p1', 'p2', 'p3'];
+          previewPositions.forEach(function(pos) {
+            if (pred[pos] && driverMap[pred[pos]]) {
+              var pd = driverMap[pred[pos]];
+              previewHtml += '<span class="sim-preview-chip" style="border-color:' + pd.teamColor + '">' +
+                pos.toUpperCase() + ' ' + pd.last +
+                '</span>';
+            }
+          });
+        }
+
+        html += '<div class="sim-race-item" data-round="' + race.round + '">' +
+          '<div class="sim-race-header" onclick="SIM.toggleRace(' + race.round + ')">' +
+            '<div class="sim-race-round">R' + String(race.round).padStart(2, '0') + '</div>' +
+            '<div class="sim-race-flag">' + race.flag + '</div>' +
+            '<div>' +
+              '<div class="sim-race-name">' + (l === 'zh' ? race.nameZH : race.name) + '</div>' +
+              '<div class="sim-race-date">' + race.display + ' · ' + race.weekend + '</div>' +
+            '</div>' +
+            (previewHtml ? '<div class="sim-race-preview">' + previewHtml + '</div>' : '') +
+            '<div class="sim-race-expand">&#9662;</div>' +
+          '</div>' +
+          '<div class="sim-race-body">' +
+            renderRaceSelects(race.round) +
+          '</div>' +
+        '</div>';
+      });
+
+      container.innerHTML = html;
+    }
+
+    /* ---- Render position selects for a single race ---- */
+    function renderRaceSelects(round) {
+      var l = getLang();
+      var pred = predictions[round] || {};
+      var html = '';
+
+      for (var i = 0; i < TOP_POSITIONS; i++) {
+        var posKey = 'p' + (i + 1);
+        var posNum = i + 1;
+        var posLabel = 'P' + posNum;
+        var isTop = posNum <= 3;
+
+        html += '<div class="sim-pos-row">' +
+          '<div class="sim-pos-label' + (isTop ? ' top' : '') + '">' + posLabel + '</div>' +
+          '<select class="sim-pos-select" data-round="' + round + '" data-pos="' + posKey + '" onchange="SIM.onPosChange(this)">' +
+            '<option value="">' + (l === 'zh' ? '— 選擇車手 —' : '— Select driver —') + '</option>' +
+            buildDriverOptions(round, posKey, pred[posKey]) +
+          '</select>' +
+        '</div>';
+      }
+
+      /* Fastest lap */
+      var flChecked = pred.flEnabled ? ' checked' : '';
+      html += '<div class="sim-fl-row">' +
+        '<input type="checkbox" class="sim-fl-checkbox" id="fl-check-' + round + '"' + flChecked +
+        ' onchange="SIM.onFLToggle(' + round + ', this.checked)">' +
+        '<label class="sim-fl-label" for="fl-check-' + round + '">' +
+        (l === 'zh' ? '最快圈速 (+1 分)' : 'Fastest Lap (+1 pt)') +
+        '</label>' +
+        '<select class="sim-fl-select" data-round="' + round + '" data-pos="fl" onchange="SIM.onFLSelect(this)"' +
+        (!pred.flEnabled ? ' disabled style="opacity:0.4"' : '') + '>' +
+          '<option value="">' + (l === 'zh' ? '— 車手 —' : '— Driver —') + '</option>' +
+          buildFLOptions(round, pred.fl) +
+        '</select>' +
+      '</div>';
+
+      return html;
+    }
+
+    /* ---- Build <option> list ---- */
+    function buildDriverOptions(round, posKey, selectedKey) {
+      var pred = predictions[round] || {};
+      var html = '';
+
+      /* Figure out which drivers are already selected for other positions in this race */
+      var usedKeys = {};
+      for (var i = 1; i <= TOP_POSITIONS; i++) {
+        var pk = 'p' + i;
+        if (pk !== posKey && pred[pk]) usedKeys[pred[pk]] = true;
+      }
+
+      allDrivers.forEach(function(d) {
+        var disabled = usedKeys[d.key] ? ' disabled style="color:var(--text-3)"' : '';
+        var selected = (d.key === selectedKey) ? ' selected' : '';
+        var label = d.flag + ' ' + d.first + ' ' + d.last + '  (' + d.teamName + ')';
+        html += '<option value="' + d.key + '"' + selected + disabled + '>' + label + '</option>';
+      });
+
+      return html;
+    }
+
+    /* ---- Build FL options (only from top 10 of this race) ---- */
+    function buildFLOptions(round, selectedKey) {
+      var pred = predictions[round] || {};
+      var html = '';
+
+      /* FL bonus can go to any driver in top 10 */
+      for (var i = 1; i <= TOP_POSITIONS; i++) {
+        var dk = pred['p' + i];
+        if (dk && driverMap[dk]) {
+          var d = driverMap[dk];
+          var selected = (dk === selectedKey) ? ' selected' : '';
+          html += '<option value="' + dk + '"' + selected + '>' +
+            'P' + i + ' ' + d.first + ' ' + d.last +
+            '</option>';
+        }
+      }
+
+      return html;
+    }
+
+    /* ---- Event: position select changed ---- */
+    function onPosChange(selectEl) {
+      var round = parseInt(selectEl.dataset.round);
+      var posKey = selectEl.dataset.pos;
+      var val = selectEl.value;
+
+      if (!predictions[round]) predictions[round] = {};
+      predictions[round][posKey] = val || null;
+
+      /* Refresh all selects for this race to update disabled states */
+      var raceItem = selectEl.closest('.sim-race-item');
+      if (raceItem) {
+        var body = raceItem.querySelector('.sim-race-body');
+        if (body) body.innerHTML = renderRaceSelects(round);
+      }
+
+      updateFilledCount();
+      autoCalculate();
+    }
+
+    /* ---- Event: FL toggle ---- */
+    function onFLToggle(round, checked) {
+      if (!predictions[round]) predictions[round] = {};
+      predictions[round].flEnabled = checked;
+
+      /* Re-render to enable/disable FL select */
+      var raceItem = document.querySelector('.sim-race-item[data-round="' + round + '"]');
+      if (raceItem) {
+        var body = raceItem.querySelector('.sim-race-body');
+        if (body) body.innerHTML = renderRaceSelects(round);
+      }
+    }
+
+    /* ---- Event: FL driver selected ---- */
+    function onFLSelect(selectEl) {
+      var round = parseInt(selectEl.dataset.round);
+      var val = selectEl.value;
+      if (!predictions[round]) predictions[round] = {};
+      predictions[round].fl = val || null;
+      autoCalculate();
+    }
+
+    /* ---- Toggle race expansion ---- */
+    function toggleRace(round) {
+      var item = document.querySelector('.sim-race-item[data-round="' + round + '"]');
+      if (item) item.classList.toggle('open');
+    }
+
+    /* ---- Update filled count ---- */
+    function updateFilledCount() {
+      var count = 0;
+      var races = getRemainingRaces();
+      races.forEach(function(r) {
+        var pred = predictions[r.round];
+        if (pred && pred.p1) count++;
+      });
+      var el = document.getElementById('sim-stat-filled');
+      if (el) el.textContent = count;
+    }
+
+    /* ---- Quick Sim: driver wins all ---- */
+    function quickSim(driverKey) {
+      var races = getRemainingRaces();
+      var d = driverMap[driverKey];
+      if (!d) return;
+
+      /* Find team-mate */
+      var teammate = null;
+      allDrivers.forEach(function(dd) {
+        if (dd.teamId === d.teamId && dd.key !== driverKey) teammate = dd;
+      });
+
+      /* Define a plausible finishing order */
+      var runnerUps = contenders.filter(function(c) { return c.key !== driverKey; }).map(function(c) { return c.key; });
+      /* If teammate not in contenders, add them at P2 */
+      if (teammate && runnerUps.indexOf(teammate.key) === -1) {
+        runnerUps.unshift(teammate.key);
+      }
+
+      races.forEach(function(r) {
+        predictions[r.round] = {
+          p1: driverKey,
+          p2: runnerUps[0] || null,
+          p3: runnerUps[1] || null,
+          p4: runnerUps[2] || null,
+          p5: runnerUps[3] || null,
+          p6: runnerUps[4] || null,
+          p7: runnerUps.length > 5 ? runnerUps[5] : null,
+          p8: null,
+          p9: null,
+          p10: null,
+          flEnabled: true,
+          fl: driverKey
+        };
+        /* Fill remaining positions with other drivers not used */
+        var used = {};
+        for (var i = 1; i <= 7; i++) {
+          var pk = 'p' + i;
+          if (predictions[r.round][pk]) used[predictions[r.round][pk]] = true;
+        }
+        var remaining = allDrivers.filter(function(dd) { return !used[dd.key]; });
+        for (var j = 7; j < TOP_POSITIONS; j++) {
+          var pk2 = 'p' + (j + 1);
+          if (!predictions[r.round][pk2] && remaining.length > 0) {
+            predictions[r.round][pk2] = remaining.shift().key;
+          }
+        }
+      });
+
+      renderRaceList();
+      updateFilledCount();
+      calculate();
+
+      /* Highlight button */
+      highlightQuickBtn(driverKey);
+    }
+
+    /* ---- Quick Sim: Random ---- */
+    function quickRandom() {
+      var races = getRemainingRaces();
+
+      races.forEach(function(r) {
+        var shuffled = allDrivers.slice();
+        /* Fisher-Yates shuffle */
+        for (var i = shuffled.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var tmp = shuffled[i];
+          shuffled[i] = shuffled[j];
+          shuffled[j] = tmp;
+        }
+        var pred = {};
+        for (var k = 0; k < TOP_POSITIONS && k < shuffled.length; k++) {
+          pred['p' + (k + 1)] = shuffled[k].key;
+        }
+        /* Random FL from top 10 */
+        pred.flEnabled = true;
+        var flIdx = Math.floor(Math.random() * Math.min(TOP_POSITIONS, shuffled.length));
+        pred.fl = shuffled[flIdx].key;
+
+        predictions[r.round] = pred;
+      });
+
+      renderRaceList();
+      updateFilledCount();
+      calculate();
+      highlightQuickBtn('random');
+    }
+
+    /* ---- Quick Sim: Realistic (weighted random based on team strength) ---- */
+    function quickRealistic() {
+      var races = getRemainingRaces();
+
+      /* Strength weights — top teams more likely */
+      var weights = {};
+      var strengths = {
+        mclaren: 18, ferrari: 16, redbull: 15, mercedes: 17,
+        astonmartin: 8, alpine: 6, haas: 5, williams: 7,
+        racingbulls: 7, audi: 4, cadillac: 3
+      };
+
+      allDrivers.forEach(function(d) {
+        weights[d.key] = strengths[d.teamId] || 5;
+        /* Slight randomisation per driver */
+        weights[d.key] += (Math.random() - 0.5) * 4;
+      });
+
+      races.forEach(function(r) {
+        var pool = allDrivers.slice();
+        /* Add per-race randomness */
+        pool.forEach(function(d) {
+          d._raceWeight = (weights[d.key] || 5) + (Math.random() - 0.5) * 6;
+        });
+        pool.sort(function(a, b) { return b._raceWeight - a._raceWeight; });
+
+        var pred = {};
+        for (var k = 0; k < TOP_POSITIONS && k < pool.length; k++) {
+          pred['p' + (k + 1)] = pool[k].key;
+        }
+        /* FL from top 3 */
+        pred.flEnabled = true;
+        pred.fl = pool[Math.floor(Math.random() * 3)].key;
+
+        predictions[r.round] = pred;
+      });
+
+      renderRaceList();
+      updateFilledCount();
+      calculate();
+      highlightQuickBtn('realistic');
+    }
+
+    /* ---- Highlight active quick btn ---- */
+    function highlightQuickBtn(id) {
+      document.querySelectorAll('.sim-quick-btn').forEach(function(b) {
+        b.classList.remove('active');
+      });
+      /* No easy way to match by id, so skip for now */
+    }
+
+    /* ---- Auto-calculate on every change ---- */
+    function autoCalculate() {
+      /* Only auto-calculate if at least one race has a P1 prediction */
+      var hasAny = false;
+      var races = getRemainingRaces();
+      races.forEach(function(r) {
+        if (predictions[r.round] && predictions[r.round].p1) hasAny = true;
+      });
+      if (hasAny) calculate();
+    }
+
+    /* ---- CALCULATE CHAMPIONSHIP ---- */
+    function calculate() {
+      var l = getLang();
+
+      /* Initialize points for all drivers */
+      var driverPoints = {};
+      var driverWins = {};
+      allDrivers.forEach(function(d) {
+        driverPoints[d.key] = d.num ? 0 : 0; /* Start from actual current pts if season progresses */
+        driverWins[d.key] = 0;
+      });
+
+      /* Add current actual points from F1 data */
+      F1.teams.forEach(function(team) {
+        team.drivers.forEach(function(d) {
+          var key = d.code || (d.first + d.last).toLowerCase();
+          if (driverPoints[key] !== undefined) {
+            driverPoints[key] += d.pts;
+            driverWins[key] += d.wins;
+          }
+        });
+      });
+
+      /* Calculate predicted points */
+      var races = getRemainingRaces();
+      var racesScored = 0;
+      races.forEach(function(r) {
+        var pred = predictions[r.round];
+        if (!pred || !pred.p1) return;
+        racesScored++;
+
+        for (var i = 0; i < TOP_POSITIONS; i++) {
+          var posKey = 'p' + (i + 1);
+          var dk = pred[posKey];
+          if (dk && driverPoints[dk] !== undefined) {
+            driverPoints[dk] += POINTS[i];
+            if (i === 0) driverWins[dk]++;
+          }
+        }
+
+        /* Fastest lap bonus (only for drivers finishing in top 10) */
+        if (pred.flEnabled && pred.fl && driverPoints[pred.fl] !== undefined) {
+          var inTop10 = false;
+          for (var j = 0; j < TOP_POSITIONS; j++) {
+            if (pred['p' + (j + 1)] === pred.fl) { inTop10 = true; break; }
+          }
+          if (inTop10) driverPoints[pred.fl] += 1;
+        }
+      });
+
+      /* Build sorted driver standings */
+      var standings = allDrivers.map(function(d) {
+        return {
+          key: d.key,
+          first: d.first,
+          last: d.last,
+          num: d.num,
+          code: d.code,
+          flag: d.flag,
+          teamId: d.teamId,
+          teamName: l === 'zh' ? d.teamNameZH : d.teamName,
+          teamColor: d.teamColor,
+          cdnSlug: d.cdnSlug,
+          pts: driverPoints[d.key] || 0,
+          wins: driverWins[d.key] || 0
+        };
+      });
+      standings.sort(function(a, b) {
+        if (b.pts !== a.pts) return b.pts - a.pts;
+        if (b.wins !== a.wins) return b.wins - a.wins;
+        return a.num - b.num;
+      });
+
+      /* Build constructor standings */
+      var constructorPts = {};
+      var constructorWins = {};
+      F1.teams.forEach(function(team) {
+        var tid = team.id;
+        constructorPts[tid] = 0;
+        constructorWins[tid] = 0;
+        team.drivers.forEach(function(d) {
+          var key = d.code || (d.first + d.last).toLowerCase();
+          constructorPts[tid] += driverPoints[key] || 0;
+          constructorWins[tid] += driverWins[key] || 0;
+        });
+      });
+      var constructorStandings = F1.teams.map(function(team) {
+        return {
+          id: team.id,
+          name: l === 'zh' ? team.nameZH : team.name,
+          fullName: team.fullName,
+          color: team.color,
+          cdnSlug: team.cdnSlug,
+          pts: constructorPts[team.id],
+          wins: constructorWins[team.id]
+        };
+      }).sort(function(a, b) {
+        if (b.pts !== a.pts) return b.pts - a.pts;
+        return b.wins - a.wins;
+      });
+
+      /* Render results */
+      renderDriverResults(standings, racesScored);
+      renderConstructorResults(constructorStandings, racesScored);
+      renderChart(standings.slice(0, 12));
+
+      /* Update sub text */
+      var subEl = document.getElementById('sim-results-sub');
+      if (subEl) {
+        subEl.textContent = l === 'zh'
+          ? racesScored + ' 場比賽已模擬 / ' + races.length + ' 場'
+          : racesScored + ' of ' + races.length + ' races simulated';
+      }
+    }
+
+    /* ---- Render driver results ---- */
+    function renderDriverResults(standings, racesScored) {
+      var panel = document.getElementById('sim-panel-drivers');
+      if (!panel) return;
+
+      if (racesScored === 0) {
+        var l = getLang();
+        panel.innerHTML = '<div class="sim-empty-state">' +
+          '<div class="sim-empty-icon">&#127937;</div>' +
+          '<div class="sim-empty-title">' + (l === 'zh' ? '尚無預測' : 'No predictions yet') + '</div>' +
+          '<div class="sim-empty-desc">' + (l === 'zh' ? '使用快速模擬或設定比賽預測<br>來推算積分榜' : 'Use Quick Sim or set race predictions<br>to project championship standings') + '</div>' +
+          '</div>';
+        return;
+      }
+
+      var html = '';
+      standings.forEach(function(d, i) {
+        if (d.pts === 0 && i >= 10) return; /* Hide zero-point drivers beyond P10 */
+
+        var pos = i + 1;
+        var isTop = pos <= 3;
+        var imgUrl = d.code ? F1.getDriverImg(d.code, d.cdnSlug, 80) : '';
+
+        html += '<div class="sim-result-row">' +
+          '<div class="sim-result-pos' + (isTop ? ' top' : '') + '">' + pos + '</div>' +
+          '<div class="sim-result-driver">' +
+            '<div class="sim-result-bar" style="background:' + d.teamColor + '"></div>' +
+            (imgUrl ? '<img class="sim-result-img" src="' + imgUrl + '" alt="' + d.last + '" loading="lazy" onerror="this.style.display=\'none\'">' : '') +
+            '<div>' +
+              '<div class="sim-result-name">' + d.first + ' ' + d.last + '</div>' +
+              '<div class="sim-result-team">' + d.flag + ' ' + d.teamName +
+                (d.wins > 0 ? ' &middot; ' + d.wins + 'W' : '') +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div>' +
+            '<div class="sim-result-pts">' + d.pts + '</div>' +
+            '<div class="sim-result-pts-lbl">PTS</div>' +
+          '</div>' +
+        '</div>';
+      });
+
+      panel.innerHTML = html;
+    }
+
+    /* ---- Render constructor results ---- */
+    function renderConstructorResults(standings, racesScored) {
+      var panel = document.getElementById('sim-panel-constructors');
+      if (!panel) return;
+
+      if (racesScored === 0) {
+        var l = getLang();
+        panel.innerHTML = '<div class="sim-empty-state">' +
+          '<div class="sim-empty-icon">&#127937;</div>' +
+          '<div class="sim-empty-title">' + (l === 'zh' ? '尚無預測' : 'No predictions yet') + '</div>' +
+          '<div class="sim-empty-desc">' + (l === 'zh' ? '使用快速模擬或設定比賽預測<br>來推算積分榜' : 'Use Quick Sim or set race predictions<br>to project championship standings') + '</div>' +
+          '</div>';
+        return;
+      }
+
+      var maxPts = standings[0].pts || 1;
+      var html = '';
+
+      standings.forEach(function(team, i) {
+        var pos = i + 1;
+        var isTop = pos <= 3;
+        var barW = Math.round((team.pts / maxPts) * 100);
+
+        html += '<div class="sim-constructor-row">' +
+          '<div class="sim-result-pos' + (isTop ? ' top' : '') + '">' + pos + '</div>' +
+          '<div>' +
+            '<div class="sim-result-name" style="display:flex;align-items:center;gap:8px;">' +
+              '<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:' + team.color + ';flex-shrink:0"></span>' +
+              team.name +
+            '</div>' +
+            '<div class="sim-constructor-bar"><div class="sim-constructor-fill" style="width:' + barW + '%;background:' + team.color + '"></div></div>' +
+          '</div>' +
+          '<div>' +
+            '<div class="sim-result-pts">' + team.pts + '</div>' +
+            '<div class="sim-result-pts-lbl">PTS</div>' +
+          '</div>' +
+        '</div>';
+      });
+
+      panel.innerHTML = html;
+    }
+
+    /* ---- Render bar chart ---- */
+    function renderChart(topDrivers) {
+      var panel = document.getElementById('sim-panel-chart');
+      if (!panel) return;
+
+      if (!topDrivers.length || topDrivers[0].pts === 0) {
+        var l = getLang();
+        panel.innerHTML = '<div class="sim-empty-state">' +
+          '<div class="sim-empty-icon">&#127937;</div>' +
+          '<div class="sim-empty-title">' + (l === 'zh' ? '尚無資料' : 'No data yet') + '</div>' +
+          '<div class="sim-empty-desc">' + (l === 'zh' ? '模擬結果將顯示在此' : 'Simulation results will appear here') + '</div>' +
+          '</div>';
+        return;
+      }
+
+      var maxPts = topDrivers[0].pts || 1;
+      var leaderPts = topDrivers[0].pts;
+
+      var html = '<div style="padding:20px 28px 8px;">' +
+        '<div style="font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-3);margin-bottom:16px;">' +
+        (getLang() === 'zh' ? '積分分佈圖' : 'Points Distribution') +
+        '</div></div>';
+      html += '<div class="sim-bar-wrap">';
+
+      topDrivers.forEach(function(d) {
+        if (d.pts === 0) return;
+        var barW = Math.round((d.pts / maxPts) * 100);
+        var gap = leaderPts - d.pts;
+        var gapLabel = gap > 0 ? ' (-' + gap + ')' : '';
+
+        html += '<div class="sim-bar-row">' +
+          '<div class="sim-bar-name" style="color:' + d.teamColor + '">' + d.last + '</div>' +
+          '<div class="sim-bar-track">' +
+            '<div class="sim-bar-fill" style="width:' + barW + '%;background:' + d.teamColor + '"></div>' +
+          '</div>' +
+          '<div class="sim-bar-pts">' + d.pts + gapLabel + '</div>' +
+        '</div>';
+      });
+
+      html += '</div>';
+
+      /* Championship gap analysis */
+      if (topDrivers.length >= 2) {
+        var leader = topDrivers[0];
+        var second = topDrivers[1];
+        var gapToLeader = leader.pts - second.pts;
+        var l = getLang();
+
+        html += '<div style="padding:16px 28px;border-top:1px solid var(--border);margin-top:8px;">' +
+          '<div style="font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-3);margin-bottom:10px;">' +
+          (l === 'zh' ? '冠軍差距分析' : 'Championship Gap') +
+          '</div>' +
+          '<div style="display:flex;align-items:center;gap:12px;">' +
+            '<div style="font-family:var(--font-display);font-size:42px;font-weight:900;color:var(--red);line-height:1;">' + gapToLeader + '</div>' +
+            '<div>' +
+              '<div style="font-family:var(--font-display);font-size:16px;font-weight:700;text-transform:uppercase;color:#fff;">' +
+                leader.last + ' ' + (l === 'zh' ? '領先' : 'leads') + ' ' + second.last +
+              '</div>' +
+              '<div style="font-family:var(--font-mono);font-size:10px;color:var(--text-3);letter-spacing:0.06em;margin-top:2px;">' +
+                leader.pts + ' ' + (l === 'zh' ? '分' : 'pts') + ' vs ' + second.pts + ' ' + (l === 'zh' ? '分' : 'pts') +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }
+
+      panel.innerHTML = html;
+
+      /* Trigger bar animation */
+      requestAnimationFrame(function() {
+        panel.querySelectorAll('.sim-bar-fill').forEach(function(bar) {
+          var w = bar.style.width;
+          bar.style.width = '0%';
+          requestAnimationFrame(function() {
+            bar.style.width = w;
+          });
+        });
+      });
+    }
+
+    /* ---- Clear all predictions ---- */
+    function clearAll() {
+      predictions = {};
+      renderRaceList();
+      updateFilledCount();
+
+      /* Reset results panels */
+      var l = getLang();
+      var emptyHtml = '<div class="sim-empty-state">' +
+        '<div class="sim-empty-icon">&#127937;</div>' +
+        '<div class="sim-empty-title">' + (l === 'zh' ? '尚無預測' : 'No predictions yet') + '</div>' +
+        '<div class="sim-empty-desc">' + (l === 'zh' ? '使用快速模擬或設定比賽預測<br>來推算積分榜' : 'Use Quick Sim or set race predictions<br>to project championship standings') + '</div>' +
+        '</div>';
+
+      document.getElementById('sim-panel-drivers').innerHTML = emptyHtml;
+      document.getElementById('sim-panel-constructors').innerHTML = emptyHtml;
+      document.getElementById('sim-panel-chart').innerHTML = emptyHtml;
+
+      var subEl = document.getElementById('sim-results-sub');
+      if (subEl) subEl.textContent = l === 'zh' ? '設定預測後計算' : 'Set predictions and calculate';
+    }
+
+    /* ---- Tab switching ---- */
+    function initTabs() {
+      document.querySelectorAll('.sim-rtab').forEach(function(tab) {
+        tab.addEventListener('click', function() {
+          document.querySelectorAll('.sim-rtab').forEach(function(t) { t.classList.remove('active'); });
+          document.querySelectorAll('.sim-rpanel').forEach(function(p) { p.style.display = 'none'; });
+          tab.classList.add('active');
+          var panel = document.getElementById(tab.dataset.panel);
+          if (panel) panel.style.display = 'block';
+        });
+      });
+    }
+
+    /* ---- Localize static text ---- */
+    function localize() {
+      var l = getLang();
+
+      var textMap = {
+        'sim-eyebrow':         { en: '2026 Season', zh: '2026 賽季' },
+        'sim-title':           { en: 'Championship Simulator', zh: '積分模擬器' },
+        'sim-stat-races-lbl':  { en: 'Races to Simulate', zh: '模擬賽事數' },
+        'sim-stat-drivers-lbl':{ en: 'Drivers', zh: '車手' },
+        'sim-stat-max-lbl':    { en: 'Max Possible Points', zh: '最高可得積分' },
+        'sim-stat-filled-lbl': { en: 'Races Predicted', zh: '已預測賽事' },
+        'sim-quicksim-label':  { en: 'Quick Simulation', zh: '快速模擬' },
+        'sim-races-title':     { en: 'Race Predictions', zh: '比賽預測' },
+        'sim-clear-btn':       { en: 'Clear All', zh: '清除全部' },
+        'sim-calculate-btn':   { en: 'Calculate Championship', zh: '計算積分榜' },
+        'sim-results-title':   { en: 'Projected Standings', zh: '預估積分榜' },
+        'sim-results-sub':     { en: 'Set predictions and calculate', zh: '設定預測後計算' },
+        'sim-tab-drivers':     { en: 'Drivers', zh: '車手' },
+        'sim-tab-constructors':{ en: 'Constructors', zh: '車隊' },
+        'sim-tab-chart':       { en: 'Chart', zh: '圖表' },
+        'sim-empty-title':     { en: 'No predictions yet', zh: '尚無預測' },
+        'sim-empty-desc':      { en: 'Use Quick Sim or set race predictions\nto project championship standings', zh: '使用快速模擬或設定比賽預測\n來推算積分榜' }
+      };
+
+      Object.keys(textMap).forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = textMap[id][l] || textMap[id].en;
+      });
+
+      /* Update stat values */
+      var racesRemaining = getRemainingRaces().length;
+      var maxEl = document.getElementById('sim-stat-max');
+      if (maxEl) maxEl.textContent = racesRemaining * 26; /* 25 + 1 FL */
+      var racesEl = document.getElementById('sim-stat-races');
+      if (racesEl) racesEl.textContent = racesRemaining;
+    }
+
+    /* ---- Init ---- */
+    function init() {
+      buildDriverList();
+      localize();
+      renderQuickBtns();
+      renderRaceList();
+      initTabs();
+      updateFilledCount();
+    }
+
+    /* ---- Full re-render for lang switch ---- */
+    function rerender() {
+      buildDriverList();
+      localize();
+      renderQuickBtns();
+      renderRaceList();
+      updateFilledCount();
+
+      /* If we have predictions, recalculate */
+      var hasAny = false;
+      getRemainingRaces().forEach(function(r) {
+        if (predictions[r.round] && predictions[r.round].p1) hasAny = true;
+      });
+      if (hasAny) calculate();
+    }
+
+    /* ---- Public API ---- */
+    return {
+      init: init,
+      rerender: rerender,
+      quickSim: quickSim,
+      quickRandom: quickRandom,
+      quickRealistic: quickRealistic,
+      toggleRace: toggleRace,
+      onPosChange: onPosChange,
+      onFLToggle: onFLToggle,
+      onFLSelect: onFLSelect,
+      calculate: calculate,
+      clearAll: clearAll
+    };
+  })();
+
+  /* ---- DOM Ready ---- */
+  document.addEventListener('DOMContentLoaded', function() {
+    SIM.init();
+  });
+
+  /* ---- Lang change re-render (override pattern like teams.html) ---- */
+  (function() {
+    var origApply = null;
+    /* Watch for lang toggle clicks */
+    document.addEventListener('click', function(e) {
+      if (e.target.classList && e.target.classList.contains('lang-btn')) {
+        /* Delay to let main.js applyLang run first */
+        setTimeout(function() { SIM.rerender(); }, 50);
+      }
+    });
+  })();
+  </script>
+
+  <div class="share-fab" id="share-fab">
+    <button class="share-fab-btn" aria-label="Share">&#x2934;</button>
+    <div class="share-fab-menu" id="share-menu"></div>
+  </div>
+</body>
+</html>

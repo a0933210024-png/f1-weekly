@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Driver Comparison — F1 Weekly</title>
+  <meta name="description" content="Compare any two F1 drivers head-to-head. Side-by-side stats including championship points, qualifying positions, and team details for the 2026 season.">
+  <link rel="canonical" href="https://f1-weekly.vercel.app/compare">
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="F1 Weekly">
+  <meta property="og:title" content="Driver Comparison — F1 Weekly">
+  <meta property="og:description" content="Compare any two 2026 F1 drivers head-to-head. Championship points, qualifying results, team info and more.">
+  <meta property="og:url" content="https://f1-weekly.vercel.app/compare">
+  <meta property="og:image" content="https://f1-weekly.vercel.app/og-image.png">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Driver Comparison — F1 Weekly">
+  <meta name="twitter:description" content="Compare any two 2026 F1 drivers head-to-head. Championship points, qualifying results, team info and more.">
+  <meta name="twitter:image" content="https://f1-weekly.vercel.app/og-image.png">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ---- Compare Page Specific Styles ---- */
+
+    .cmp-selectors {
+      max-width: var(--w);
+      margin: 0 auto;
+      padding: 32px var(--gutter);
+      display: grid;
+      grid-template-columns: 1fr 60px 1fr;
+      align-items: center;
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cmp-select-wrap {
+      position: relative;
+    }
+    .cmp-select-wrap select {
+      width: 100%;
+      appearance: none;
+      -webkit-appearance: none;
+      background: var(--bg-3);
+      border: 1px solid var(--border-2);
+      color: #fff;
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 14px 44px 14px 18px;
+      cursor: pointer;
+      transition: border-color var(--ease);
+    }
+    .cmp-select-wrap select:hover,
+    .cmp-select-wrap select:focus {
+      border-color: var(--red);
+      outline: none;
+    }
+    .cmp-select-wrap::after {
+      content: '';
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 5px solid var(--text-2);
+      pointer-events: none;
+    }
+    .cmp-select-wrap select option {
+      background: var(--bg-2);
+      color: #fff;
+      font-family: var(--font-body);
+      text-transform: none;
+      font-weight: 400;
+      font-size: 14px;
+    }
+
+    .cmp-vs {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cmp-vs-badge {
+      width: 48px;
+      height: 48px;
+      background: var(--red);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: 0.08em;
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    }
+
+    /* ---- Comparison Arena ---- */
+    .cmp-arena {
+      max-width: var(--w);
+      margin: 0 auto;
+      padding: 0;
+    }
+
+    .cmp-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+    }
+
+    .cmp-card {
+      background: var(--bg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Driver hero section */
+    .cmp-driver-hero {
+      position: relative;
+      padding: 40px 40px 30px;
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .cmp-driver-hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      z-index: 5;
+    }
+    .cmp-card:first-child .cmp-driver-hero {
+      border-right: 1px solid var(--border);
+    }
+
+    .cmp-driver-img {
+      position: absolute;
+      bottom: 0;
+      width: 280px;
+      height: 320px;
+      object-fit: cover;
+      object-position: top center;
+      z-index: 1;
+      pointer-events: none;
+      filter: grayscale(0.2) contrast(1.05);
+    }
+    .cmp-card:first-child .cmp-driver-img {
+      right: -20px;
+      -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,1) 30%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0) 90%);
+      mask-image: linear-gradient(to left, rgba(0,0,0,1) 30%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0) 90%);
+    }
+    .cmp-card:last-child .cmp-driver-img {
+      left: -20px;
+      -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,1) 30%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0) 90%);
+      mask-image: linear-gradient(to right, rgba(0,0,0,1) 30%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0) 90%);
+    }
+
+    .cmp-driver-num-bg {
+      font-family: var(--font-display);
+      font-size: 160px;
+      font-weight: 900;
+      color: rgba(255,255,255,0.03);
+      position: absolute;
+      line-height: 1;
+      pointer-events: none;
+      letter-spacing: -0.06em;
+      z-index: 0;
+    }
+    .cmp-card:first-child .cmp-driver-num-bg {
+      right: 20px;
+      bottom: -20px;
+    }
+    .cmp-card:last-child .cmp-driver-num-bg {
+      left: 20px;
+      bottom: -20px;
+    }
+
+    .cmp-driver-info {
+      position: relative;
+      z-index: 3;
+    }
+    .cmp-card:last-child .cmp-driver-info {
+      text-align: right;
+    }
+    .cmp-card:last-child .cmp-driver-hero {
+      align-items: flex-end;
+    }
+
+    .cmp-driver-num {
+      font-family: var(--font-display);
+      font-size: 42px;
+      font-weight: 900;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .cmp-driver-name {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-2);
+      line-height: 1.2;
+    }
+    .cmp-driver-surname {
+      font-family: var(--font-display);
+      font-size: 34px;
+      font-weight: 900;
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+      color: #fff;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .cmp-driver-flag {
+      font-size: 18px;
+      margin-bottom: 2px;
+    }
+    .cmp-driver-nat {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+
+    /* Stats rows */
+    .cmp-stats {
+      display: flex;
+      flex-direction: column;
+    }
+    .cmp-stat-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+    }
+    .cmp-stat-cell {
+      background: var(--bg);
+      padding: 22px 40px;
+      transition: background var(--ease);
+    }
+    .cmp-stat-cell:hover {
+      background: var(--bg-2);
+    }
+    .cmp-stat-cell:first-child {
+      border-right: 1px solid var(--border);
+    }
+    .cmp-stat-cell:last-child {
+      text-align: right;
+    }
+    .cmp-stat-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 6px;
+    }
+    .cmp-stat-value {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+    .cmp-stat-value.mono {
+      font-family: var(--font-mono);
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .cmp-stat-sub {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-3);
+      letter-spacing: 0.06em;
+      margin-top: 3px;
+    }
+
+    /* Team color badge on stat */
+    .cmp-team-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .cmp-team-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .cmp-stat-cell:last-child .cmp-team-badge {
+      flex-direction: row-reverse;
+    }
+
+    /* Highlight better stat */
+    .cmp-stat-value.better {
+      color: var(--red);
+    }
+
+    /* Center divider row label */
+    .cmp-stat-divider {
+      background: var(--bg-2);
+      padding: 10px 40px;
+      grid-column: 1 / -1;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Quali position badge */
+    .cmp-quali-pos {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 900;
+      width: 48px;
+      height: 48px;
+      line-height: 1;
+    }
+    .cmp-quali-pos.top3 {
+      color: var(--red);
+    }
+
+    /* Swap button */
+    .cmp-swap-btn {
+      background: var(--bg-3);
+      border: 1px solid var(--border-2);
+      color: var(--text-2);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 8px 18px;
+      cursor: pointer;
+      transition: all var(--ease);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .cmp-swap-btn:hover {
+      border-color: var(--red);
+      color: #fff;
+    }
+    .cmp-swap-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .cmp-actions {
+      max-width: var(--w);
+      margin: 0 auto;
+      padding: 20px var(--gutter);
+      display: flex;
+      justify-content: center;
+    }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 900px) {
+      .cmp-selectors {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .cmp-vs {
+        padding: 4px 0;
+      }
+      .cmp-vs-badge {
+        width: 38px;
+        height: 38px;
+        font-size: 13px;
+      }
+      .cmp-cards {
+        grid-template-columns: 1fr;
+      }
+      .cmp-card:first-child .cmp-driver-hero {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .cmp-card:last-child .cmp-driver-info {
+        text-align: left;
+      }
+      .cmp-card:last-child .cmp-driver-hero {
+        align-items: flex-start;
+      }
+      .cmp-card:last-child .cmp-driver-img {
+        left: auto;
+        right: -20px;
+        -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,1) 30%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0) 90%);
+        mask-image: linear-gradient(to left, rgba(0,0,0,1) 30%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0) 90%);
+      }
+      .cmp-card:last-child .cmp-driver-num-bg {
+        left: auto;
+        right: 20px;
+      }
+      .cmp-stat-row {
+        grid-template-columns: 1fr;
+      }
+      .cmp-stat-cell:first-child {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .cmp-stat-cell:last-child {
+        text-align: left;
+      }
+      .cmp-stat-cell:last-child .cmp-team-badge {
+        flex-direction: row;
+      }
+    }
+    @media (max-width: 680px) {
+      .cmp-driver-hero {
+        min-height: 200px;
+        padding: 24px 20px 20px;
+      }
+      .cmp-driver-img {
+        width: 180px;
+        height: 220px;
+      }
+      .cmp-driver-num { font-size: 32px; }
+      .cmp-driver-surname { font-size: 26px; }
+      .cmp-driver-num-bg { font-size: 100px; }
+      .cmp-stat-cell { padding: 16px 20px; }
+      .cmp-stat-value { font-size: 18px; }
+      .cmp-stat-value.mono { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TICKER -->
+  <div class="ticker">
+    <div class="ticker-track">
+      <span class="ticker-item" data-i18n="ticker_1"></span>
+      <span class="ticker-item" data-i18n="ticker_2"></span>
+      <span class="ticker-item" data-i18n="ticker_3"></span>
+      <span class="ticker-item" data-i18n="ticker_4"></span>
+      <span class="ticker-item" data-i18n="ticker_5"></span>
+      <span class="ticker-item" data-i18n="ticker_1"></span>
+      <span class="ticker-item" data-i18n="ticker_2"></span>
+      <span class="ticker-item" data-i18n="ticker_3"></span>
+      <span class="ticker-item" data-i18n="ticker_4"></span>
+      <span class="ticker-item" data-i18n="ticker_5"></span>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-mark"></div>
+        <div class="nav-logo-text"><em>F1</em> WEEKLY</div>
+      </a>
+      <div class="nav-links">
+        <a href="index.html"     class="nav-link" data-i18n="nav_home"></a>
+        <a href="teams.html"     class="nav-link" data-i18n="nav_teams"></a>
+        <a href="schedule.html"  class="nav-link" data-i18n="nav_schedule"></a>
+        <a href="standings.html" class="nav-link" data-i18n="nav_standings"></a>
+        <a href="news.html"      class="nav-link" data-i18n="nav_news"></a>
+        <a href="compare.html"   class="nav-link" data-i18n="nav_compare"></a>
+        <a href="simulator.html" class="nav-link" data-i18n="nav_simulator"></a>
+      </div>
+      <div class="nav-right">
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+        <div class="lang-toggle">
+          <button class="lang-btn" data-lang="en">EN</button>
+          <button class="lang-btn" data-lang="zh">中</button>
+        </div>
+        <button class="mobile-menu-btn" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <div class="page-hero">
+    <div class="page-eyebrow" data-i18n="eyebrow_compare"></div>
+    <h1 class="page-title" data-i18n="page_compare"></h1>
+  </div>
+
+  <!-- DRIVER SELECTORS -->
+  <div class="cmp-selectors">
+    <div class="cmp-select-wrap">
+      <select id="driver-a"></select>
+    </div>
+    <div class="cmp-vs">
+      <div class="cmp-vs-badge">VS</div>
+    </div>
+    <div class="cmp-select-wrap">
+      <select id="driver-b"></select>
+    </div>
+  </div>
+
+  <!-- COMPARISON ARENA -->
+  <div class="cmp-arena" id="cmp-arena"></div>
+
+  <!-- SWAP BUTTON -->
+  <div class="cmp-actions">
+    <button class="cmp-swap-btn" id="cmp-swap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+      <span id="swap-label">Swap Drivers</span>
+    </button>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand-logo"><em>F1</em> WEEKLY</div>
+        <p class="footer-desc" data-i18n="footer_tagline"></p>
+      </div>
+      <div>
+        <div class="footer-col-hd" data-i18n="footer_nav"></div>
+        <div class="footer-col-links">
+          <a href="teams.html"     class="footer-col-link" data-i18n="nav_teams"></a>
+          <a href="schedule.html"  class="footer-col-link" data-i18n="nav_schedule"></a>
+          <a href="standings.html" class="footer-col-link" data-i18n="nav_standings"></a>
+          <a href="news.html"      class="footer-col-link" data-i18n="nav_news"></a>
+          <a href="compare.html"   class="footer-col-link" data-i18n="nav_compare"></a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-hd" data-i18n="footer_races"></div>
+        <div class="footer-col-links">
+          <a href="schedule.html"  class="footer-col-link">2026 Calendar</a>
+          <a href="standings.html" class="footer-col-link">Standings</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-hd" data-i18n="footer_follow"></div>
+        <div class="footer-col-links">
+          <a href="https://www.formula1.com/en/teams" target="_blank" class="footer-col-link">Official Team Profiles</a>
+          <a href="https://www.the-race.com/formula-1/f1-2026-entry-list-driver-numbers-chassis-engines/" target="_blank" class="footer-col-link">2026 Entry List</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy" data-i18n="copyright"></div>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/live.js"></script>
+  <script>
+    /* ============================================================
+       DRIVER COMPARISON — inline page script
+       Pattern follows teams.html / news.html
+    ============================================================ */
+
+    var engineMap = {
+      mclaren: 'Mercedes', ferrari: 'Ferrari', redbull: 'Red Bull Ford',
+      mercedes: 'Mercedes', astonmartin: 'Honda', alpine: 'Mercedes',
+      haas: 'Ferrari', williams: 'Mercedes', racingbulls: 'Red Bull Ford',
+      audi: 'Audi', cadillac: 'Ferrari'
+    };
+
+    /* Build a flat driver list with team info attached */
+    function getAllDrivers() {
+      var list = [];
+      F1.teams.forEach(function(team) {
+        team.drivers.forEach(function(d) {
+          list.push({
+            num: d.num,
+            first: d.first,
+            last: d.last,
+            nat: d.nat,
+            flag: d.flag,
+            code: d.code,
+            pts: d.pts,
+            wins: d.wins,
+            teamId: team.id,
+            teamName: team.name,
+            teamNameZH: team.nameZH,
+            teamColor: team.color,
+            teamCdnSlug: team.cdnSlug,
+            engine: engineMap[team.id] || '—'
+          });
+        });
+      });
+      return list;
+    }
+
+    /* Find qualifying data for a driver by number */
+    function getQuali(num) {
+      if (!F1.australiaQuali) return null;
+      for (var i = 0; i < F1.australiaQuali.length; i++) {
+        if (F1.australiaQuali[i].num === num) return F1.australiaQuali[i];
+      }
+      return null;
+    }
+
+    /* Populate select elements */
+    function populateSelects() {
+      var l = getLang();
+      var drivers = getAllDrivers();
+      var selA = document.getElementById('driver-a');
+      var selB = document.getElementById('driver-b');
+
+      [selA, selB].forEach(function(sel) {
+        var currentVal = sel.value;
+        sel.innerHTML = '';
+        drivers.forEach(function(d) {
+          var opt = document.createElement('option');
+          opt.value = d.num;
+          var teamLabel = l === 'zh' ? d.teamNameZH : d.teamName;
+          opt.textContent = '#' + d.num + '  ' + d.first + ' ' + d.last + '  (' + teamLabel + ')';
+          sel.appendChild(opt);
+        });
+        if (currentVal) sel.value = currentVal;
+      });
+    }
+
+    /* Render the comparison */
+    function renderComparison() {
+      var l = getLang();
+      var drivers = getAllDrivers();
+      var selA = document.getElementById('driver-a');
+      var selB = document.getElementById('driver-b');
+      var numA = parseInt(selA.value);
+      var numB = parseInt(selB.value);
+
+      var dA = drivers.find(function(d) { return d.num === numA; });
+      var dB = drivers.find(function(d) { return d.num === numB; });
+      if (!dA || !dB) return;
+
+      var qA = getQuali(dA.num);
+      var qB = getQuali(dB.num);
+
+      var arena = document.getElementById('cmp-arena');
+
+      /* Labels */
+      var labels = {
+        number: t('cmp_number'),
+        nationality: t('cmp_nationality'),
+        team: t('cmp_team'),
+        engine: t('cmp_engine'),
+        points: t('cmp_points'),
+        qualiPos: t('cmp_quali_pos'),
+        qualiTime: t('cmp_quali_time'),
+        noTime: t('cmp_no_time')
+      };
+
+      /* Determine better values for highlighting */
+      var ptsBetter = dA.pts > dB.pts ? 'a' : (dB.pts > dA.pts ? 'b' : '');
+      var qPosBetterA = qA && qB ? (qA.pos < qB.pos) : false;
+      var qPosBetterB = qA && qB ? (qB.pos < qA.pos) : false;
+
+      /* Parse qualifying times for comparison */
+      function parseTime(timeStr) {
+        if (!timeStr || timeStr === '—' || timeStr === 'Q1 Crash') return Infinity;
+        var parts = timeStr.split(':');
+        if (parts.length !== 2) return Infinity;
+        return parseFloat(parts[0]) * 60 + parseFloat(parts[1]);
+      }
+      var tA = qA ? parseTime(qA.time) : Infinity;
+      var tB = qB ? parseTime(qB.time) : Infinity;
+      var timeBetterA = tA < tB && tA !== Infinity;
+      var timeBetterB = tB < tA && tB !== Infinity;
+
+      /* Driver image URLs */
+      var imgA = dA.code ? F1.getDriverImg(dA.code, dA.teamCdnSlug, 440) : '';
+      var imgB = dB.code ? F1.getDriverImg(dB.code, dB.teamCdnSlug, 440) : '';
+
+      /* Team names */
+      var teamNameA = l === 'zh' ? dA.teamNameZH : dA.teamName;
+      var teamNameB = l === 'zh' ? dB.teamNameZH : dB.teamName;
+
+      /* Quali display */
+      var qPosA = qA ? 'P' + qA.pos : '—';
+      var qPosB = qB ? 'P' + qB.pos : '—';
+      var qTimeA = qA ? qA.time : labels.noTime;
+      var qTimeB = qB ? qB.time : labels.noTime;
+      var qTimeADisplay = qTimeA === '—' ? labels.noTime : qTimeA;
+      var qTimeBDisplay = qTimeB === '—' ? labels.noTime : qTimeB;
+
+      arena.innerHTML =
+        /* Driver hero cards */
+        '<div class="cmp-cards">' +
+          /* Card A */
+          '<div class="cmp-card">' +
+            '<div class="cmp-driver-hero" style="border-top: 3px solid ' + dA.teamColor + ';">' +
+              '<div class="cmp-driver-num-bg">' + dA.num + '</div>' +
+              (imgA ? '<img class="cmp-driver-img" src="' + imgA + '" alt="' + dA.first + ' ' + dA.last + '" loading="lazy" onerror="this.style.display=\'none\'">' : '') +
+              '<div class="cmp-driver-info">' +
+                '<div class="cmp-driver-num" style="color:' + dA.teamColor + '">' + dA.num + '</div>' +
+                '<div class="cmp-driver-name">' + dA.first + '</div>' +
+                '<div class="cmp-driver-surname">' + dA.last + '</div>' +
+                '<div class="cmp-driver-flag">' + dA.flag + '</div>' +
+                '<div class="cmp-driver-nat">' + dA.nat + '</div>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          /* Card B */
+          '<div class="cmp-card">' +
+            '<div class="cmp-driver-hero" style="border-top: 3px solid ' + dB.teamColor + ';">' +
+              '<div class="cmp-driver-num-bg">' + dB.num + '</div>' +
+              (imgB ? '<img class="cmp-driver-img" src="' + imgB + '" alt="' + dB.first + ' ' + dB.last + '" loading="lazy" onerror="this.style.display=\'none\'">' : '') +
+              '<div class="cmp-driver-info">' +
+                '<div class="cmp-driver-num" style="color:' + dB.teamColor + '">' + dB.num + '</div>' +
+                '<div class="cmp-driver-name">' + dB.first + '</div>' +
+                '<div class="cmp-driver-surname">' + dB.last + '</div>' +
+                '<div class="cmp-driver-flag">' + dB.flag + '</div>' +
+                '<div class="cmp-driver-nat">' + dB.nat + '</div>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        /* Stats section */
+        '<div class="cmp-stats">' +
+          /* Team */
+          '<div class="cmp-stat-row">' +
+            '<div class="cmp-stat-cell">' +
+              '<div class="cmp-stat-label">' + labels.team + '</div>' +
+              '<div class="cmp-stat-value">' +
+                '<span class="cmp-team-badge"><span class="cmp-team-dot" style="background:' + dA.teamColor + '"></span> ' + teamNameA + '</span>' +
+              '</div>' +
+              '<div class="cmp-stat-sub">' + dA.engine + '</div>' +
+            '</div>' +
+            '<div class="cmp-stat-cell">' +
+              '<div class="cmp-stat-label">' + labels.team + '</div>' +
+              '<div class="cmp-stat-value">' +
+                '<span class="cmp-team-badge"><span class="cmp-team-dot" style="background:' + dB.teamColor + '"></span> ' + teamNameB + '</span>' +
+              '</div>' +
+              '<div class="cmp-stat-sub">' + dB.engine + '</div>' +
+            '</div>' +
+          '</div>' +
+          /* Points */
+          '<div class="cmp-stat-row">' +
+            '<div class="cmp-stat-cell">' +
+              '<div class="cmp-stat-label">' + labels.points + '</div>' +
+              '<div class="cmp-stat-value mono' + (ptsBetter === 'a' ? ' better' : '') + '">' + dA.pts + '</div>' +
+            '</div>' +
+            '<div class="cmp-stat-cell">' +
+              '<div class="cmp-stat-label">' + labels.points + '</div>' +
+              '<div class="cmp-stat-value mono' + (ptsBetter === 'b' ? ' better' : '') + '">' + dB.pts + '</div>' +
+            '</div>' +
+          '</div>' +
+          /* Quali Position */
+          '<div class="cmp-stat-row">' +
+            '<div class="cmp-stat-cell">' +
+              '<div class="cmp-stat-label">' + labels.qualiPos + '</div>' +
+              '<div class="cmp-stat-value' + (qPosBetterA ? ' better' : '') + '">' +
+                '<span class="cmp-quali-pos' + (qA && qA.pos <= 3 ? ' top3' : '') + '">' + qPosA + '</span>' +
+              '</div>' +
+            '</div>' +
+            '<div class="cmp-stat-cell">' +
+              '<div class="cmp-stat-label">' + labels.qualiPos + '</div>' +
+              '<div class="cmp-stat-value' + (qPosBetterB ? ' better' : '') + '">' +
+                '<span class="cmp-quali-pos' + (qB && qB.pos <= 3 ? ' top3' : '') + '">' + qPosB + '</span>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          /* Quali Time */
+          '<div class="cmp-stat-row">' +
+            '<div class="cmp-stat-cell">' +
+              '<div class="cmp-stat-label">' + labels.qualiTime + '</div>' +
+              '<div class="cmp-stat-value mono' + (timeBetterA ? ' better' : '') + '">' + qTimeADisplay + '</div>' +
+              (qA && qA.time === 'Q1 Crash' ? '<div class="cmp-stat-sub" style="color:var(--red)">DNF</div>' : '') +
+            '</div>' +
+            '<div class="cmp-stat-cell">' +
+              '<div class="cmp-stat-label">' + labels.qualiTime + '</div>' +
+              '<div class="cmp-stat-value mono' + (timeBetterB ? ' better' : '') + '">' + qTimeBDisplay + '</div>' +
+              (qB && qB.time === 'Q1 Crash' ? '<div class="cmp-stat-sub" style="color:var(--red)">DNF</div>' : '') +
+            '</div>' +
+          '</div>' +
+        '</div>';
+
+      /* Update swap label */
+      document.getElementById('swap-label').textContent = l === 'zh' ? '交換車手' : 'Swap Drivers';
+    }
+
+    /* Event handlers */
+    function initCompare() {
+      var selA = document.getElementById('driver-a');
+      var selB = document.getElementById('driver-b');
+      var swapBtn = document.getElementById('cmp-swap');
+
+      populateSelects();
+
+      /* Default: Norris vs Verstappen */
+      selA.value = '1';
+      selB.value = '3';
+
+      selA.addEventListener('change', renderComparison);
+      selB.addEventListener('change', renderComparison);
+
+      swapBtn.addEventListener('click', function() {
+        var tmpA = selA.value;
+        selA.value = selB.value;
+        selB.value = tmpA;
+        renderComparison();
+      });
+
+      renderComparison();
+    }
+
+    /* Override for lang toggle re-render */
+    window.renderCompare = function() {
+      populateSelects();
+      renderComparison();
+    };
+
+    document.addEventListener('DOMContentLoaded', initCompare);
+    document.addEventListener('f1live:updated', function() {
+      populateSelects();
+      renderComparison();
+    });
+  </script>
+
+  <div class="share-fab" id="share-fab">
+    <button class="share-fab-btn" aria-label="Share">&#x2934;</button>
+    <div class="share-fab-menu" id="share-menu"></div>
+  </div>
+</body>
+</html>

@@ -12,12 +12,14 @@
   document.addEventListener('DOMContentLoaded', function () {
     applyLang();
     initLangToggle();
+    initThemeToggle();
     initMobileMenu();
     initCountdown();
     initScheduleFilter();
     initCircuitModal();
     initStandingsTabs();
     markActiveNav();
+    initShareFab();
   });
 
   /* ============================================================
@@ -52,6 +54,7 @@
     if (document.getElementById('constructor-standings-tbody')) renderConstructorStandings();
     if (document.getElementById('quali-grid-tbody'))       renderQualiGrid();
     if (typeof window.renderNews === 'function' && document.getElementById('news-page-grid')) window.renderNews();
+    if (typeof window.renderCompare === 'function' && document.getElementById('cmp-arena')) window.renderCompare();
 
     /* update countdown labels */
     updateCountdownLabels();
@@ -70,6 +73,108 @@
   /* expose for pages that override renderNews */
   window.getLang = function () { return lang; };
   window.t = t;
+
+  /* ============================================================
+     THEME TOGGLE
+  ============================================================ */
+  function initThemeToggle() {
+    var saved = localStorage.getItem('f1w-theme') || 'dark';
+    applyTheme(saved);
+
+    document.querySelectorAll('.theme-toggle').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var current = document.documentElement.getAttribute('data-theme') || 'dark';
+        var next = current === 'dark' ? 'light' : 'dark';
+        localStorage.setItem('f1w-theme', next);
+        applyTheme(next);
+      });
+    });
+  }
+
+  function applyTheme(theme) {
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
+    /* Update button icons */
+    document.querySelectorAll('.theme-toggle').forEach(function (btn) {
+      btn.textContent = theme === 'light' ? '\u2600' : '\uD83C\uDF19';
+      btn.setAttribute('aria-label', theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme');
+    });
+  }
+
+  /* ============================================================
+     SHARE FAB
+  ============================================================ */
+  function initShareFab() {
+    var fab = document.getElementById('share-fab');
+    if (!fab) return;
+
+    var btn = fab.querySelector('.share-fab-btn');
+    var menu = document.getElementById('share-menu');
+    if (!btn || !menu) return;
+
+    var pageUrl = encodeURIComponent(window.location.href);
+    var shareText = encodeURIComponent('Check out F1 Weekly \u2014 your Formula 1 companion for the 2026 season!');
+
+    menu.innerHTML =
+      '<a class="share-fab-item" href="https://twitter.com/intent/tweet?url=' + pageUrl + '&text=' + shareText + '" target="_blank" rel="noopener" aria-label="Share on X/Twitter" title="X / Twitter">\uD835\uDD4F</a>' +
+      '<a class="share-fab-item" href="https://www.facebook.com/sharer/sharer.php?u=' + pageUrl + '" target="_blank" rel="noopener" aria-label="Share on Facebook" title="Facebook">f</a>' +
+      '<a class="share-fab-item" href="https://wa.me/?text=' + shareText + '%20' + pageUrl + '" target="_blank" rel="noopener" aria-label="Share on WhatsApp" title="WhatsApp">\u260E</a>' +
+      '<button class="share-fab-item" id="share-copy-link" aria-label="Copy link" title="Copy Link">\uD83D\uDD17</button>';
+
+    btn.addEventListener('click', function () {
+      fab.classList.toggle('open');
+    });
+
+    /* Copy link button */
+    menu.addEventListener('click', function (e) {
+      var copyBtn = e.target.closest('#share-copy-link');
+      if (!copyBtn) return;
+      e.preventDefault();
+      navigator.clipboard.writeText(window.location.href).then(function () {
+        showShareToast('Copied!');
+      }).catch(function () {
+        /* fallback */
+        var ta = document.createElement('textarea');
+        ta.value = window.location.href;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showShareToast('Copied!');
+      });
+    });
+
+    /* Close when clicking outside */
+    document.addEventListener('click', function (e) {
+      if (!fab.contains(e.target)) {
+        fab.classList.remove('open');
+      }
+    });
+  }
+
+  function showShareToast(msg) {
+    var existing = document.querySelector('.share-toast');
+    if (existing) existing.remove();
+
+    var toast = document.createElement('div');
+    toast.className = 'share-toast';
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+
+    requestAnimationFrame(function () {
+      toast.classList.add('show');
+    });
+
+    setTimeout(function () {
+      toast.classList.remove('show');
+      setTimeout(function () { toast.remove(); }, 250);
+    }, 1800);
+  }
 
   /* ============================================================
      MOBILE MENU
@@ -199,7 +304,7 @@
     var filename = (typeof c === 'object') ? c.img    : c;
     var invert   = (typeof c === 'object') ? !!c.invert : false;
     var src = 'https://media.formula1.com/image/upload/c_fit,h_704/q_auto/v1740000000/common/f1/2026/track/' + filename + '.webp';
-    var style = 'object-fit:contain;display:block;background:#111;' + (invert ? 'filter:invert(1);' : '');
+    var style = 'object-fit:contain;display:block;background:var(--bg-2);' + (invert ? 'filter:invert(1);' : '');
     return '<img src="' + src + '" alt="' + key + ' circuit" ' +
       'width="' + w + '" height="' + h + '" ' +
       'style="' + style + '" ' +

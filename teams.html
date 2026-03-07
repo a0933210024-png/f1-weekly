@@ -4,7 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Teams & Drivers — F1 Weekly</title>
+  <meta name="description" content="Meet all 11 Formula 1 teams and 22 drivers for the 2026 season. Full grid with driver numbers, nationalities, power units, and constructor standings.">
+  <link rel="canonical" href="https://f1-weekly.vercel.app/teams">
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="F1 Weekly">
+  <meta property="og:title" content="2026 F1 Teams & Drivers — F1 Weekly">
+  <meta property="og:description" content="Complete 2026 F1 grid: 11 teams including new entries Cadillac and Audi, 22 drivers, 6 engine suppliers. Profiles, stats, and standings.">
+  <meta property="og:url" content="https://f1-weekly.vercel.app/teams">
+  <meta property="og:image" content="https://f1-weekly.vercel.app/og-image.png">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="2026 F1 Teams & Drivers — F1 Weekly">
+  <meta name="twitter:description" content="Complete 2026 F1 grid: 11 teams including new entries Cadillac and Audi, 22 drivers, 6 engine suppliers. Profiles, stats, and standings.">
+  <meta name="twitter:image" content="https://f1-weekly.vercel.app/og-image.png">
   <link rel="stylesheet" href="css/style.css">
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#e10600">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="/icons/icon-192.svg">
   <style>
     .team-legend {
       max-width: var(--w);
@@ -132,8 +152,11 @@
         <a href="schedule.html"  class="nav-link" data-i18n="nav_schedule"></a>
         <a href="standings.html" class="nav-link" data-i18n="nav_standings"></a>
         <a href="news.html"      class="nav-link" data-i18n="nav_news"></a>
+        <a href="compare.html"   class="nav-link" data-i18n="nav_compare"></a>
+        <a href="simulator.html" class="nav-link" data-i18n="nav_simulator"></a>
       </div>
       <div class="nav-right">
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
         <div class="lang-toggle">
           <button class="lang-btn" data-lang="en">EN</button>
           <button class="lang-btn" data-lang="zh">中</button>
@@ -193,6 +216,7 @@
           <a href="schedule.html"  class="footer-col-link" data-i18n="nav_schedule"></a>
           <a href="standings.html" class="footer-col-link" data-i18n="nav_standings"></a>
           <a href="news.html"      class="footer-col-link" data-i18n="nav_news"></a>
+          <a href="compare.html"   class="footer-col-link" data-i18n="nav_compare"></a>
         </div>
       </div>
       <div>
@@ -316,5 +340,15 @@
     document.addEventListener('DOMContentLoaded', renderTeamsPage);
     document.addEventListener('f1live:updated',   renderTeamsPage);
   </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js');
+    }
+  </script>
+
+  <div class="share-fab" id="share-fab">
+    <button class="share-fab-btn" aria-label="Share">&#x2934;</button>
+    <div class="share-fab-menu" id="share-menu"></div>
+  </div>
 </body>
 </html>

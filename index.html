@@ -4,7 +4,57 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>F1 Weekly — 2026 Formula 1 World Championship</title>
+  <meta name="description" content="F1 Weekly is your go-to source for the 2026 Formula 1 season. Live standings, race calendar, team lineups, qualifying results, and breaking F1 news.">
+  <link rel="canonical" href="https://f1-weekly.vercel.app/">
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="F1 Weekly">
+  <meta property="og:title" content="F1 Weekly — 2026 Formula 1 World Championship">
+  <meta property="og:description" content="Your weekly Formula 1 companion — 2026 season coverage. Live standings, full race calendar, all 11 teams, 22 drivers, and breaking news.">
+  <meta property="og:url" content="https://f1-weekly.vercel.app/">
+  <meta property="og:image" content="https://f1-weekly.vercel.app/og-image.png">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="F1 Weekly — 2026 Formula 1 World Championship">
+  <meta name="twitter:description" content="Your weekly Formula 1 companion — 2026 season coverage. Live standings, full race calendar, all 11 teams, 22 drivers, and breaking news.">
+  <meta name="twitter:image" content="https://f1-weekly.vercel.app/og-image.png">
   <link rel="stylesheet" href="css/style.css">
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#e10600">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="/icons/icon-192.svg">
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "F1 Weekly",
+    "url": "https://f1-weekly.vercel.app",
+    "description": "Your weekly Formula 1 companion — 2026 season coverage",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://f1-weekly.vercel.app/news?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SportsOrganization",
+    "name": "F1 Weekly",
+    "url": "https://f1-weekly.vercel.app",
+    "sport": "Formula 1 Auto Racing",
+    "description": "Fan-driven Formula 1 coverage for the 2026 FIA World Championship season. 24 races, 11 teams, 22 drivers.",
+    "logo": "https://f1-weekly.vercel.app/og-image.png",
+    "sameAs": [
+      "https://www.formula1.com",
+      "https://github.com/a0933210024-png/f1-weekly"
+    ]
+  }
+  </script>
   <style>
     /* ---- Australia Qualifying banner ---- */
     .quali-banner {
@@ -178,8 +228,11 @@
         <a href="schedule.html"  class="nav-link" data-i18n="nav_schedule"></a>
         <a href="standings.html" class="nav-link" data-i18n="nav_standings"></a>
         <a href="news.html"      class="nav-link" data-i18n="nav_news"></a>
+        <a href="compare.html"   class="nav-link" data-i18n="nav_compare"></a>
+        <a href="simulator.html" class="nav-link" data-i18n="nav_simulator"></a>
       </div>
       <div class="nav-right">
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
         <div class="lang-toggle">
           <button class="lang-btn" data-lang="en">EN</button>
           <button class="lang-btn" data-lang="zh">中</button>
@@ -261,6 +314,263 @@
     </div>
   </div>
 
+  <!-- RACE COUNTDOWN -->
+  <section id="race-countdown-section">
+    <div class="rcd-inner" id="rcd-container">
+      <!-- Rendered by JS below -->
+    </div>
+  </section>
+
+  <style>
+    /* ---- Race Countdown Section ---- */
+    #race-countdown-section {
+      background: var(--bg-2);
+      border-top: 2px solid var(--red);
+      border-bottom: 1px solid var(--border-2);
+      overflow: hidden;
+    }
+    .rcd-inner {
+      max-width: var(--w);
+      margin: 0 auto;
+      padding: 0 var(--gutter);
+    }
+    .rcd-layout {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 0;
+      min-height: 220px;
+    }
+    .rcd-main {
+      padding: 40px 48px 40px 0;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .rcd-top-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 6px;
+    }
+    .rcd-round {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--red);
+      background: var(--red-dim);
+      padding: 3px 10px;
+      border: 1px solid rgba(232,0,45,0.25);
+    }
+    .rcd-status-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      animation: rcd-pulse 2.5s ease-in-out infinite;
+    }
+    @keyframes rcd-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.45; }
+    }
+    .rcd-race-name {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 900;
+      text-transform: uppercase;
+      color: #fff;
+      line-height: 1;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .rcd-flag {
+      font-size: clamp(24px, 3vw, 36px);
+      line-height: 1;
+    }
+    .rcd-circuit-name {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-3);
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+    .rcd-date-line {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-2);
+      margin-bottom: 28px;
+    }
+    /* Countdown digit boxes */
+    .rcd-countdown {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      max-width: 480px;
+    }
+    .rcd-digit-group {
+      background: var(--bg);
+      border: 1px solid var(--border-2);
+      padding: 16px 8px 12px;
+      text-align: center;
+      position: relative;
+    }
+    .rcd-digit-group::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--red);
+      opacity: 0.5;
+    }
+    .rcd-digit {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 900;
+      color: #fff;
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+    .rcd-digit-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-top: 6px;
+    }
+    /* Separator colons between digit groups */
+    .rcd-countdown-wrap {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      max-width: 520px;
+    }
+    .rcd-sep {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      flex-shrink: 0;
+    }
+    .rcd-sep-dots {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .rcd-sep-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--red);
+      opacity: 0.7;
+    }
+    .rcd-digit-group-wrap {
+      flex: 1;
+    }
+
+    /* Circuit image sidebar */
+    .rcd-circuit-col {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .rcd-circuit-col::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(232,0,45,0.04) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .rcd-circuit-col img {
+      width: 100%;
+      max-width: 280px;
+      height: auto;
+      opacity: 0.75;
+      transition: opacity 400ms ease;
+    }
+    .rcd-circuit-col:hover img {
+      opacity: 1;
+    }
+
+    /* Race day special state */
+    .rcd-raceday .rcd-countdown {
+      display: none;
+    }
+    .rcd-raceday-banner {
+      display: none;
+    }
+    .rcd-raceday .rcd-raceday-banner {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .rcd-raceday-text {
+      font-family: var(--font-display);
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 900;
+      text-transform: uppercase;
+      color: var(--red);
+      line-height: 1;
+      letter-spacing: 0.02em;
+      animation: rcd-raceday-glow 2s ease-in-out infinite;
+    }
+    @keyframes rcd-raceday-glow {
+      0%, 100% { text-shadow: 0 0 20px rgba(232,0,45,0.3); }
+      50% { text-shadow: 0 0 40px rgba(232,0,45,0.6); }
+    }
+
+    /* Season complete state */
+    .rcd-season-complete {
+      text-align: center;
+      padding: 48px 0;
+    }
+    .rcd-season-complete-text {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: var(--text-3);
+      letter-spacing: 0.06em;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .rcd-layout {
+        grid-template-columns: 1fr;
+      }
+      .rcd-main {
+        padding: 32px 0;
+        border-right: none;
+      }
+      .rcd-circuit-col {
+        display: none;
+      }
+    }
+    @media (max-width: 600px) {
+      .rcd-countdown-wrap {
+        max-width: 100%;
+      }
+      .rcd-sep { width: 10px; }
+      .rcd-sep-dot { width: 4px; height: 4px; }
+      .rcd-digit-group { padding: 12px 4px 10px; }
+    }
+  </style>
+
   <!-- STANDINGS PREVIEW -->
   <section class="section">
     <div class="section-head">
@@ -308,6 +618,7 @@
           <a href="schedule.html"  class="footer-col-link" data-i18n="nav_schedule"></a>
           <a href="standings.html" class="footer-col-link" data-i18n="nav_standings"></a>
           <a href="news.html"      class="footer-col-link" data-i18n="nav_news"></a>
+          <a href="compare.html"   class="footer-col-link" data-i18n="nav_compare"></a>
         </div>
       </div>
       <div>
@@ -386,5 +697,199 @@
       renderIndexDynamic();
     });
   </script>
+  <script>
+    /* ---- Enhanced Race Countdown ---- */
+    (function() {
+      var rcdInterval = null;
+
+      function findNextRace() {
+        var now = new Date();
+        /* First check for status === 'next' */
+        var next = F1.races.find(function(r) { return r.status === 'next'; });
+        if (next) return next;
+        /* Then find first upcoming race whose date hasn't passed */
+        next = F1.races.find(function(r) {
+          return r.status === 'upcoming' && new Date(r.date + 'T23:59:59Z') > now;
+        });
+        return next || null;
+      }
+
+      function rcdLabels() {
+        var l = getLang();
+        return {
+          lightsOut: l === 'zh' ? '\u8DDD\u96E2\u7184\u71C8' : 'LIGHTS OUT IN',
+          days:      l === 'zh' ? '\u5929' : 'DAYS',
+          hrs:       l === 'zh' ? '\u6642' : 'HRS',
+          min:       l === 'zh' ? '\u5206' : 'MIN',
+          sec:       l === 'zh' ? '\u79D2' : 'SEC',
+          raceDay:   l === 'zh' ? '\u6BD4\u8CFD\u65E5\uFF01' : 'RACE DAY!',
+          seasonEnd: l === 'zh' ? '\u8CFD\u5B63\u5B8C\u7D50' : 'SEASON COMPLETE',
+          raceWeekend: l === 'zh' ? '\u6BD4\u8CFD\u9031\u672B' : 'RACE WEEKEND'
+        };
+      }
+
+      function pad2(n) { return n < 10 ? '0' + n : String(n); }
+
+      function renderRCD() {
+        var container = document.getElementById('rcd-container');
+        if (!container) return;
+
+        var race = findNextRace();
+        var labels = rcdLabels();
+        var l = getLang();
+
+        /* No next race — season complete */
+        if (!race) {
+          container.innerHTML =
+            '<div class="rcd-season-complete">' +
+              '<div class="rcd-season-complete-text">' + labels.seasonEnd + '</div>' +
+            '</div>';
+          return;
+        }
+
+        var raceName = l === 'zh' ? race.nameZH : race.name;
+        var circuitName = l === 'zh' ? race.circuitZH : race.circuit;
+        var roundStr = 'R' + String(race.round).padStart(2, '0');
+        var circuitImg = buildCircuitSVG(race.key, 300, 200);
+
+        container.innerHTML =
+          '<div class="rcd-layout" id="rcd-layout">' +
+            '<div class="rcd-main">' +
+              '<div class="rcd-top-row">' +
+                '<div class="rcd-round">' + roundStr + '</div>' +
+                '<div class="rcd-status-label" id="rcd-status">' + labels.lightsOut + '</div>' +
+              '</div>' +
+              '<div class="rcd-race-name">' +
+                '<span class="rcd-flag">' + race.flag + '</span>' +
+                '<span>' + raceName + '</span>' +
+              '</div>' +
+              '<div class="rcd-circuit-name">' + circuitName + '</div>' +
+              '<div class="rcd-date-line">' + race.display + ' \u00B7 ' + race.weekend + '</div>' +
+              '<div class="rcd-countdown-wrap">' +
+                '<div class="rcd-digit-group-wrap">' +
+                  '<div class="rcd-digit-group">' +
+                    '<div class="rcd-digit" id="rcd-d">--</div>' +
+                    '<div class="rcd-digit-label" id="rcd-dl">' + labels.days + '</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="rcd-sep"><div class="rcd-sep-dots"><div class="rcd-sep-dot"></div><div class="rcd-sep-dot"></div></div></div>' +
+                '<div class="rcd-digit-group-wrap">' +
+                  '<div class="rcd-digit-group">' +
+                    '<div class="rcd-digit" id="rcd-h">--</div>' +
+                    '<div class="rcd-digit-label" id="rcd-hl">' + labels.hrs + '</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="rcd-sep"><div class="rcd-sep-dots"><div class="rcd-sep-dot"></div><div class="rcd-sep-dot"></div></div></div>' +
+                '<div class="rcd-digit-group-wrap">' +
+                  '<div class="rcd-digit-group">' +
+                    '<div class="rcd-digit" id="rcd-m">--</div>' +
+                    '<div class="rcd-digit-label" id="rcd-ml">' + labels.min + '</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="rcd-sep"><div class="rcd-sep-dots"><div class="rcd-sep-dot"></div><div class="rcd-sep-dot"></div></div></div>' +
+                '<div class="rcd-digit-group-wrap">' +
+                  '<div class="rcd-digit-group">' +
+                    '<div class="rcd-digit" id="rcd-s">--</div>' +
+                    '<div class="rcd-digit-label" id="rcd-sl">' + labels.sec + '</div>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+              '<div class="rcd-raceday-banner">' +
+                '<div class="rcd-raceday-text">' + labels.raceDay + '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="rcd-circuit-col">' +
+              (circuitImg || '') +
+            '</div>' +
+          '</div>';
+
+        startRCDTick(race, labels);
+      }
+
+      function startRCDTick(race, labels) {
+        if (rcdInterval) clearInterval(rcdInterval);
+
+        function tick() {
+          var now = new Date();
+          /* Race time: assume race at 06:00 UTC on race day (adjustable) */
+          var target = new Date(race.date + 'T06:00:00Z');
+          var diff = target - now;
+
+          var layout = document.getElementById('rcd-layout');
+          if (!layout) return;
+
+          if (diff <= 0) {
+            /* Race day or past — show RACE DAY state */
+            layout.classList.add('rcd-raceday');
+            var statusEl = document.getElementById('rcd-status');
+            if (statusEl) statusEl.textContent = labels.raceWeekend;
+            clearInterval(rcdInterval);
+
+            /* Check if race is more than 4 hours past start — could auto-advance */
+            if (diff < -14400000) {
+              /* Race likely over, check for next */
+              var nextRace = F1.races.find(function(r) {
+                return (r.status === 'upcoming' || r.status === 'next') &&
+                       new Date(r.date + 'T23:59:59Z') > now;
+              });
+              if (nextRace && nextRace.round !== race.round) {
+                setTimeout(renderRCD, 1000);
+              }
+            }
+            return;
+          }
+
+          var d = Math.floor(diff / 86400000);
+          var h = Math.floor((diff % 86400000) / 3600000);
+          var m = Math.floor((diff % 3600000) / 60000);
+          var s = Math.floor((diff % 60000) / 1000);
+
+          var dEl = document.getElementById('rcd-d');
+          var hEl = document.getElementById('rcd-h');
+          var mEl = document.getElementById('rcd-m');
+          var sEl = document.getElementById('rcd-s');
+
+          if (dEl) dEl.textContent = pad2(d);
+          if (hEl) hEl.textContent = pad2(h);
+          if (mEl) mEl.textContent = pad2(m);
+          if (sEl) sEl.textContent = pad2(s);
+        }
+
+        tick();
+        rcdInterval = setInterval(tick, 1000);
+      }
+
+      /* Initial render on DOMContentLoaded */
+      document.addEventListener('DOMContentLoaded', function() {
+        renderRCD();
+      });
+
+      /* Re-render on language change */
+      document.addEventListener('DOMContentLoaded', function() {
+        /* Hook into lang toggle clicks to re-render countdown */
+        document.querySelectorAll('.lang-btn').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            /* Small delay to let getLang() update */
+            setTimeout(renderRCD, 50);
+          });
+        });
+      });
+
+      /* Also listen for live data updates */
+      document.addEventListener('f1live:updated', function() {
+        renderRCD();
+      });
+    })();
+  </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js');
+    }
+  </script>
+
+  <div class="share-fab" id="share-fab">
+    <button class="share-fab-btn" aria-label="Share">&#x2934;</button>
+    <div class="share-fab-menu" id="share-menu"></div>
+  </div>
 </body>
 </html>

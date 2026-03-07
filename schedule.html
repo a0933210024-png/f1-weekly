@@ -4,7 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>2026 Schedule — F1 Weekly</title>
+  <meta name="description" content="Full 2026 Formula 1 race calendar with all 24 Grand Prix dates, circuits, and locations. From Melbourne in March to Abu Dhabi in December.">
+  <link rel="canonical" href="https://f1-weekly.vercel.app/schedule">
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="F1 Weekly">
+  <meta property="og:title" content="2026 F1 Race Calendar — F1 Weekly">
+  <meta property="og:description" content="Complete 2026 Formula 1 schedule: 24 races across 5 continents. Circuit details, race dates, and countdown to the next Grand Prix.">
+  <meta property="og:url" content="https://f1-weekly.vercel.app/schedule">
+  <meta property="og:image" content="https://f1-weekly.vercel.app/og-image.png">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="2026 F1 Race Calendar — F1 Weekly">
+  <meta name="twitter:description" content="Complete 2026 Formula 1 schedule: 24 races across 5 continents. Circuit details, race dates, and countdown to the next Grand Prix.">
+  <meta name="twitter:image" content="https://f1-weekly.vercel.app/og-image.png">
   <link rel="stylesheet" href="css/style.css">
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#e10600">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="/icons/icon-192.svg">
   <style>
     .schedule-season-bar {
       max-width: var(--w);
@@ -72,8 +92,11 @@
         <a href="schedule.html"  class="nav-link" data-i18n="nav_schedule"></a>
         <a href="standings.html" class="nav-link" data-i18n="nav_standings"></a>
         <a href="news.html"      class="nav-link" data-i18n="nav_news"></a>
+        <a href="compare.html"   class="nav-link" data-i18n="nav_compare"></a>
+        <a href="simulator.html" class="nav-link" data-i18n="nav_simulator"></a>
       </div>
       <div class="nav-right">
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
         <div class="lang-toggle">
           <button class="lang-btn" data-lang="en">EN</button>
           <button class="lang-btn" data-lang="zh">中</button>
@@ -184,6 +207,7 @@
           <a href="schedule.html"  class="footer-col-link" data-i18n="nav_schedule"></a>
           <a href="standings.html" class="footer-col-link" data-i18n="nav_standings"></a>
           <a href="news.html"      class="footer-col-link" data-i18n="nav_news"></a>
+          <a href="compare.html"   class="footer-col-link" data-i18n="nav_compare"></a>
         </div>
       </div>
       <div>
@@ -225,5 +249,15 @@
     document.addEventListener('DOMContentLoaded', updateSeasonBar);
     document.addEventListener('f1live:updated',   updateSeasonBar);
   </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js');
+    }
+  </script>
+
+  <div class="share-fab" id="share-fab">
+    <button class="share-fab-btn" aria-label="Share">&#x2934;</button>
+    <div class="share-fab-menu" id="share-menu"></div>
+  </div>
 </body>
 </html>
