@@ -106,70 +106,117 @@
 
   /* ============================================================
      SHARE FAB
+     Platforms: X (EN) · Threads (ZH) · Facebook (ZH) · LINE (ZH) · Copy
   ============================================================ */
   function initShareFab() {
     var fab = document.getElementById('share-fab');
     if (!fab) return;
-
     var btn = fab.querySelector('.share-fab-btn');
     var menu = document.getElementById('share-menu');
     if (!btn || !menu) return;
 
-    var pageUrl = encodeURIComponent(window.location.href);
-    var shareText = encodeURIComponent('Check out F1 Weekly \u2014 your Formula 1 companion for the 2026 season!');
+    /* --- Build page-aware bilingual share texts --- */
+    function getShareTexts() {
+      var path = window.location.pathname;
+      var en, zh;
+      if (path.indexOf('compare') !== -1) {
+        /* Try to read currently selected drivers */
+        var selA = document.querySelector('select:first-of-type');
+        var selB = document.querySelectorAll('select')[1];
+        var nameA = selA ? selA.options[selA.selectedIndex].text.replace(/^#\d+\s+/, '').split('(')[0].trim() : 'Driver A';
+        var nameB = selB ? selB.options[selB.selectedIndex].text.replace(/^#\d+\s+/, '').split('(')[0].trim() : 'Driver B';
+        en = nameA + ' vs ' + nameB + ' \u2014 head-to-head 2026 F1 comparison \uD83C\uDFCE\uFE0F #F1 #Formula1';
+        zh = nameA + ' vs ' + nameB + ' \u8eca\u624b\u5c0d\u6c7a\uff01\uD83C\uDFCE\uFE0F 2026 F1 \u8cfd\u5b63\u6578\u64da\u5168\u9762\u6bd4\u8f03\u2014\u2014\u5feb\u4f86\u770b\u770b\uff01 #F1 #F1\u8cfd\u8eca';
+      } else if (path.indexOf('simulator') !== -1) {
+        en = 'I just simulated the 2026 F1 Championship on F1 Weekly \uD83C\uDFC6 What\u2019s your prediction? #F1 #Formula1 #2026F1';
+        zh = '\u6211\u525b\u7528 F1 Weekly \u6a21\u64ec\u4e862026 F1 \u5e74\u5ea6\u5192\u8ecd\uff01\uD83C\uDFC6 \u4f60\u5c0b\u5c6c\u8acb\u5049\u6c2a\u5198\u51a0\uff1f\u5feb\u4f86\u9810\u6e2c\uff01 #F1 #F1\u8cfd\u8eca';
+      } else if (path.indexOf('teams') !== -1) {
+        en = 'Complete 2026 F1 grid: all 11 teams & 22 drivers \uD83C\uDFCE\uFE0F Check it out on F1 Weekly! #F1 #Formula1';
+        zh = '2026 F1 \u5b8c\u6574\u8eca\u968a\u9663\u5bb9\u2014\u201411 \u652f\u8eca\u968a\u300122 \u4f4d\u8eca\u624b\u5927\u516c\u958b\uD83C\uDFCE\uFE0F #F1 #F1\u8cfd\u8eca #2026\u8cfd\u5b63';
+      } else if (path.indexOf('schedule') !== -1) {
+        en = '2026 F1 season: 24 races, 5 continents \uD83C\uDF0D Full calendar on F1 Weekly! Season opens March 8. #F1 #Formula1';
+        zh = '2026 F1 \u8cfd\u66862024 \u5834\u6bd4\u8cfd\u6a6b\u8de8\u4e94\u5927\u6d32\uD83C\uDF0D \u6fb3\u6d32\u5927\u734e\u8cfd\u4e09\u6708\u516b\u65e5\u958b\u5e55\uff01 #F1 #F1\u8cfd\u8eca #2026\u8cfd\u5b63';
+      } else if (path.indexOf('standings') !== -1) {
+        en = '2026 F1 Championship standings \uD83C\uDFC6 Who\u2019s leading the title fight? #F1 #Formula1';
+        zh = '2026 F1 \u5e74\u5ea6\u7a4d\u5206\u6392\u884c\u699c\uD83C\uDFC6 \u8ab0\u5c07\u554f\u9f0e\u5e74\u5ea6\u5192\u8ecd\uff1f #F1 #F1\u8cfd\u8eca';
+      } else if (path.indexOf('news') !== -1) {
+        en = 'Latest 2026 F1 news & race updates \uD83D\uDCF0 Stay informed on F1 Weekly! #F1 #Formula1';
+        zh = '2026 F1 \u6700\u65b0\u8cfd\u4e8b\u65b0\u805e\u8207\u8cfd\u6cc1\u52d5\u614b\uD83D\uDCF0 #F1 #F1\u8cfd\u8eca';
+      } else {
+        en = 'F1 Weekly \u2014 your complete 2026 Formula 1 companion \uD83C\uDFCE\uFE0F Standings, schedule, driver comparison & championship simulator! #F1 #Formula1';
+        zh = '\uD83C\uDFCE\uFE0F F1 Weekly \u2014 2026 \u5e74 F1 \u8cfd\u5b63\u5b8c\u6574\u8cc7\u8a0a\u7ad99\uff01\u7a4d\u5206\u69dc\u3001\u8cfd\u7a0b\u3001\u8eca\u624b\u5c0d\u6bd4\u3001\u5192\u8ecd\u6a21\u64ec\u5668\u4e00\u7ad9\u641e\u5b9a\u3002\u8cfd\u5b63\u4e09\u6708\u516b\u65e5\u958b\u5e55\uff01 #F1 #F1\u8cfd\u8eca #2026\u8cfd\u5b63';
+      }
+      return { en: en, zh: zh };
+    }
 
-    menu.innerHTML =
-      '<a class="share-fab-item" href="https://twitter.com/intent/tweet?url=' + pageUrl + '&text=' + shareText + '" target="_blank" rel="noopener" aria-label="Share on X/Twitter" title="X / Twitter">\uD835\uDD4F</a>' +
-      '<a class="share-fab-item" href="https://www.facebook.com/sharer/sharer.php?u=' + pageUrl + '" target="_blank" rel="noopener" aria-label="Share on Facebook" title="Facebook">f</a>' +
-      '<a class="share-fab-item" href="https://wa.me/?text=' + shareText + '%20' + pageUrl + '" target="_blank" rel="noopener" aria-label="Share on WhatsApp" title="WhatsApp">\u260E</a>' +
-      '<button class="share-fab-item" id="share-copy-link" aria-label="Copy link" title="Copy Link">\uD83D\uDD17</button>';
+    /* --- SVG icons --- */
+    var iconX = '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.738l7.726-8.84L1.254 2.25H8.08l4.226 5.593L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg>';
+    var iconThreads = '<svg width="15" height="15" viewBox="0 0 192 192" fill="currentColor"><path d="M141.537 88.988c-.954-.49-1.923-.959-2.908-1.408a65.97 65.97 0 0 0-1.449-6.306C129.04 57.899 113.786 44 95.813 44H95.8c-13.617 0-26.22 7.128-33.546 18.659a7.5 7.5 0 0 0 12.783 7.848C79.686 63.51 87.464 59 95.8 59h.013c13.064 0 24.117 10.007 29.487 26.054.4 1.2.754 2.44 1.064 3.714-3.893-.546-8.042-.751-12.416-.586-16.734.628-30.713 9.012-32.923 21.127-1.195 6.648.604 13.411 4.98 18.51 4.18 4.872 10.35 7.695 17.382 7.695 10.012 0 19.03-5.532 23.854-14.432 3.558-6.57 5.35-14.44 5.33-23.383.42.256.829.519 1.225.788 6.47 4.367 10.625 10.932 11.688 18.539.97 6.927-.6 13.804-4.415 19.35-5.32 7.77-14.28 12.25-24.62 12.25-17.688 0-32.25-14.507-32.25-32.336 0-4.143-3.358-7.5-7.5-7.5s-7.5 3.357-7.5 7.5c0 26.108 21.178 47.336 47.25 47.336 15.33 0 28.863-6.77 37.203-18.584 6.044-8.83 8.397-19.59 6.826-30.318-1.85-13.2-9.25-24.5-20.987-31.773zm-26.52 21.23c-.246 5.57-1.428 10.64-3.43 14.42-2.557 4.722-6.773 7.36-11.583 7.36-3.56 0-6.485-1.293-8.472-3.637-1.885-2.196-2.634-5.134-2.108-8.052.91-5.066 8.03-10.396 20.08-10.841 1.813-.068 3.571-.048 5.265.047a14.32 14.32 0 0 1 .248.702z"/></svg>';
+    var iconFB = '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.994 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>';
+    var iconLINE = '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>';
+    var iconLink = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>';
+
+    /* --- Build menu on each open so compare page gets current drivers --- */
+    function buildMenu() {
+      var texts = getShareTexts();
+      var url = encodeURIComponent(window.location.href);
+      var enEnc = encodeURIComponent(texts.en);
+      var zhEnc = encodeURIComponent(texts.zh);
+      var l = getLang();
+      menu.innerHTML =
+        /* X — English */
+        '<a class="share-fab-item share-fab-item--x" href="https://twitter.com/intent/tweet?url=' + url + '&text=' + enEnc + '" target="_blank" rel="noopener" title="X \u00b7 English">' + iconX + '</a>' +
+        /* Threads — Chinese */
+        '<a class="share-fab-item share-fab-item--threads" href="https://www.threads.net/intent/post?text=' + zhEnc + '%20' + url + '" target="_blank" rel="noopener" title="Threads \u00b7 \u4e2d\u6587">' + iconThreads + '</a>' +
+        /* Facebook — Chinese */
+        '<a class="share-fab-item share-fab-item--fb" href="https://www.facebook.com/sharer/sharer.php?u=' + url + '&quote=' + zhEnc + '" target="_blank" rel="noopener" title="Facebook \u00b7 \u4e2d\u6587">' + iconFB + '</a>' +
+        /* LINE — Chinese */
+        '<a class="share-fab-item share-fab-item--line" href="https://social-plugins.line.me/lineit/share?url=' + url + '&text=' + zhEnc + '" target="_blank" rel="noopener" title="LINE \u00b7 \u4e2d\u6587">' + iconLINE + '</a>' +
+        /* Copy link */
+        '<button class="share-fab-item" id="share-copy-link" title="' + (l === 'zh' ? '\u8907\u88fd\u9023\u7d50' : 'Copy link') + '">' + iconLink + '</button>';
+    }
 
     btn.addEventListener('click', function () {
+      var opening = !fab.classList.contains('open');
       fab.classList.toggle('open');
+      if (opening) buildMenu();
     });
 
-    /* Copy link button */
+    /* Copy link */
     menu.addEventListener('click', function (e) {
       var copyBtn = e.target.closest('#share-copy-link');
       if (!copyBtn) return;
       e.preventDefault();
+      var l = getLang();
+      var successMsg = l === 'zh' ? '\u5df2\u8907\u88fd\u9023\u7d50\uff01' : 'Link copied!';
       navigator.clipboard.writeText(window.location.href).then(function () {
-        showShareToast('Copied!');
+        showShareToast(successMsg);
       }).catch(function () {
-        /* fallback */
         var ta = document.createElement('textarea');
         ta.value = window.location.href;
-        ta.style.position = 'fixed';
-        ta.style.opacity = '0';
+        ta.style.cssText = 'position:fixed;opacity:0';
         document.body.appendChild(ta);
         ta.select();
         document.execCommand('copy');
         document.body.removeChild(ta);
-        showShareToast('Copied!');
+        showShareToast(successMsg);
       });
     });
 
-    /* Close when clicking outside */
+    /* Close on outside click */
     document.addEventListener('click', function (e) {
-      if (!fab.contains(e.target)) {
-        fab.classList.remove('open');
-      }
+      if (!fab.contains(e.target)) fab.classList.remove('open');
     });
   }
 
   function showShareToast(msg) {
     var existing = document.querySelector('.share-toast');
     if (existing) existing.remove();
-
     var toast = document.createElement('div');
     toast.className = 'share-toast';
     toast.textContent = msg;
     document.body.appendChild(toast);
-
-    requestAnimationFrame(function () {
-      toast.classList.add('show');
-    });
-
+    requestAnimationFrame(function () { toast.classList.add('show'); });
     setTimeout(function () {
       toast.classList.remove('show');
       setTimeout(function () { toast.remove(); }, 250);

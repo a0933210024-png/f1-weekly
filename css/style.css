@@ -1618,6 +1618,11 @@ body.lang-zh [data-en] { display: none; }
   border-color: var(--red);
   color: #fff;
 }
+/* Platform brand colours on hover */
+.share-fab-item--x:hover      { background: #000;     border-color: #000;     color: #fff; }
+.share-fab-item--threads:hover { background: #000;     border-color: #000;     color: #fff; }
+.share-fab-item--fb:hover      { background: #1877f2;  border-color: #1877f2;  color: #fff; }
+.share-fab-item--line:hover    { background: #06c755;  border-color: #06c755;  color: #fff; }
 
 /* Share toast */
 .share-toast {
