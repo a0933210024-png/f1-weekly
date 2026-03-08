@@ -1,5 +1,5 @@
 /* ---- F1 Weekly Service Worker ---- */
-var CACHE_NAME = 'f1weekly-v1';
+var CACHE_NAME = 'f1weekly-v2';
 
 var PRE_CACHE = [
   '/',
@@ -51,9 +51,10 @@ self.addEventListener('fetch', function (e) {
   if (!req.url.startsWith(self.location.origin)) return;
 
   var isHTML = req.headers.get('accept') && req.headers.get('accept').indexOf('text/html') !== -1;
+  var isDataJS = req.url.indexOf('/js/data.js') !== -1;
 
-  if (isHTML) {
-    /* Network-first for HTML pages */
+  if (isHTML || isDataJS) {
+    /* Network-first for HTML pages and data.js (frequently updated) */
     e.respondWith(
       fetch(req)
         .then(function (res) {
