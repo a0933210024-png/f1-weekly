@@ -1414,6 +1414,9 @@ body.lang-zh [data-en] { display: none; }
 [data-theme="light"] .navbar {
   background: rgba(245,245,245,0.96);
 }
+/* ---- Comprehensive light theme text overrides ---- */
+
+/* All elements that use hardcoded color:#fff in style.css */
 [data-theme="light"] .nav-logo-text,
 [data-theme="light"] .page-title,
 [data-theme="light"] .section-title,
@@ -1441,7 +1444,34 @@ body.lang-zh [data-en] { display: none; }
 [data-theme="light"] .qb-name,
 [data-theme="light"] .cmp-driver-surname,
 [data-theme="light"] .cmp-stat-value,
-[data-theme="light"] .article-title {
+[data-theme="light"] .article-title,
+/* style.css elements with hardcoded #fff */
+[data-theme="light"] .mobile-menu-btn span,
+[data-theme="light"] .hero-headline,
+[data-theme="light"] .sp-name,
+[data-theme="light"] .sp-team-val,
+[data-theme="light"] .nrp-num,
+[data-theme="light"] .cd-label,
+[data-theme="light"] .news-tile-date,
+[data-theme="light"] .rr-circuit,
+[data-theme="light"] .cm-sub,
+[data-theme="light"] .cm-stat-label,
+[data-theme="light"] .s-tab.active,
+[data-theme="light"] .st-name,
+[data-theme="light"] .st-driver-name,
+[data-theme="light"] .driver-tile-lastname,
+[data-theme="light"] .footer-col-hd,
+[data-theme="light"] .footer-copy,
+/* schedule page */
+[data-theme="light"] .ssb-lbl,
+/* standings page */
+[data-theme="light"] .hlp-driver,
+[data-theme="light"] .qb-time,
+[data-theme="light"] .qb-delta,
+/* compare page inline styles */
+[data-theme="light"] .cmp-select-wrap select,
+[data-theme="light"] .cmp-driver-num,
+[data-theme="light"] .cmp-quali-pos {
   color: #111113;
 }
 
@@ -1453,6 +1483,14 @@ body.lang-zh [data-en] { display: none; }
 [data-theme="light"] .hero-headline .outline {
   -webkit-text-stroke: 1px rgba(0,0,0,0.18);
   color: transparent;
+}
+
+/* Hover states should stay #fff on red backgrounds (buttons etc) */
+[data-theme="light"] .filter-btn:hover,
+[data-theme="light"] .filter-btn.active,
+[data-theme="light"] .lang-btn.active,
+[data-theme="light"] .status-badge.next {
+  color: #fff;
 }
 
 [data-theme="light"] .driver-tile {
@@ -1494,6 +1532,17 @@ body.lang-zh [data-en] { display: none; }
 }
 [data-theme="light"] .theme-toggle:hover {
   color: #111113;
+}
+
+/* Footer hover keep white on dark isn't needed; override to dark */
+[data-theme="light"] .footer-col-link:hover {
+  color: #111113;
+}
+[data-theme="light"] .footer-col-link {
+  color: #555;
+}
+[data-theme="light"] .footer-desc {
+  color: #555;
 }
 
 /* Bahrain circuit image uses filter:invert(1) for dark mode;

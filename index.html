@@ -195,6 +195,12 @@
       color: #fff;
       padding: 5px 12px;
     }
+
+    /* Light theme overrides for homepage inline styles */
+    [data-theme="light"] .qb-name,
+    [data-theme="light"] .qb-time,
+    [data-theme="light"] .hlp-name,
+    [data-theme="light"] .hlp-pts-val { color: #111113; }
   </style>
 </head>
 <body>
@@ -293,7 +299,7 @@
         <div style="display:flex;align-items:center;gap:12px;">
           <div style="font-family:var(--font-display);font-size:42px;font-weight:900;color:var(--red);line-height:1;">1</div>
           <div>
-            <div style="font-family:var(--font-display);font-size:20px;font-weight:900;text-transform:uppercase;color:#fff;line-height:1.1;">Lando<br>Norris</div>
+            <div style="font-family:var(--font-display);font-size:20px;font-weight:900;text-transform:uppercase;color:var(--text);line-height:1.1;">Lando<br>Norris</div>
             <div style="font-family:var(--font-mono);font-size:9px;color:var(--text-3);letter-spacing:0.06em;margin-top:3px;">McLaren Mastercard F1 Team</div>
           </div>
           <div style="margin-left:auto;text-align:right;">
@@ -569,6 +575,12 @@
       .rcd-sep-dot { width: 4px; height: 4px; }
       .rcd-digit-group { padding: 12px 4px 10px; }
     }
+
+    /* Light theme overrides for countdown */
+    [data-theme="light"] .rcd-race-name,
+    [data-theme="light"] .rcd-digit,
+    [data-theme="light"] .rcd-raceday-text { color: #111113; }
+    [data-theme="light"] .rcd-digit-group { background: var(--bg-2); border-color: rgba(0,0,0,0.1); }
   </style>
 
   <!-- STANDINGS PREVIEW -->

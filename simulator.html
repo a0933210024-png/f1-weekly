@@ -590,6 +590,32 @@
       .sim-race-header { grid-template-columns: 40px 28px 1fr auto; gap: 10px; }
       .sim-race-preview { display: none; }
     }
+
+    /* Light theme overrides */
+    [data-theme="light"] .sim-stat-val,
+    [data-theme="light"] .sim-race-name,
+    [data-theme="light"] .sim-race-round,
+    [data-theme="light"] .sim-results-title,
+    [data-theme="light"] .sim-races-title,
+    [data-theme="light"] .sim-rtab.active,
+    [data-theme="light"] .sim-driver-name,
+    [data-theme="light"] .sim-driver-pts,
+    [data-theme="light"] .sim-team-name,
+    [data-theme="light"] .sim-team-pts,
+    [data-theme="light"] .sim-chart-name,
+    [data-theme="light"] .sim-chart-pts,
+    [data-theme="light"] .sim-bar-pts,
+    [data-theme="light"] .sim-gap-title,
+    [data-theme="light"] .sim-no-data-title,
+    [data-theme="light"] .sim-race-expand { color: #111113; }
+    [data-theme="light"] .sim-quick-btn { color: #555; border-color: rgba(0,0,0,0.15); }
+    [data-theme="light"] .sim-quick-btn:hover { color: #111113; border-color: rgba(0,0,0,0.3); }
+    [data-theme="light"] .sim-quick-btn.active { color: #fff; }
+    [data-theme="light"] .sim-rtab { color: #555; }
+    [data-theme="light"] .sim-race-header { border-bottom-color: rgba(0,0,0,0.08); }
+    [data-theme="light"] .sim-race-body { background: var(--bg-2); border-color: rgba(0,0,0,0.08); }
+    [data-theme="light"] .sim-select select { background: var(--bg-3); color: #111113; border-color: rgba(0,0,0,0.15); }
+    [data-theme="light"] .sim-race-preview span { border-color: rgba(0,0,0,0.15); color: #555; }
   </style>
 </head>
 <body>
@@ -1446,7 +1472,7 @@
           '<div style="display:flex;align-items:center;gap:12px;">' +
             '<div style="font-family:var(--font-display);font-size:42px;font-weight:900;color:var(--red);line-height:1;">' + gapToLeader + '</div>' +
             '<div>' +
-              '<div style="font-family:var(--font-display);font-size:16px;font-weight:700;text-transform:uppercase;color:#fff;">' +
+              '<div style="font-family:var(--font-display);font-size:16px;font-weight:700;text-transform:uppercase;color:var(--text);">' +
                 leader.last + ' ' + (l === 'zh' ? '領先' : 'leads') + ' ' + second.last +
               '</div>' +
               '<div style="font-family:var(--font-mono);font-size:10px;color:var(--text-3);letter-spacing:0.06em;margin-top:2px;">' +
