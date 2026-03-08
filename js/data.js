@@ -1,7 +1,7 @@
 /* ============================================================
    F1 WEEKLY — DATA (2026 Season)
    Sources: formula1.com, the-race.com, racingnews365.com
-   Last updated: March 7, 2026 (Australia qualifying day)
+   Last updated: March 8, 2026 (after Australian GP R1)
    ============================================================ */
 
 const F1 = {
@@ -11,18 +11,18 @@ const F1 = {
     en: {
       nav_home: 'Home', nav_teams: 'Teams', nav_schedule: 'Schedule',
       nav_standings: 'Standings', nav_news: 'News', nav_simulator: 'Simulator',
-      ticker_1: 'Season Opener: Australian GP — Race Day March 8',
-      ticker_2: 'Russell on Pole · Antonelli P2 · Verstappen Crashes Q1',
-      ticker_3: 'Hadjar Impresses on Red Bull Debut · P3 in Australia Qualifying',
-      ticker_4: 'Ferrari Off Pace in Melbourne — Leclerc "Nowhere Near" Mercedes',
-      ticker_5: '11 Teams · 22 Drivers · 24 Races — 2026 Season Begins',
+      ticker_1: 'Russell Wins Australian GP — Mercedes 1-2 to Open 2026 Season',
+      ticker_2: 'Verstappen P20 to P6 Recovery Earns Driver of the Day',
+      ticker_3: 'Piastri DNS After Warm-Up Lap Crash — Heartbreak at Home GP',
+      ticker_4: 'Mercedes Lead Constructors with Maximum 43 Points After Round 1',
+      ticker_5: 'Next Up: Chinese Grand Prix — Shanghai, March 15',
       hero_badge: '2026 Formula 1 World Championship',
       hero_line1: 'THE', hero_line2: 'FASTEST', hero_line3: 'SHOW', hero_line4: 'ON EARTH',
       hero_sub: 'Your home for everything Formula 1. Live standings, race schedules, team news, and circuit guides — all in one place.',
       counter_races: 'Races', counter_teams: 'Teams', counter_drivers: 'Drivers',
-      next_race_lbl: 'Season Opener',
+      next_race_lbl: 'Next Race',
       days: 'Days', hours: 'Hrs', minutes: 'Min', seconds: 'Sec',
-      wdc_leader: 'Reigning World Champion',
+      wdc_leader: 'Championship Leader',
       view_all: 'View All',
       drivers_standings: "Driver Standings", constructors_standings: "Constructor Standings",
       latest_news: 'Latest News', pts_label: 'PTS',
@@ -40,7 +40,7 @@ const F1 = {
       st_driver: 'Driver', st_nationality: 'Nat.', st_team: 'Team',
       st_wins: 'Wins', st_points: 'Points',
       quali_grid: 'Australia Qualifying Grid',
-      standings_note_en: '2026 Season — No races completed yet. Race 1: Australia, March 8',
+      standings_note_en: '2026 Season — Round 1 of 24 completed',
       nav_compare: 'Compare',
       footer_tagline: 'Your weekly source for Formula 1 news, standings, and race coverage.',
       footer_nav: 'Navigation', footer_races: 'Races', footer_follow: 'Follow',
@@ -56,18 +56,18 @@ const F1 = {
     zh: {
       nav_home: '首頁', nav_teams: '車隊', nav_schedule: '賽程',
       nav_standings: '積分', nav_news: '新聞', nav_simulator: '模擬器',
-      ticker_1: '賽季揭幕：澳洲大獎賽 — 3月8日比賽日',
-      ticker_2: '羅素奪桿位 · 安托內利P2 · 維斯達彭Q1意外退場',
-      ticker_3: '哈達爾在紅牛首秀令人驚艷 · 澳洲排位賽第三',
-      ticker_4: '法拉利在墨爾本落後 — 勒克萊爾稱「與梅賽德斯差距懸殊」',
-      ticker_5: '11支車隊 · 22位車手 · 24場賽事 — 2026賽季啟動',
+      ticker_1: '羅素贏下澳洲大獎賽 — 梅賽德斯包辦前二揭幕2026賽季',
+      ticker_2: '維斯達彭從P20追到P6 榮獲最佳車手',
+      ticker_3: '皮亞斯特里暖胎圈撞車未能起跑 — 主場夢碎',
+      ticker_4: '梅賽德斯以滿分43分領跑車隊積分榜',
+      ticker_5: '下一站：中國大獎賽 — 上海，3月15日',
       hero_badge: '2026年一級方程式世界錦標賽',
       hero_line1: '地球上', hero_line2: '最快的', hero_line3: '賽車', hero_line4: '盛事',
       hero_sub: '你的 Formula 1 資訊中心。即時積分、賽程安排、車隊新聞、賽道導覽，一站式掌握所有資訊。',
       counter_races: '場大獎賽', counter_teams: '支車隊', counter_drivers: '位車手',
-      next_race_lbl: '賽季首站',
+      next_race_lbl: '下一站',
       days: '天', hours: '時', minutes: '分', seconds: '秒',
-      wdc_leader: '衛冕世界冠軍',
+      wdc_leader: '積分榜領先',
       view_all: '查看全部',
       drivers_standings: '車手積分榜', constructors_standings: '車隊積分榜',
       latest_news: '最新消息', pts_label: '分',
@@ -85,7 +85,7 @@ const F1 = {
       st_driver: '車手', st_nationality: '國籍', st_team: '車隊',
       st_wins: '勝場', st_points: '積分',
       quali_grid: '澳洲站排位賽發車位置',
-      standings_note_en: '2026賽季 — 尚無比賽結果。第1站：澳洲，3月8日',
+      standings_note_en: '2026賽季 — 已完成第1站（共24站）',
       nav_compare: '比較',
       footer_tagline: '你的每週 Formula 1 新聞、積分與賽事報導來源。',
       footer_nav: '導覽', footer_races: '賽事', footer_follow: '關注',
@@ -107,43 +107,43 @@ const F1 = {
     {
       id: 'mclaren', name: 'McLaren', nameZH: '麥拿侖',
       fullName: 'McLaren Mastercard F1 Team',
-      engine: 'Mercedes', color: '#FF8000', pos: 1, pts: 0, cdnSlug: 'mclaren',
+      engine: 'Mercedes', color: '#FF8000', pos: 3, pts: 10, cdnSlug: 'mclaren',
       drivers: [
-        { num: 1,  first: 'Lando',   last: 'Norris',    nat: 'GBR', flag: '🇬🇧', pts: 0, wins: 0, code: 'lannor01' },
+        { num: 1,  first: 'Lando',   last: 'Norris',    nat: 'GBR', flag: '🇬🇧', pts: 10, wins: 0, code: 'lannor01' },
         { num: 81, first: 'Oscar',   last: 'Piastri',   nat: 'AUS', flag: '🇦🇺', pts: 0, wins: 0, code: 'oscpia01' }
       ]
     },
     {
       id: 'ferrari', name: 'Ferrari', nameZH: '法拉利',
       fullName: 'Scuderia Ferrari HP',
-      engine: 'Ferrari', color: '#E8002D', pos: 2, pts: 0, cdnSlug: 'ferrari',
+      engine: 'Ferrari', color: '#E8002D', pos: 2, pts: 27, cdnSlug: 'ferrari',
       drivers: [
-        { num: 16, first: 'Charles', last: 'Leclerc',   nat: 'MCO', flag: '🇲🇨', pts: 0, wins: 0, code: 'chalec01' },
-        { num: 44, first: 'Lewis',   last: 'Hamilton',  nat: 'GBR', flag: '🇬🇧', pts: 0, wins: 0, code: 'lewham01' }
+        { num: 16, first: 'Charles', last: 'Leclerc',   nat: 'MCO', flag: '🇲🇨', pts: 15, wins: 0, code: 'chalec01' },
+        { num: 44, first: 'Lewis',   last: 'Hamilton',  nat: 'GBR', flag: '🇬🇧', pts: 12, wins: 0, code: 'lewham01' }
       ]
     },
     {
       id: 'redbull', name: 'Red Bull', nameZH: '紅牛',
       fullName: 'Oracle Red Bull Racing',
-      engine: 'Red Bull Ford', color: '#3671C6', pos: 3, pts: 0, cdnSlug: 'redbullracing',
+      engine: 'Red Bull Ford', color: '#3671C6', pos: 4, pts: 8, cdnSlug: 'redbullracing',
       drivers: [
-        { num: 3,  first: 'Max',     last: 'Verstappen', nat: 'NED', flag: '🇳🇱', pts: 0, wins: 0, code: 'maxver01' },
+        { num: 3,  first: 'Max',     last: 'Verstappen', nat: 'NED', flag: '🇳🇱', pts: 8, wins: 0, code: 'maxver01' },
         { num: 6,  first: 'Isack',   last: 'Hadjar',     nat: 'FRA', flag: '🇫🇷', pts: 0, wins: 0, code: 'isahad01' }
       ]
     },
     {
       id: 'mercedes', name: 'Mercedes', nameZH: '梅賽德斯',
       fullName: 'Mercedes-AMG PETRONAS Formula One Team',
-      engine: 'Mercedes', color: '#00D2BE', pos: 4, pts: 0, cdnSlug: 'mercedes',
+      engine: 'Mercedes', color: '#00D2BE', pos: 1, pts: 43, cdnSlug: 'mercedes',
       drivers: [
-        { num: 63, first: 'George',  last: 'Russell',   nat: 'GBR', flag: '🇬🇧', pts: 0, wins: 0, code: 'georus01' },
-        { num: 12, first: 'Kimi',    last: 'Antonelli', nat: 'ITA', flag: '🇮🇹', pts: 0, wins: 0, code: 'andant01' }
+        { num: 63, first: 'George',  last: 'Russell',   nat: 'GBR', flag: '🇬🇧', pts: 25, wins: 1, code: 'georus01' },
+        { num: 12, first: 'Kimi',    last: 'Antonelli', nat: 'ITA', flag: '🇮🇹', pts: 18, wins: 0, code: 'andant01' }
       ]
     },
     {
       id: 'astonmartin', name: 'Aston Martin', nameZH: '阿斯頓·馬丁',
       fullName: 'Aston Martin Aramco Formula One Team',
-      engine: 'Honda', color: '#229971', pos: 5, pts: 0, cdnSlug: 'astonmartin',
+      engine: 'Honda', color: '#229971', pos: 11, pts: 0, cdnSlug: 'astonmartin',
       drivers: [
         { num: 14, first: 'Fernando', last: 'Alonso',   nat: 'ESP', flag: '🇪🇸', pts: 0, wins: 0, code: 'feralo01' },
         { num: 18, first: 'Lance',    last: 'Stroll',   nat: 'CAN', flag: '🇨🇦', pts: 0, wins: 0, code: 'lanstr01' }
@@ -152,25 +152,25 @@ const F1 = {
     {
       id: 'alpine', name: 'Alpine', nameZH: '阿爾派',
       fullName: 'BWT Alpine Formula One Team',
-      engine: 'Mercedes', color: '#0093CC', pos: 6, pts: 0, cdnSlug: 'alpine',
+      engine: 'Mercedes', color: '#0093CC', pos: 8, pts: 1, cdnSlug: 'alpine',
       drivers: [
-        { num: 10, first: 'Pierre',  last: 'Gasly',     nat: 'FRA', flag: '🇫🇷', pts: 0, wins: 0, code: 'piegas01' },
+        { num: 10, first: 'Pierre',  last: 'Gasly',     nat: 'FRA', flag: '🇫🇷', pts: 1, wins: 0, code: 'piegas01' },
         { num: 43, first: 'Franco',  last: 'Colapinto', nat: 'ARG', flag: '🇦🇷', pts: 0, wins: 0, code: 'fracol01' }
       ]
     },
     {
       id: 'haas', name: 'Haas', nameZH: '哈斯',
       fullName: 'TGR Haas F1 Team',
-      engine: 'Ferrari', color: '#FFFFFF', pos: 7, pts: 0, cdnSlug: 'haasf1team',
+      engine: 'Ferrari', color: '#FFFFFF', pos: 5, pts: 6, cdnSlug: 'haasf1team',
       drivers: [
         { num: 31, first: 'Esteban', last: 'Ocon',      nat: 'FRA', flag: '🇫🇷', pts: 0, wins: 0, code: 'estoco01' },
-        { num: 87, first: 'Oliver',  last: 'Bearman',   nat: 'GBR', flag: '🇬🇧', pts: 0, wins: 0, code: 'olibea01' }
+        { num: 87, first: 'Oliver',  last: 'Bearman',   nat: 'GBR', flag: '🇬🇧', pts: 6, wins: 0, code: 'olibea01' }
       ]
     },
     {
       id: 'williams', name: 'Williams', nameZH: '威廉斯',
       fullName: 'Atlassian Williams F1 Team',
-      engine: 'Mercedes', color: '#37BEDD', pos: 8, pts: 0, cdnSlug: 'williams',
+      engine: 'Mercedes', color: '#37BEDD', pos: 9, pts: 0, cdnSlug: 'williams',
       drivers: [
         { num: 55, first: 'Carlos',  last: 'Sainz',     nat: 'ESP', flag: '🇪🇸', pts: 0, wins: 0, code: 'carsai01' },
         { num: 23, first: 'Alex',    last: 'Albon',     nat: 'THA', flag: '🇹🇭', pts: 0, wins: 0, code: 'alealb01' }
@@ -179,25 +179,25 @@ const F1 = {
     {
       id: 'racingbulls', name: 'Racing Bulls', nameZH: '鬥牛',
       fullName: 'Visa Cash App Racing Bulls Formula One Team',
-      engine: 'Red Bull Ford', color: '#6692FF', pos: 9, pts: 0, cdnSlug: 'racingbulls',
+      engine: 'Red Bull Ford', color: '#6692FF', pos: 6, pts: 4, cdnSlug: 'racingbulls',
       drivers: [
         { num: 30, first: 'Liam',    last: 'Lawson',    nat: 'NZL', flag: '🇳🇿', pts: 0, wins: 0, code: 'lialaw01' },
-        { num: 41, first: 'Arvid',   last: 'Lindblad',  nat: 'GBR', flag: '🇬🇧', pts: 0, wins: 0, code: 'arvlin01' }
+        { num: 41, first: 'Arvid',   last: 'Lindblad',  nat: 'GBR', flag: '🇬🇧', pts: 4, wins: 0, code: 'arvlin01' }
       ]
     },
     {
       id: 'audi', name: 'Audi', nameZH: '奧迪',
       fullName: 'Audi Revolut F1 Team',
-      engine: 'Audi', color: '#BB0000', pos: 10, pts: 0, cdnSlug: 'audi',
+      engine: 'Audi', color: '#BB0000', pos: 7, pts: 2, cdnSlug: 'audi',
       drivers: [
         { num: 27, first: 'Nico',    last: 'Hülkenberg', nat: 'DEU', flag: '🇩🇪', pts: 0, wins: 0, code: 'nichul01' },
-        { num: 5,  first: 'Gabriel', last: 'Bortoleto',  nat: 'BRA', flag: '🇧🇷', pts: 0, wins: 0, code: 'gabbor01' }
+        { num: 5,  first: 'Gabriel', last: 'Bortoleto',  nat: 'BRA', flag: '🇧🇷', pts: 2, wins: 0, code: 'gabbor01' }
       ]
     },
     {
       id: 'cadillac', name: 'Cadillac', nameZH: '凱迪拉克',
       fullName: 'Cadillac Formula 1 Team',
-      engine: 'Ferrari', color: '#CC0033', pos: 11, pts: 0, cdnSlug: 'cadillac',
+      engine: 'Ferrari', color: '#CC0033', pos: 10, pts: 0, cdnSlug: 'cadillac',
       drivers: [
         { num: 11, first: 'Sergio',   last: 'Pérez',    nat: 'MEX', flag: '🇲🇽', pts: 0, wins: 0, code: 'serper01' },
         { num: 77, first: 'Valtteri', last: 'Bottas',   nat: 'FIN', flag: '🇫🇮', pts: 0, wins: 0, code: 'valbot01' }
@@ -284,8 +284,8 @@ const F1 = {
      Status: R1 = 'next' (race day tomorrow March 8); all others = 'upcoming'
   ---- */
   races: [
-    { round:1,  key:'australia',  name:'Australian Grand Prix',            nameZH:'澳洲大獎賽',          circuit:'Albert Park Circuit',                    circuitZH:'艾伯特公園賽道',        country:'Australia',     countryZH:'澳洲',      flag:'🇦🇺', date:'2026-03-08', display:'MAR 8',  weekend:'6–8 Mar',  status:'next',     winner:null, length:'5.278 km', laps:58, lapRecord:'1:19.813', turns:16 },
-    { round:2,  key:'china',      name:'Chinese Grand Prix',               nameZH:'中國大獎賽',           circuit:'Shanghai International Circuit',         circuitZH:'上海國際賽車場',         country:'China',         countryZH:'中國',      flag:'🇨🇳', date:'2026-03-15', display:'MAR 15', weekend:'13–15 Mar', status:'upcoming', winner:null, length:'5.451 km', laps:56, lapRecord:'1:32.238', turns:16 },
+    { round:1,  key:'australia',  name:'Australian Grand Prix',            nameZH:'澳洲大獎賽',          circuit:'Albert Park Circuit',                    circuitZH:'艾伯特公園賽道',        country:'Australia',     countryZH:'澳洲',      flag:'🇦🇺', date:'2026-03-08', display:'MAR 8',  weekend:'6–8 Mar',  status:'done',     winner:'Russell', length:'5.278 km', laps:58, lapRecord:'1:19.813', turns:16 },
+    { round:2,  key:'china',      name:'Chinese Grand Prix',               nameZH:'中國大獎賽',           circuit:'Shanghai International Circuit',         circuitZH:'上海國際賽車場',         country:'China',         countryZH:'中國',      flag:'🇨🇳', date:'2026-03-15', display:'MAR 15', weekend:'13–15 Mar', status:'next',    winner:null, length:'5.451 km', laps:56, lapRecord:'1:32.238', turns:16 },
     { round:3,  key:'japan',      name:'Japanese Grand Prix',              nameZH:'日本大獎賽',           circuit:'Suzuka International Racing Course',     circuitZH:'鈴鹿國際賽道',           country:'Japan',         countryZH:'日本',      flag:'🇯🇵', date:'2026-03-29', display:'MAR 29', weekend:'27–29 Mar', status:'upcoming', winner:null, length:'5.807 km', laps:53, lapRecord:'1:30.983', turns:18 },
     { round:4,  key:'bahrain',    name:'Bahrain Grand Prix',               nameZH:'巴林大獎賽',           circuit:'Bahrain International Circuit',          circuitZH:'巴林國際賽道',           country:'Bahrain',       countryZH:'巴林',      flag:'🇧🇭', date:'2026-04-12', display:'APR 12', weekend:'10–12 Apr', status:'upcoming', winner:null, length:'5.412 km', laps:57, lapRecord:'1:31.447', turns:15 },
     { round:5,  key:'saudi',      name:'Saudi Arabian Grand Prix',         nameZH:'沙烏地阿拉伯大獎賽',    circuit:'Jeddah Corniche Circuit',                circuitZH:'吉達街道賽道',           country:'Saudi Arabia',  countryZH:'沙烏地阿拉伯', flag:'🇸🇦', date:'2026-04-19', display:'APR 19', weekend:'17–19 Apr', status:'upcoming', winner:null, length:'6.174 km', laps:50, lapRecord:'1:30.734', turns:27 },
@@ -315,6 +315,62 @@ const F1 = {
      Article bodies are editorial summaries based on official reports.
   ---- */
   news: [
+    {
+      id: 9,
+      cat:      { en: 'Race', zh: '正賽' },
+      tag:      { en: 'Race Report', zh: '賽事報導' },
+      title:    { en: "Russell Wins Season Opener as Mercedes Deliver Dominant 1-2 in Australia", zh: "羅素澳洲站封王 梅賽德斯以壓倒性1-2開啟賽季" },
+      excerpt:  { en: "George Russell led from pole to chequered flag at Albert Park, with team-mate Kimi Antonelli completing a perfect Mercedes 1-2. Three VSC deployments created a strategic chess match that the Silver Arrows mastered.", zh: "喬治·羅素在艾伯特公園從桿位一路領先到方格旗，隊友基米·安托內利完成梅賽德斯完美的1-2。三次VSC為比賽增添了策略博弈的元素，銀箭車隊完全掌控了全局。" },
+      date:     { en: 'Mar 8, 2026', zh: '2026年3月8日' },
+      readTime: { en: '6 min read', zh: '6分鐘閱讀' },
+      source:   'formula1.com',
+      body: {
+        en: '<p>George Russell converted his pole position into a commanding victory at the 2026 Australian Grand Prix, leading a Mercedes 1-2 finish that sent a powerful statement to the rest of the grid at Albert Park.</p><p>Russell controlled the race from lights out, never seriously threatened despite three Virtual Safety Car periods that compressed the field and forced teams into rapid strategic recalculations. The 28-year-old crossed the line 4.2 seconds ahead of team-mate Kimi Antonelli, who drove a mature race to secure second on his full-season debut.</p><p>Charles Leclerc took the final podium spot for Ferrari after a strong recovery from fourth on the grid, with Lewis Hamilton completing a solid weekend in fourth place. Reigning champion Lando Norris finished fifth for McLaren, while the story of the race was Max Verstappen\'s extraordinary charge from P22 to P6, earning him Driver of the Day honours.</p><p>The race was marred by a pre-race drama when Oscar Piastri crashed on the warm-up lap heading to the grid, denying the home favourite any chance of racing in front of his fans. Nico Hülkenberg also failed to start due to a power unit issue on the formation lap.</p><p>Mercedes\' aggressive pit strategy under Virtual Safety Car conditions proved decisive. Team principal Toto Wolff called it "the perfect execution of a perfect weekend" as the team scored maximum points — 43 out of a possible 44 — to lead the Constructors\' Championship from the opening round.</p>',
+        zh: '<p>喬治·羅素將桿位成功轉化為2026年澳洲大獎賽的制勝表現，帶領梅賽德斯在艾伯特公園完成1-2終局，向其他車隊發出了有力的信號。</p><p>羅素從起步燈熄滅就掌控了整場比賽，儘管三次虛擬安全車壓縮了車陣、迫使各隊迅速調整策略，他始終未受到實質威脅。這位28歲的英國車手以4.2秒的優勢領先隊友基米·安托內利衝線，後者在首個完整賽季的首場比賽中展現了成熟的駕駛拿下第二。</p><p>查理斯·勒克萊爾在從第四位出發後強勢追趕，為法拉利奪得第三名站上頒獎台。漢米爾頓以第四名完成了穩健的週末。衛冕冠軍蘭多·諾里斯為麥拿侖取得第五名。而比賽最大亮點是麥斯·維斯達彭從第22位一路追趕到第6名的驚人表現，他也因此獲得了「全場最佳車手」的殊榮。</p><p>比賽開始前就出現戲劇性一幕——主場寵兒奧斯卡·皮亞斯特里在暖胎圈前往發車格的途中撞車，令他在自家車迷面前失去了比賽的機會。尼科·胡肯堡也因發車圈動力單元故障而未能起跑。</p><p>梅賽德斯在虛擬安全車期間的進攻性進站策略證明是決定性的。車隊領隊托托·沃爾夫稱這是「完美週末的完美執行」，車隊以43分（滿分44分）的成績從首站起就領跑車隊積分榜。</p>'
+      }
+    },
+    {
+      id: 10,
+      cat:      { en: 'Race', zh: '正賽' },
+      tag:      { en: 'Highlight', zh: '焦點' },
+      title:    { en: "Verstappen P22 to P6: 'The Car Is Strong, That Gives Me Confidence'", zh: "維斯達彭P22到P6：「賽車很強，這讓我充滿信心」" },
+      excerpt:  { en: "Max Verstappen turned his disastrous qualifying into a remarkable recovery drive, slicing from last to sixth and setting the fastest lap of the race at 1:22.091 to earn Driver of the Day.", zh: "麥斯·維斯達彭將災難性的排位結果轉化為一場精彩的逆襲之旅，從最後一位追趕至第六名，並以1:22.091跑出全場最快單圈，榮獲全場最佳車手。" },
+      date:     { en: 'Mar 8, 2026', zh: '2026年3月8日' },
+      readTime: { en: '4 min read', zh: '4分鐘閱讀' },
+      source:   'the-race.com',
+      body: {
+        en: '<p>Max Verstappen delivered a masterclass in recovery driving at the Australian Grand Prix, climbing from 22nd on the grid to sixth place in what he described as a "damage limitation" performance that nonetheless showcased Red Bull\'s underlying pace.</p><p>The four-time world champion, forced to start last after his Q1 crash, carved through the field with precise overtaking and aggressive strategy calls. His fastest lap of 1:22.091 was the quickest of anyone all weekend, a stat that will concern Mercedes despite their dominant 1-2 finish.</p><p>"When you start last, you have nothing to lose," Verstappen said. "The car felt incredible today — much better than qualifying, obviously. We had a different rear brake setup and it was perfect. I could push hard from the first lap."</p><p>Verstappen used a three-stop strategy to great effect, taking advantage of each Virtual Safety Car period to make pit stops with minimal time loss. His sequence of overtakes through the midfield was reminiscent of his best drives, with decisive passes on Gasly, Bortoleto, and Lindblad all executed cleanly.</p><p>"P6 is not where we want to be, but given where we started, I\'ll take it," he added. "We scored eight points, and the pace of the car tells me we\'ll be fighting at the front soon. Isack\'s retirement was unfortunate — the car was quick enough for the podium."</p>',
+        zh: '<p>麥斯·維斯達彭在澳洲大獎賽中展示了一堂逆境求生的大師課，從第22位出發一路追趕至第六名，他形容這是一場「止損」的表現，但同時也展示了紅牛底層的強大速度。</p><p>這位四屆世界冠軍因Q1的撞車被迫從最後出發，以精準的超車和積極的策略穿越車陣。他的最快圈速1:22.091是整個週末所有車手中最快的，這個數據即使在梅賽德斯壓倒性1-2的光環下也令人擔憂。</p><p>維斯達彭說：「當你從最後出發時，你沒什麼可失去的。今天的賽車感覺非常好——顯然比排位賽好得多。我們換了不同的後輪剎車設定，效果完美。從第一圈開始我就能全力推進。」</p><p>維斯達彭運用三停策略發揮了極大效果，利用每次虛擬安全車的機會進站，將時間損失降到最低。他在中游車陣中的一連串超車令人回想起他最精彩的比賽——對加斯利、博爾托萊托和林德布拉德的超越都執行得乾淨利落。</p><p>他補充道：「第六名不是我們想要的位置，但考慮到出發位置，我接受這個結果。我們拿到了八分，而賽車的速度告訴我，我們很快就會在前方作戰。哈達爾的退賽很不幸——那台車的速度足以爭奪頒獎台。」</p>'
+      }
+    },
+    {
+      id: 11,
+      cat:      { en: 'Race', zh: '正賽' },
+      tag:      { en: 'Incident', zh: '事故' },
+      title:    { en: "Piastri's Warm-Up Lap Crash Ends Home Race Before It Starts", zh: "皮亞斯特里暖胎圈撞車 主場大獎賽未開始就結束" },
+      excerpt:  { en: "Oscar Piastri's nightmare debut weekend for McLaren as an F1 title contender ended with heartbreak on the warm-up lap when a suspected hydraulic failure sent him into the barrier at Turn 6.", zh: "奧斯卡·皮亞斯特里作為F1冠軍爭奪者在麥拿侖的噩夢般的首站週末以心碎收場——疑似液壓故障在暖胎圈將他送入第6彎的圍欄。" },
+      date:     { en: 'Mar 8, 2026', zh: '2026年3月8日' },
+      readTime: { en: '3 min read', zh: '3分鐘閱讀' },
+      source:   'formula1.com',
+      body: {
+        en: '<p>Oscar Piastri\'s 2026 season could not have started more cruelly. The Australian driver, who qualified a promising fifth at his home Grand Prix, never made it to the starting grid after a suspected hydraulic failure caused him to crash on the warm-up lap at Turn 6.</p><p>Piastri\'s McLaren snapped sideways without warning as he navigated the high-speed left-hander, sending the car into the barrier with enough force to cause significant damage. The 24-year-old was able to climb out unassisted but was visibly devastated as he walked back to the paddock.</p><p>"I had no warning," Piastri told Sky Sports. "The car just went and there was nothing I could do. To not even start my home race — it\'s the worst feeling. I feel terrible for the team as well, they gave me a car that could fight for the podium."</p><p>McLaren team principal Andrea Stella confirmed the team is investigating a potential hydraulic system failure. "We are deeply sorry for Oscar. The initial data suggests a sudden loss of hydraulic pressure which affected the power steering. We need to understand why and make sure it doesn\'t happen again."</p><p>Team-mate Lando Norris salvaged 10 points with fifth place, but the DNS represents a significant early setback for McLaren\'s constructors\' championship defence.</p>',
+        zh: '<p>奧斯卡·皮亞斯特里的2026年賽季不可能有比這更殘忍的開始了。這位澳洲車手在主場大獎賽排位賽中拿到了充滿希望的第五位，但在暖胎圈中疑似液壓故障導致他在6號彎撞車，未能抵達發車格。</p><p>皮亞斯特里的麥拿侖賽車在他通過高速左彎時毫無預警地橫滑，將賽車撞上圍欄，力道之大造成了嚴重損壞。這位24歲的車手自行爬出賽車，但走回圍場時的神情明顯崩潰。</p><p>皮亞斯特里告訴Sky Sports：「完全沒有預兆。賽車就這樣失控了，我什麼都做不了。連自己的主場大獎賽都無法起跑——這是最糟糕的感受。我也為車隊感到難過，他們給了我一台能爭奪頒獎台的賽車。」</p><p>麥拿侖車隊領隊安德烈亞·斯特拉確認車隊正在調查可能的液壓系統故障。「我們為奧斯卡深感抱歉。初步數據顯示液壓壓力突然下降影響了動力轉向。我們需要了解原因並確保不再發生。」</p><p>隊友蘭多·諾里斯以第五名挽回10分，但這次DNS對麥拿侖衛冕車隊冠軍的征途是一個重大的早期挫折。</p>'
+      }
+    },
+    {
+      id: 12,
+      cat:      { en: 'Race', zh: '正賽' },
+      tag:      { en: 'Analysis', zh: '分析' },
+      title:    { en: "Rookies Shine: Hadjar, Antonelli, Lindblad & Bortoleto All Impress in Melbourne", zh: "新秀閃耀：哈達爾、安托內利、林德布拉德、博爾托萊托在墨爾本大放異彩" },
+      excerpt:  { en: "The 2026 rookie class made a spectacular first impression. Antonelli secured P2, Lindblad finished P8 for Racing Bulls, Bortoleto scored points for Audi on debut, while Hadjar showed podium pace before retiring.", zh: "2026年的新秀陣容留下了驚艷的第一印象。安托內利奪得P2，林德布拉德為鬥牛車隊取得P8，博爾托萊托為奧迪在首站即拿積分，哈達爾在退賽前展現了領獎台級的速度。" },
+      date:     { en: 'Mar 8, 2026', zh: '2026年3月8日' },
+      readTime: { en: '4 min read', zh: '4分鐘閱讀' },
+      source:   'the-race.com',
+      body: {
+        en: '<p>The 2026 Formula 1 rookie class announced itself with authority at the Australian Grand Prix, with all four newcomers delivering performances that exceeded expectations and demonstrated the depth of young talent in the sport.</p><p>Kimi Antonelli\'s second-place finish was the headline act. The 19-year-old Italian, partnering George Russell at Mercedes, drove with a composure that belied his age and experience. Starting second, he held station through three VSC periods and fended off late pressure from Leclerc to secure his maiden F1 podium at the first attempt.</p><p>Arvid Lindblad, the 17-year-old Briton at Racing Bulls, qualified a remarkable ninth and converted that into an eighth-place finish worth four championship points. "I didn\'t expect to score points in my first race," Lindblad admitted. "The team gave me a great car and I just tried to be consistent."</p><p>Gabriel Bortoleto brought his Audi home in ninth place for two points — a hugely encouraging result for a team that struggled through much of 2025 under the Sauber banner. The Brazilian showed excellent racecraft in wheel-to-wheel battles through the midfield.</p><p>The only rookie to miss out was Isack Hadjar, whose Red Bull suffered a mechanical failure on lap 10 while running in podium contention. Having qualified an incredible third, Hadjar had shown pace to match Russell in the early laps before his car gave up. "Devastated," was his one-word reaction.</p>',
+        zh: '<p>2026年F1新秀在澳洲大獎賽以強而有力的方式宣告自己的到來，四位新人的表現全部超出預期，展示了這項運動中年輕人才的深度。</p><p>基米·安托內利的第二名是最大的頭條。這位19歲的意大利人搭檔喬治·羅素在梅賽德斯效力，以超越年齡和經驗的沉穩完成比賽。從第二位出發，他在三次VSC中保持位置，並在後段頂住了勒克萊爾的壓力，在首場F1比賽就登上頒獎台。</p><p>17歲的英國車手阿爾維德·林德布拉德在鬥牛車隊排位第九，並將其轉化為第八名的成績，收穫四個積分。林德布拉德坦言：「我沒想到第一場比賽就能拿分。車隊給了我一台出色的賽車，我只是盡量保持穩定。」</p><p>加布里埃爾·博爾托萊托為奧迪取得第九名收穫兩分——對於一支在2025年以索伯名義掙扎了大半年的車隊來說，這是極其鼓舞人心的結果。這位巴西車手在中游車陣的輪對輪較量中展現了出色的比賽技巧。</p><p>唯一未能得分的新秀是伊薩克·哈達爾，他的紅牛在第10圈處於領獎台爭奪位置時遭遇機械故障退賽。哈達爾以令人難以置信的第三名起步，在開賽初段展現了與羅素匹敵的速度，隨後賽車放棄了。「崩潰」是他唯一的反應。</p>'
+      }
+    },
     {
       id: 1,
       cat:      { en: 'Qualifying', zh: '排位賽' },

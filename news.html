@@ -213,7 +213,11 @@
   <!-- FILTER BAR -->
   <div class="news-filter-bar">
     <button class="news-filter-btn active" data-filter="all"></button>
+    <button class="news-filter-btn" data-filter="Race Report"></button>
+    <button class="news-filter-btn" data-filter="Highlight"></button>
+    <button class="news-filter-btn" data-filter="Analysis"></button>
     <button class="news-filter-btn" data-filter="Qualifying"></button>
+    <button class="news-filter-btn" data-filter="Incident"></button>
     <button class="news-filter-btn" data-filter="Technical"></button>
     <button class="news-filter-btn" data-filter="Interview"></button>
     <button class="news-filter-btn" data-filter="Practice"></button>
@@ -281,13 +285,16 @@
   <script>
     /* ---- Filter label map ---- */
     var filterLabels = {
-      all:        { en: 'All',        zh: '全部' },
-      Qualifying: { en: 'Qualifying', zh: '排位賽' },
-      Technical:  { en: 'Technical',  zh: '技術' },
-      Interview:  { en: 'Interviews', zh: '訪談' },
-      Practice:   { en: 'Practice',   zh: '練習賽' },
-      Guide:      { en: 'Guide',      zh: '指南' },
-      Incident:   { en: 'Incidents',  zh: '事故' }
+      all:            { en: 'All',          zh: '全部' },
+      'Race Report':  { en: 'Race Report',  zh: '賽事報導' },
+      Highlight:      { en: 'Highlights',   zh: '焦點' },
+      Analysis:       { en: 'Analysis',     zh: '分析' },
+      Qualifying:     { en: 'Qualifying',   zh: '排位賽' },
+      Incident:       { en: 'Incidents',    zh: '事故' },
+      Technical:      { en: 'Technical',    zh: '技術' },
+      Interview:      { en: 'Interviews',   zh: '訪談' },
+      Practice:       { en: 'Practice',     zh: '練習賽' },
+      Guide:          { en: 'Guide',        zh: '指南' }
     };
 
     var currentFilter = 'all';
@@ -316,7 +323,9 @@
       }
 
       return articles.map(function(n) {
-        var isSource = n.source === 'formula1.com';
+        var srcBadge = '';
+        if (n.source === 'formula1.com') srcBadge = '<span style="color:var(--red);font-size:8px;">● F1.COM</span>';
+        else if (n.source === 'the-race.com') srcBadge = '<span style="color:var(--red);font-size:8px;">● THE RACE</span>';
         return '<div class="np-card" data-id="' + n.id + '">' +
           '<div class="np-card-top">' +
           '<div class="np-card-bg-text">' + n.tag.en.toUpperCase() + '</div>' +
@@ -328,7 +337,7 @@
           '<div class="np-meta">' +
           '<span>' + n.date[l] + '</span>' +
           '<span>' + n.readTime[l] + '</span>' +
-          (isSource ? '<span style="color:var(--red);font-size:8px;">● F1.COM</span>' : '') +
+          srcBadge +
           '</div>' +
           '</div>' +
           '</div>';
@@ -364,6 +373,8 @@
       var src = document.getElementById('modal-source');
       if (n.source === 'formula1.com') {
         src.innerHTML = 'Source: <a href="https://www.formula1.com/en/latest/all" target="_blank" style="color:var(--red);">formula1.com</a> — editorial summaries based on official reports.';
+      } else if (n.source === 'the-race.com') {
+        src.innerHTML = 'Source: <a href="https://www.the-race.com/formula-1/" target="_blank" style="color:var(--red);">the-race.com</a> — editorial summaries based on official reports.';
       } else {
         src.innerHTML = 'F1 Weekly original content.';
       }
